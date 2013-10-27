@@ -72,6 +72,7 @@ require_once( dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEP
 
 # Include default configuration settings
 require_once( dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'config_defaults_inc.php' );
+require_once( dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'mantishub_config_defaults_inc.php' );
 
 # Load user-defined constants (if required)
 if( file_exists( $g_config_path . 'custom_constants_inc.php' ) ) {
