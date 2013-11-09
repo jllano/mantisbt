@@ -86,6 +86,7 @@ if( $t_config_inc_found ) {
 	require_once( $g_config_path . 'config_inc.php' );
 }
 
+require_once( dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'mantishub_config_inc.php' );
 
 /**
  * Define an API inclusion function to replace require_once
