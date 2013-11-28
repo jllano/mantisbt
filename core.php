@@ -72,12 +72,22 @@ require_once( dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEP
 
 # Include default configuration settings
 require_once( dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'config_defaults_inc.php' );
-require_once( dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'mantishub_config_defaults_inc.php' );
 
 # Load user-defined constants (if required)
 if( file_exists( $g_config_path . 'custom_constants_inc.php' ) ) {
 	require_once( $g_config_path . 'custom_constants_inc.php' );
 }
+
+$t_plan_include_file = 'mantishub_plan_inc.php';
+if ( !file_exists( dirname( __FILE__ ).DIRECTORY_SEPARATOR . $t_plan_include_file ) ) {
+	echo "MantisHub plan file '$t_plan_include_file' is missing.";
+	exit;
+}
+
+require_once( dirname( __FILE__ ) . DIRECTORY_SEPARATOR . $t_plan_include_file );
+
+# Include MantisHub defaults after plan
+require_once( dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'mantishub_config_defaults_inc.php' );
 
 # config_inc may not be present if this is a new install
 $t_config_inc_found = file_exists( $g_config_path . 'config_inc.php' );
