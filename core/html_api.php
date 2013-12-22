@@ -107,6 +107,7 @@ require_api( 'rss_api.php' );
 require_api( 'string_api.php' );
 require_api( 'user_api.php' );
 require_api( 'utility_api.php' );
+require_api( 'mantishub_api.php' );
 
 $g_rss_feed_url = null;
 
@@ -767,6 +768,8 @@ function html_body_end() {
 	event_signal( 'EVENT_LAYOUT_BODY_END' );
 
 	echo '</div>', "\n";
+
+	mantishub_intercom();
 
 	echo '</body>', "\n";
 }
