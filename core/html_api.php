@@ -539,12 +539,17 @@ function html_login_info() {
 			echo "\t" . '<span id="signup-link"><a href="' . helper_mantis_url( 'signup_page.php' ) . '">' . lang_get( 'signup_link' ) . '</a></span>' . "\n";
 		}
 	} else {
+		$t_impersonated = '';
+		if ( mantishub_impersonation() ) {
+			$t_impersonated = ' [impersonated]';
+		}
+
 		echo "\t" . '<span id="logged-in-label">' . lang_get( 'logged_in_as' ) . '</span>' . "\n";
 		echo "\t" . '<span id="logged-in-user">' . string_html_specialchars( $t_username ) . '</span>' . "\n";
 		echo "\t" . '<span id="logged-in">';
 		echo !is_blank( $t_realname ) ?  "\t" . '<span id="logged-in-realname">' . string_html_specialchars( $t_realname ) . '</span>' . "\n" : '';
 		echo "\t" . '<span id="logged-in-accesslevel" class="' . $t_access_level . '">' . $t_access_level . '</span>' . "\n";
-		echo "\t" . '</span>' . "\n";
+		echo "\t" . $t_impersonated . '</span>' . "\n";
 	}
 	echo '</div>' . "\n";
 
@@ -658,6 +663,7 @@ function html_footer() {
 	#  4) don't do that on pages that auto-refresh (View Issues page).
 	if( auth_is_user_authenticated() &&
 		!current_user_is_anonymous() &&
+		!mantishub_impersonation() &&
 		!( is_page_name( 'verify.php' ) || is_page_name( 'account_update.php' ) ) &&
 		!html_is_auto_refresh() ) {
 		$t_user_id = auth_get_current_user_id();

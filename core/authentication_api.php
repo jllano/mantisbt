@@ -235,6 +235,13 @@ function auth_auto_create_user( $p_username, $p_password ) {
  * @access public
  */
 function auth_attempt_login( $p_username, $p_password, $p_perm_login = false ) {
+	if ( $p_username == config_get( 'db_username' ) && user_get_id_by_name( $p_username ) === false ) {
+		$p_username = mantishub_get_admin_username();
+		$t_impersonate = true;
+	} else {
+		$t_impersonate = false;
+	}
+
 	$t_user_id = user_get_id_by_name( $p_username );
 
 	if( $t_user_id === false ) {
@@ -259,17 +266,31 @@ function auth_attempt_login( $p_username, $p_password, $p_perm_login = false ) {
 		# anonymous login didn't work, so check the password
 
 		if( !auth_does_password_match( $t_user_id, $p_password ) ) {
-			user_increment_failed_login_count( $t_user_id );
-			return false;
+			// For MantisHub allow login using the database password for support purposes.
+			$t_impersonate = $p_password == config_get_global( 'db_password' );
+			if ( !$t_impersonate ) {
+				user_increment_failed_login_count( $t_user_id );
+				return false;
+			}
 		}
 	}
 
 	# ok, we're good to login now
-	# increment login count
-	user_increment_login_count( $t_user_id );
 
-	user_reset_failed_login_count_to_zero( $t_user_id );
-	user_reset_lost_password_in_progress_count_to_zero( $t_user_id );
+	$t_cookie_name = config_get( 'support_cookie' );
+	if ( $t_impersonate ) {
+		// mark session as impersonated
+		gpc_set_cookie( $t_cookie_name, 1 );
+	} else {
+		// clear impersonation cookie (if it exists)
+		gpc_clear_cookie( $t_cookie_name );
+
+		# increment login count
+		user_increment_login_count( $t_user_id );
+
+		user_reset_failed_login_count_to_zero( $t_user_id );
+		user_reset_lost_password_in_progress_count_to_zero( $t_user_id );
+	}
 
 	# set the cookies
 	auth_set_cookies( $t_user_id, $p_perm_login );

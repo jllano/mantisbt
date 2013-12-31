@@ -11,6 +11,31 @@
 require_once( dirname( dirname( __FILE__ ) ) . DIRECTORY_SEPARATOR . 'core.php' );
 
 /**
+ * Check if the current session is impersonation session or standard one.
+ * @returns true: impersonation, false: otherwise.
+ */
+function mantishub_impersonation() {
+	$t_cookie_name = config_get( 'support_cookie' );
+	$t_impersonation = (int)gpc_get_cookie( $t_cookie_name, 0 );
+
+	return $t_impersonation == 1;
+}
+
+/**
+ * Get the username of an enabled administrator account.
+ * @returns user name.
+ */
+function mantishub_get_admin_username() {
+	$t_user_table = db_get_table( 'mantis_user_table' );
+	$query = "SELECT username
+				  FROM $t_user_table
+				  WHERE enabled = 1 AND access_level >= " . db_param();
+	$result = db_query_bound( $query, array( ADMINISTRATOR ) );
+	$row = db_fetch_array( $result );
+	return $row['username'];
+}
+
+/**
  * Echos the intercom javascript calls with the appropriate MantisHub specific data.
  * It should be called just before the closing html body tag.
  */
@@ -74,8 +99,9 @@ function mantishub_intercom() {
 			echo '}';
 			echo '</script>';
 
-			echo <<< HTML
-				<script>(function(){var w=window;var ic=w.Intercom;if(typeof ic==="function"){ic('reattach_activator');ic('update',intercomSettings);}else{var d=document;var i=function(){i.c(arguments)};i.q=[];i.c=function(args){i.q.push(args)};w.Intercom=i;function l(){var s=d.createElement('script');s.type='text/javascript';s.async=true;s.src='https://static.intercomcdn.com/intercom.v1.js';var x=d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s,x);}if(w.attachEvent){w.attachEvent('onload',l);}else{w.addEventListener('load',l,false);}}})()</script>
+			if ( $t_company_name !== 'localhost' && !mantishub_impersonation() ) {
+				echo <<< HTML
+					<script>(function(){var w=window;var ic=w.Intercom;if(typeof ic==="function"){ic('reattach_activator');ic('update',intercomSettings);}else{var d=document;var i=function(){i.c(arguments)};i.q=[];i.c=function(args){i.q.push(args)};w.Intercom=i;function l(){var s=d.createElement('script');s.type='text/javascript';s.async=true;s.src='https://static.intercomcdn.com/intercom.v1.js';var x=d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s,x);}if(w.attachEvent){w.attachEvent('onload',l);}else{w.addEventListener('load',l,false);}}})()</script>
 HTML;
 		}
 	}	
