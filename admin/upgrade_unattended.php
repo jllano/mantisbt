@@ -87,13 +87,6 @@ if( false == $t_result ) {
 	exit( 1 );
 }
 
-# TODO: Enhance this check to support the mode where this script is called on an empty database.
-# check to see if the new installer was used
-if( -1 == config_get( 'database_version', -1 ) ) {
-		echo 'Upgrade from the current installed MantisBT version is no longer supported.  If you are using MantisBT version older than 1.0.0, then upgrade to v1.0.0 first.';
-		exit( 1 );
-}
-
 # read control variables with defaults
 $f_hostname = gpc_get( 'hostname', config_get( 'hostname', 'localhost' ) );
 $f_db_type = gpc_get( 'db_type', config_get( 'db_type', '' ) );
