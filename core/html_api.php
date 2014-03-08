@@ -502,7 +502,7 @@ function html_top_banner() {
 			echo '<a id="logo-link" href="', config_get( 'logo_url' ), '">';
 		}
 		$t_alternate_text = string_html_specialchars( config_get( 'window_title' ) );
-		echo '<img id="logo-image" alt="', $t_alternate_text, '" src="' . helper_mantis_url( $t_logo_image ) . '" />';
+		echo '<img id="logo-image" alt="', $t_alternate_text, '" style="max-height: 80px;" src="' . helper_mantis_url( $t_logo_image ) . '" />';
 		if( $t_show_url ) {
 			echo '</a>';
 		}
@@ -1153,6 +1153,9 @@ function print_manage_config_menu( $p_page = '' ) {
 	$t_pages['manage_config_columns_page.php'] = array( 'url'   => 'manage_config_columns_page.php',
 	                                                    'label' => 'manage_columns_config' );
 
+	$t_pages['logo_page.php'] = array( 'url'   => 'logo_page.php',
+	                                   'label' => 'Logo' );
+
 	# Remove the link from the current page
 	if( isset( $t_pages[$p_page] ) ) {
 		$t_pages[$p_page]['url'] = '';
@@ -1177,9 +1180,9 @@ function print_manage_config_menu( $p_page = '' ) {
 	echo '<ul class="menu">';
 	foreach ( $t_pages as $t_page ) {
 		if( $t_page['url'] == '' ) {
-			echo '<li><span>', lang_get( $t_page['label'] ), '</span></li>';
+			echo '<li><span>', lang_get_defaulted( $t_page['label'] ), '</span></li>';
 		} else {
-			echo '<li><a href="'. helper_mantis_url( $t_page['url'] ) .'">' . lang_get( $t_page['label'] ) . '</a></li>';
+			echo '<li><a href="'. helper_mantis_url( $t_page['url'] ) .'">' . lang_get_defaulted( $t_page['label'] ) . '</a></li>';
 		}
 	}
 
