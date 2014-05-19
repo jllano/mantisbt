@@ -21,6 +21,18 @@ function mantishub_impersonation() {
 	return $t_impersonation == 1;
 }
 
+function mantishub_top_message() {
+	global $g_mantishub_info_trial;
+
+	if ( $g_mantishub_info_trial && current_user_is_administrator() ) {
+		$t_issues_count = mantishub_table_row_count( db_get_table( 'mantis_bug_table' ) );
+
+		if ( $t_issues_count >= 5 ) {
+			echo '<div style="background-color: #fff494; z-index: 10; position: absolute; right: 5px; top: 5px; text-align: right;"><b>Trial Version:</b> Click <a href="http://www.mantishub.com/docs/faq.html#how-do-i-add-payment-method" target="_blank">here</a> to convert to paid and enable daily backups.</div>';
+		}
+	}
+}
+
 /**
  * Get the username of an enabled administrator account.
  * @returns user name.
