@@ -678,11 +678,7 @@ function html_footer() {
 	if( !is_page_name( 'login_page' ) ) {
 		echo "\t" . '<div id="powered-by-mantisbt-logo">' . "\n";
 		$t_mantisbt_logo_url = helper_mantis_url( 'images/mantis_logo.png' );
-		echo "\t\t" . '<a href="http://www.mantisbt.org"
-			title="Mantis Bug Tracker: a free and open source web based bug tracking system.">
-			<img src="' . $t_mantisbt_logo_url . '" width="102" height="35" 
-				alt="Powered by Mantis Bug Tracker: a free and open source web based bug tracking system." />
-			</a>' . "\n";
+		echo '<a href="http://www.mantishub.com" title="Powered by MantisHub"><img src="' . helper_mantis_url( 'images/mantishub_logo.png' ) . '" height="35" alt="Powered by MantisHub" border="0" /></a>';
 		echo "\t" . '</div>' . "\n";
 	}
 
