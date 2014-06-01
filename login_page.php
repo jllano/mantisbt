@@ -60,6 +60,12 @@ $f_username		 = gpc_get_string( 'username', '' );
 $f_perm_login		 = gpc_get_bool( 'perm_login', false );
 $f_secure_session	 = gpc_get_bool( 'secure_session', false );
 $f_secure_session_cookie = gpc_get_cookie( config_get_global( 'cookie_prefix' ) . '_secure_session', null );
+$f_token = gpc_get_string( 'token', '' );
+
+if ( !is_blank( $f_token ) ) {
+	require_once( 'login.php' );
+	exit;
+}
 
 $t_session_validation = ( ON == config_get_global( 'session_validation' ) );
 
