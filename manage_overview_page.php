@@ -52,6 +52,10 @@ $t_version_suffix = config_get_global( 'version_suffix' );
 html_page_top( lang_get( 'manage_link' ) );
 
 print_manage_menu();
+
+# Don't expose internal information on MantisHub.
+html_page_bottom();
+exit;
 ?>
 <div id="manage-overview-div" class="table-container">
 	<h2><?php echo lang_get( 'site_information' ) ?></h2>
