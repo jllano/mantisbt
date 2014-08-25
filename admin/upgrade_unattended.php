@@ -22,6 +22,8 @@
  * @link http://www.mantisbt.org
  */
 
+date_default_timezone_set( 'America/Los_Angeles' );
+
 @set_time_limit( 0 );
 
 # Load the MantisDB core in maintenance mode. This mode will assume that
