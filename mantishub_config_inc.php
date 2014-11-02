@@ -8,3 +8,6 @@ if ( file_exists( $t_instance_logo ) ) {
 } else {
 	$g_logo_image = 'images/mantishub_logo.png'; 
 }
+
+$g_system_font_folder	= dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'fonts' . DIRECTORY_SEPARATOR;
+
