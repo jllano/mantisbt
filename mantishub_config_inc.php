@@ -9,5 +9,8 @@ if ( file_exists( $t_instance_logo ) ) {
 	$g_logo_image = 'images/mantishub_logo.png'; 
 }
 
+// Setup font folder to folder distributed with the MantisHub app files.
 $g_system_font_folder	= dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'fonts' . DIRECTORY_SEPARATOR;
 
+// Don't allow per-project upload path.
+$g_allow_per_project_upload_path = OFF;
