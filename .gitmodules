@@ -10,3 +10,6 @@
 [submodule "library/securimage"]
 	path = library/securimage
 	url = https://github.com/mantisbt/securimage.git
+[submodule "m"]
+	path = m
+	url = git@bitbucket.org:vboctor/mantistouch.git
