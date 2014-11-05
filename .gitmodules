@@ -13,3 +13,6 @@
 [submodule "m"]
 	path = m
 	url = git@bitbucket.org:vboctor/mantistouch.git
+[submodule "plugins/MantisTouchRedirect"]
+	path = plugins/MantisTouchRedirect
+	url = git@github.com:mantishub/MantisTouchRedirect.git
