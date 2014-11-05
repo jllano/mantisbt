@@ -1073,6 +1073,11 @@ function print_manage_menu( $p_page = '' ) {
 			$t_pages['adm_permissions_report.php'] = array( 'url'   => 'adm_permissions_report.php', 'label' => 'manage_config_link' );
 		}
 	}
+
+	if ( access_has_global_level( ADMINISTRATOR ) ) {
+		$t_pages['manage_backup_page.php'] = array( 'url' => 'manage_backup_page.php', 'label' => 'Backup' );
+	}
+
 	# Remove the link from the current page
 	if( isset( $t_pages[$p_page] ) ) {
 		$t_pages[$p_page]['url'] = '';
@@ -1097,9 +1102,9 @@ function print_manage_menu( $p_page = '' ) {
 	echo '<ul class="menu">';
 	foreach( $t_pages as $t_page ) {
 		if( $t_page['url'] == '' ) {
-			echo '<li><span>', lang_get( $t_page['label'] ), '</span></li>';
+			echo '<li><span>', lang_get_defaulted( $t_page['label'] ), '</span></li>';
 		} else {
-			echo '<li><a href="'. helper_mantis_url( $t_page['url'] ) .'">' . lang_get( $t_page['label'] ) . '</a></li>';
+			echo '<li><a href="'. helper_mantis_url( $t_page['url'] ) .'">' . lang_get_defaulted( $t_page['label'] ) . '</a></li>';
 		}
 	}
 

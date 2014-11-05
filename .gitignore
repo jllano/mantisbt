@@ -9,6 +9,9 @@ custom_relationships_inc.php
 custom_strings_inc.php
 api/soap/mc_config_inc.php
 
+# Backup
+backup/
+
 # Config files
 config/
 mantis_offline.php
