@@ -523,6 +523,8 @@ function html_login_info() {
 	$t_now = date( config_get( 'complete_date_format' ) );
 	$t_realname = current_user_get_field( 'realname' );
 
+	echo '<div class="info-bar">' . "\n";
+
 	# Login information
 	echo '<div id="login-info">' . "\n";
 	if( current_user_is_anonymous() ) {
@@ -607,6 +609,7 @@ function html_login_info() {
 
 	# Current time
 	echo '<div id="current-time">' . $t_now . '</div>';
+	echo '</div>' . "\n";
 }
 
 /**
@@ -1799,29 +1802,29 @@ function html_buttons_view_bug_page( $p_bug_id ) {
 
 	$t_bug = bug_get( $p_bug_id );
 
-	echo '<table><tr class="vcenter">';
+	echo '<table><tr class="details-buttons">';
 	if( !$t_readonly ) {
 		# UPDATE button
-		echo '<td class="center">';
+		echo '<td>';
 		html_button_bug_update( $p_bug_id );
 		echo '</td>';
 
 		# ASSIGN button
-		echo '<td class="center">';
+		echo '<td>';
 		html_button_bug_assign_to( $t_bug );
 		echo '</td>';
 	}
 
 	# Change status button/dropdown
 	if( !$t_readonly ) {
-		echo '<td class="center">';
+		echo '<td>';
 		html_button_bug_change_status( $t_bug );
 		echo '</td>';
 	}
 
 	# MONITOR/UNMONITOR button
 	if( !current_user_is_anonymous() ) {
-		echo '<td class="center">';
+		echo '<td>';
 		if( user_is_monitoring_bug( auth_get_current_user_id(), $p_bug_id ) ) {
 			html_button_bug_unmonitor( $p_bug_id );
 		} else {
@@ -1832,7 +1835,7 @@ function html_buttons_view_bug_page( $p_bug_id ) {
 
 	# STICK/UNSTICK button
 	if( access_has_bug_level( $t_sticky, $p_bug_id ) ) {
-		echo '<td class="center">';
+		echo '<td>';
 		if( !bug_get_field( $p_bug_id, 'sticky' ) ) {
 			html_button_bug_stick( $p_bug_id );
 		} else {
@@ -1843,28 +1846,28 @@ function html_buttons_view_bug_page( $p_bug_id ) {
 
 	# CLONE button
 	if( !$t_readonly ) {
-		echo '<td class="center">';
+		echo '<td>';
 		html_button_bug_create_child( $p_bug_id );
 		echo '</td>';
 	}
 
 	# REOPEN button
-	echo '<td class="center">';
+	echo '<td>';
 	html_button_bug_reopen( $t_bug );
 	echo '</td>';
 
 	# CLOSE button
-	echo '<td class="center">';
+	echo '<td>';
 	html_button_bug_close( $t_bug );
 	echo '</td>';
 
 	# MOVE button
-	echo '<td class="center">';
+	echo '<td>';
 	html_button_bug_move( $p_bug_id );
 	echo '</td>';
 
 	# DELETE button
-	echo '<td class="center">';
+	echo '<td>';
 	html_button_bug_delete( $p_bug_id );
 	echo '</td>';
 
