@@ -267,7 +267,7 @@ HTML;
  */
 function mantishub_table_row_count( $p_table ) {
 	$query = "SELECT COUNT(*) FROM {" . $p_table . "}";
-	$result = db_query_bound( $query );
+	$result = db_query( $query );
 	$t_users = db_result( $result );
 
 	return $t_users;
@@ -282,7 +282,7 @@ function mantishub_user_count_has_access( $p_access_level ) {
 	$query = "SELECT COUNT(*)
 				  FROM {user}
 				  WHERE access_level >= " . db_param();
-	$result = db_query_bound( $query, array( $p_access_level ) );
+	$result = db_query( $query, array( $p_access_level ) );
 
 	return db_result( $result );
 }
@@ -295,7 +295,7 @@ function mantishub_user_count_has_access( $p_access_level ) {
  */
 function mantishub_last_issue_update() {
 	$query = "SELECT last_updated FROM {bug} ORDER BY last_updated DESC";
-	$result = db_query_bound( $query, array(), /* one row */ 1 );
+	$result = db_query( $query, array(), /* one row */ 1 );
 	$t_timestamp = db_result( $result );
 
 	return $t_timestamp;
