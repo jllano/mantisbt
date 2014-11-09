@@ -19,3 +19,4 @@ if ( is_gold() || is_silver() ) {
 	$g_plugins_force_installed['MantisTouchRedirect'] = 5;
 }
 
+$g_crypto_generate_random_string = $g_database_name . $g_db_username . $g_db_password;
