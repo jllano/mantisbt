@@ -295,6 +295,8 @@ function html_page_bottom1a( $p_file = null ) {
 		$p_file = basename( $_SERVER['SCRIPT_NAME'] );
 	}
 
+	error_print_delayed();
+
 	html_bottom_banner();
 	html_footer();
 	html_body_end();
@@ -364,7 +366,7 @@ function require_css( $p_stylesheet_path ) {
 function html_css() {
 	global $g_stylesheets_included;
 	html_css_link( config_get( 'css_include_file' ) );
-	html_css_link( 'jquery-ui-1.10.0.custom.min.css' );
+	html_css_link( 'jquery-ui-1.11.2.min.css' );
 	html_css_link( 'common_config.php' );
 	# Add right-to-left css if needed
 	if( lang_get( 'directionality' ) == 'rtl' ) {
@@ -438,8 +440,8 @@ function html_head_javascript() {
 
 	echo "\t" . '<script type="text/javascript" src="' . helper_mantis_url( 'javascript_config.php' ) . '"></script>' . "\n";
 	echo "\t" . '<script type="text/javascript" src="' . helper_mantis_url( 'javascript_translations.php' ) . '"></script>' . "\n";
-	html_javascript_link( 'jquery-1.9.1.min.js' );
-	html_javascript_link( 'jquery-ui-1.10.0.custom.min.js' );
+	html_javascript_link( 'jquery-1.11.1.min.js' );
+	html_javascript_link( 'jquery-ui-1.11.2.min.js' );
 	html_javascript_link( 'common.js' );
 	foreach ( $g_scripts_included as $t_script_path ) {
 		html_javascript_link( $t_script_path );
@@ -680,8 +682,10 @@ function html_footer() {
 	# version of the logo when not on login page.
 	if( !is_page_name( 'login_page' ) ) {
 		echo "\t" . '<div id="powered-by-mantisbt-logo">' . "\n";
-		$t_mantisbt_logo_url = helper_mantis_url( 'images/mantis_logo.png' );
-		echo '<a href="http://www.mantishub.com" title="Powered by MantisHub"><img src="' . helper_mantis_url( 'images/mantishub_logo.png' ) . '" height="35" alt="Powered by MantisHub" border="0" /></a>';
+		$t_mantisbt_logo_url = helper_mantis_url( 'images/mantishub_logo.png' );
+		echo "\t\t" . '<a href="http://www.mantishub.com"
+			title="Powered by MantisHub">
+			<img src="' . $t_mantisbt_logo_url . '" height="35" alt="Powered by MantisHub" border="0" /></a>';
 		echo "\t" . '</div>' . "\n";
 	}
 
@@ -1035,7 +1039,7 @@ function print_summary_submenu() {
 		echo "\t\t" . '<ul class="menu">' . "\n";
 		# Plugins menu items - these are cooked links
 		foreach ( $t_menu_options as $t_menu_item ) {
-			echo "\t\t\t" . '<li>', $t_menu_item, '</li> . "\n"';
+			echo "\t\t\t" . '<li>', $t_menu_item, '</li>' . "\n";
 		}
 		echo "\t\t" . '</ul>' . "\n";
 		echo "\t" . '</div>' . "\n";
