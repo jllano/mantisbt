@@ -766,14 +766,11 @@ function email_store( $p_recipient, $p_subject, $p_message, array $p_headers = n
 	$t_email_data->metadata['charset'] = 'utf-8';
 
 	$t_hostname = '';
-	if( isset( $_SERVER['SERVER_NAME'] ) ) {
-		$t_hostname = $_SERVER['SERVER_NAME'];
-	} else {
-		$t_address = explode( '@', config_get( 'from_email' ) );
-		if( isset( $t_address[1] ) ) {
-			$t_hostname = $t_address[1];
-		}
+	$t_address = explode( '@', config_get( 'from_email' ) );
+	if( isset( $t_address[1] ) ) {
+		$t_hostname = $t_address[1];
 	}
+
 	$t_email_data->metadata['hostname'] = $t_hostname;
 
 	$t_email_id = email_queue_add( $t_email_data );
