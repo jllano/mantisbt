@@ -61,3 +61,8 @@
 
     # This causes issue for some customers.
 	$g_session_validation = OFF;
+
+	# By default notify developers and above for newly created issues.
+	$g_notify_flags['new']['threshold_min'] = DEVELOPER;
+	$g_notify_flags['new']['threshold_max'] = ADMINISTRATOR;
+
