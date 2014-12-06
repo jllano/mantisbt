@@ -69,7 +69,9 @@ foreach( $t_plugins as $t_basename => $t_plugin ) {
 	if( plugin_is_registered( $t_basename ) ) {
 		$t_plugins_installed[$t_basename] = $t_plugin;
 	} else {
-		$t_plugins_available[$t_basename] = $t_plugin;
+		if ( !in_array( $t_basename, $g_plugins_to_exclude ) ) {
+			$t_plugins_available[$t_basename] = $t_plugin;
+		}
 	}
 }
 
