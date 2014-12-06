@@ -2,6 +2,9 @@
 mantishub_plan_inc.php
 package_timestamp.txt
 
+# Mac Files
+.DS_Store
+
 # Config files - v1.2.x config files - keep for convenience for dev machines switching branches
 config_inc.php
 custom_constants_inc.php
