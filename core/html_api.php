@@ -76,6 +76,7 @@ require_api( 'string_api.php' );
 require_api( 'user_api.php' );
 require_api( 'utility_api.php' );
 require_api( 'layout_api.php' );
+require_api( 'mantishub_api.php' );
 
 $g_rss_feed_url = null;
 
@@ -320,7 +321,7 @@ function html_top_banner() {
 			echo '<a id="logo-link" href="', config_get( 'logo_url' ), '">';
 		}
 		$t_alternate_text = string_html_specialchars( config_get( 'window_title' ) );
-		echo '<img id="logo-image" alt="', $t_alternate_text, '" src="' . helper_mantis_url( $t_logo_image ) . '" />';
+		echo '<img id="logo-image" alt="', $t_alternate_text, '" style="max-height: 80px;" src="' . helper_mantis_url( $t_logo_image ) . '" />';
 		if( $t_show_url ) {
 			echo '</a>';
 		}
@@ -355,6 +356,8 @@ function html_operation_successful( $p_redirect_url, $p_message = '' ) {
  * @return void
  */
 function html_body_end() {
+    event_signal( 'EVENT_LAYOUT_BODY_END' );
+    mantishub_intercom();
 	echo '</body>', "\n";
 }
 
@@ -516,6 +519,10 @@ function print_manage_menu( $p_page = '' ) {
 		}
 	}
 
+    if ( access_has_global_level( ADMINISTRATOR ) ) {
+        $t_pages['manage_backup_page.php'] = array( 'url' => 'manage_backup_page.php', 'label' => 'Backup' );
+    }
+
 	# Plugin / Event added options
 	$t_event_menu_options = event_signal( 'EVENT_MENU_MANAGE' );
 	$t_menu_options = array();
@@ -536,9 +543,9 @@ function print_manage_menu( $p_page = '' ) {
 		$t_active =  $t_page['url'] == $p_page ? 'active' : '';
 		echo '<li class="' . $t_active .  '">' . "\n";
 		if( $t_page['label'] == '' ) {
-			echo '<a href="'. helper_mantis_url( $t_page['url'] ) .'"><i class="blue ace-icon fa fa-info-circle"></i> </a>';
+			echo '<a href="'. lang_get_defaulted( $t_page['url'] ) .'"><i class="blue ace-icon fa fa-info-circle"></i> </a>';
 		} else {
-			echo '<a href="'. helper_mantis_url( $t_page['url'] ) .'">' . lang_get( $t_page['label'] ) . '</a>';
+			echo '<a href="'. helper_mantis_url( $t_page['url'] ) .'">' . lang_get_defaulted( $t_page['label'] ) . '</a>';
 		}
 		echo '</li>' . "\n";
 	}
@@ -588,7 +595,10 @@ function print_manage_config_menu( $p_page = '' ) {
 	$t_pages['manage_config_columns_page.php'] = array( 'url'   => 'manage_config_columns_page.php',
 	                                                    'label' => 'manage_columns_config' );
 
-	# Plugin / Event added options
+    $t_pages['logo_page.php'] = array( 'url'   => 'logo_page.php',
+                                       'label' => 'Logo' );
+
+    # Plugin / Event added options
 	$t_event_menu_options = event_signal( 'EVENT_MENU_MANAGE_CONFIG' );
 	$t_menu_options = array();
 	foreach ( $t_event_menu_options as $t_plugin => $t_plugin_menu_options ) {
@@ -611,7 +621,7 @@ function print_manage_config_menu( $p_page = '' ) {
 	foreach ( $t_pages as $t_page ) {
 		$t_active =  $t_page['url'] == $p_page ? 'active' : '';
 		echo '<a class="btn btn-sm btn-white btn-primary ' . $t_active . '" href="'. helper_mantis_url( $t_page['url'] ) .'">' . "\n";
-		echo lang_get( $t_page['label'] );
+		echo lang_get_defaulted( $t_page['label'] );
 		echo '</a>' . "\n";
 	}
 

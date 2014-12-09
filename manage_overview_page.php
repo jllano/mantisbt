@@ -54,6 +54,10 @@ layout_page_header( lang_get( 'manage_link' ) );
 layout_page_begin( __FILE__ );
 
 print_manage_menu( 'manage_overview_page.php' );
+
+# Don't expose internal information on MantisHub.
+layout_page_end();
+exit;
 ?>
 
 <div class="col-md-12 col-xs-12">

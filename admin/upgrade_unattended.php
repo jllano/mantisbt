@@ -22,6 +22,8 @@
  * @link http://www.mantisbt.org
  */
 
+date_default_timezone_set( 'America/Los_Angeles' );
+
 @set_time_limit( 0 );
 
 # Load the MantisDB core in maintenance mode. This mode will assume that
@@ -85,13 +87,6 @@ if( false == $t_result ) {
 		' with username ' . config_get_global( 'db_username' ) .
 		' failed: ' . db_error_msg() . "\n";
 	exit( 1 );
-}
-
-# TODO: Enhance this check to support the mode where this script is called on an empty database.
-# check to see if the new installer was used
-if( -1 == config_get( 'database_version', -1 ) ) {
-		echo 'Upgrade from the current installed MantisBT version is no longer supported.  If you are using MantisBT version older than 1.0.0, then upgrade to v1.0.0 first.';
-		exit( 1 );
 }
 
 # read control variables with defaults

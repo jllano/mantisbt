@@ -1,19 +1,27 @@
+# MantisHub Files
+mantishub_plan_inc.php
+package_timestamp.txt
+
+# Mac Files
+.DS_Store
+
 # Config files - v1.2.x config files - keep for convenience for dev machines switching branches
 config_inc.php
 custom_constants_inc.php
 custom_functions_inc.php
 custom_relationships_inc.php
 custom_strings_inc.php
+mantis_offline.php
 api/soap/mc_config_inc.php
 
-# Config files
-config/
-mantis_offline.php
+# Files to be deprecated in v1.3
+custom_constant_inc.php
 
 # Docbook builds
 docbook/*/*/builddate
 docbook/*/*/build
 docbook/*/*/install
+docbook/*/builddate
 docbook/*/tmp
 !docbook/Admin_Guide/*/config
 
@@ -45,3 +53,9 @@ web.config
 #libraries
 library/jpgraph
 library/FirePHPCore
+
+images/logo.png
+attach/
+config/
+backup/
+log/

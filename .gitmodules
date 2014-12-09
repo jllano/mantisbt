@@ -10,3 +10,12 @@
 [submodule "library/securimage"]
 	path = library/securimage
 	url = https://github.com/mantisbt/securimage.git
+[submodule "m"]
+	path = m
+	url = git@bitbucket.org:vboctor/mantistouch.git
+[submodule "plugins/MantisTouchRedirect"]
+	path = plugins/MantisTouchRedirect
+	url = git@github.com:mantishub/MantisTouchRedirect.git
+[submodule "plugins/Csv_import"]
+	path = plugins/Csv_import
+	url = git@github.com:mantisbt-plugins/csv-import.git

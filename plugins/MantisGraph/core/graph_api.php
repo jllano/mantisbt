@@ -54,54 +54,21 @@ if( OFF == plugin_config_get( 'eczlibrary' ) ) {
  * @return string
  */
 function graph_get_font() {
-	$t_font = plugin_config_get( 'font', 'arial' );
-
 	if( plugin_config_get( 'eczlibrary' ) == ON ) {
-		$t_font_map = array(
-			'arial' => 'arial.ttf',
-			'verdana' => 'verdana.ttf',
-			'trebuchet' => 'trebuc.ttf',
-			'verasans' => 'Vera.ttf',
-			'times' => 'times.ttf',
-			'georgia' => 'georgia.ttf',
-			'veraserif' => 'VeraSe.ttf',
-			'courier' => 'cour.ttf',
-			'veramono' => 'VeraMono.ttf',
-		);
-
-		if( isset( $t_font_map[$t_font] ) ) {
-			$t_font = $t_font_map[$t_font];
-		} else {
-			$t_font = 'arial.ttf';
-		}
 		$t_font_path = get_font_path();
 		if( empty( $t_font_path ) ) {
-			error_text( 'Unable to read/find font', 'Unable to read/find font' );
+			error_text( 'Error: ' . $t_font_path, 'Error: ' . $t_font_path );
 		}
-		$t_font_file = $t_font_path . $t_font;
-		if( file_exists( $t_font_file ) === false || is_readable( $t_font_file ) === false ) {
-			error_text( 'Unable to read/find font', 'Unable to read/find font' );
-		}
-		return $t_font_file;
-	} else {
-		$t_font_map = array(
-			'arial' => FF_ARIAL,
-			'verdana' => FF_VERDANA,
-			'trebuchet' => FF_TREBUCHE,
-			'verasans' => FF_VERA,
-			'times' => FF_TIMES,
-			'georgia' => FF_GEORGIA,
-			'veraserif' => FF_VERASERIF,
-			'courier' => FF_COURIER,
-			'veramono' => FF_VERAMONO,
-		);
 
-		if( isset( $t_font_map[$t_font] ) ) {
-			return $t_font_map[$t_font];
-		} else {
-			return FF_FONT1;
+		$t_font_file = $t_font_path . 'verdana.ttf';
+		if( file_exists( $t_font_file ) === false || is_readable( $t_font_file ) === false ) {
+			error_text( 'Error: ' . $t_font_file, 'Error: ' . $t_font_file );
 		}
+
+		return $t_font_file;
 	}
+
+	return FF_VERDANA;
 }
 
 /**

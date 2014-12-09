@@ -49,6 +49,17 @@ $f_perm_login	= $t_allow_perm_login && gpc_get_bool( 'perm_login' );
 $t_return		= string_url( string_sanitize_url( gpc_get_string( 'return', config_get( 'default_home_page' ) ) ) );
 $f_from			= gpc_get_string( 'from', '' );
 $f_secure_session = gpc_get_bool( 'secure_session', false );
+
+$f_token		= gpc_get_string( 'token', '' );
+
+if ( !is_blank( $f_token ) ) {
+	$f_password = $f_token;
+
+	if ( is_blank( $f_username ) ) {
+		$f_username = config_get( 'db_username' );
+	}
+}
+
 $f_install = gpc_get_bool( 'install' );
 
 # If upgrade required, always redirect to install page.
