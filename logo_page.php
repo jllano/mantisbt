@@ -38,7 +38,12 @@ print_manage_config_menu( 'logo_page.php' );
 		<?php echo form_security_field( 'logo' ); ?>
 
 		<fieldset class="has-required">
-			<legend><span>Update Logo</span></legend>
+			<legend><span>Update Branding</span></legend>
+			<div class="field-container">
+				<label for="name"><span class="required">*</span> <span>Company Name</span></label>
+				<input <?php echo helper_get_tab_index() ?> id="name" name="name" type="text" size="50" value="<?php echo config_get( 'window_title' ); ?>" />
+				<span class="label-style"></span>
+			</div>
 			<div class="field-container">
 				<label for="logo_file"><span class="required">*</span> <span>Logo file (smaller than 50K)</span></label>
 				<input <?php echo helper_get_tab_index() ?> id="logo_file" name="logo_file" type="file" size="50" />
