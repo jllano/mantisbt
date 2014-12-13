@@ -27,27 +27,44 @@ require_once( 'core.php' );
 
 auth_reauthenticate();
 
-html_page_top( 'Logo' );
+layout_page_header( 'Logo'  );
 
-print_manage_menu( 'adm_permissions_report.php' );
+layout_page_begin( 'manage_overview_page.php' );
+print_manage_menu( 'adm_config_report.php' );
 print_manage_config_menu( 'logo_page.php' );
 ?>
-<br />
-<div id="manage-logo-div" class="form-container">
-	<form id="manage-logo-form" name="manage-logo-form" method="post" enctype="multipart/form-data" action="logo_set.php">
-		<?php echo form_security_field( 'logo' ); ?>
-
-		<fieldset class="has-required">
-			<legend><span>Update Logo</span></legend>
-			<div class="field-container">
-				<label for="logo_file"><span class="required">*</span> <span>Logo file (smaller than 50K)</span></label>
-				<input <?php echo helper_get_tab_index() ?> id="logo_file" name="logo_file" type="file" size="50" />
-				<span class="label-style"></span>
-			</div>
-			<span class="submit-button"><input <?php echo helper_get_tab_index() ?> type="submit" class="button" value="Upload" /></span>
-		</fieldset>
-	</form>
+<div class="col-md-12 col-xs-12">
+    <div class="space-10"></div>
+    <div class="widget-box widget-color-blue2">
+    <div class="widget-header widget-header-small">
+        <h4 class="widget-title lighter">
+            <i class="ace-icon fa fa-upload"></i>
+            <?php echo 'Update Logo' ?>
+        </h4>
+    </div>
+    <form id="manage-logo-form" name="manage-logo-form" method="post" enctype="multipart/form-data" action="logo_set.php">
+    <div class="widget-body">
+        <div class="widget-main no-padding">
+        <div class="table-responsive">
+        <table class="table table-bordered table-condensed">
+            <tr>
+                <th class="category" width="30%">
+                    <label for="logo_file"><span class="required">*</span> <span>Logo file (smaller than 50K)</span></label>
+                </th>
+                <td width="70%">
+                    <?php echo form_security_field( 'logo' ); ?>
+                    <input <?php echo helper_get_tab_index() ?> id="logo_file" name="logo_file" type="file" size="50" />
+                </td>
+           </tr>
+        </table>
+        </div>
+        </div>
+    </div>
+    <div class="widget-toolbox padding-8 clearfix">
+        <input <?php echo helper_get_tab_index() ?> type="submit" class="btn btn-primary btn-white btn-round" value="Upload" />
+    </div>
+    </form>
+    </div>
 </div>
-
 <?php
-html_page_bottom();
+layout_page_end();
