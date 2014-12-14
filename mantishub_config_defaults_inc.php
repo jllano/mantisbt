@@ -66,3 +66,5 @@
 	$g_notify_flags['new']['threshold_min'] = DEVELOPER;
 	$g_notify_flags['new']['threshold_max'] = ADMINISTRATOR;
 
+	$g_crypto_master_salt = $g_database_name . $g_db_username . $g_db_password;
+
