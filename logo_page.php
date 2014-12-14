@@ -47,8 +47,16 @@ print_manage_config_menu( 'logo_page.php' );
         <div class="widget-main no-padding">
         <div class="table-responsive">
         <table class="table table-bordered table-condensed">
-            <tr>
+            <tr class="field-container">
                 <th class="category" width="30%">
+                    <label for="name"><span>Company Name</span></label>
+                </th>
+                <td>
+                    <input <?php echo helper_get_tab_index() ?> id="name" name="name" type="text" size="50" value="<?php echo config_get( 'window_title' ); ?>" />
+                </td>
+            </tr>
+            <tr>
+                <th class="category">
                     <label for="logo_file"><span class="required">*</span> <span>Logo file (smaller than 50K)</span></label>
                 </th>
                 <td width="70%">
