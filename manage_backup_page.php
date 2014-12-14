@@ -72,7 +72,7 @@ if ( mantishub_backup_in_progress() ) {
 
 	if ( $t_backup_timestamp == 0 || ( time() - $t_backup_timestamp ) > 60 ) {
 ?>
-    <p class="lead">Start a new backup. <b>It may take a couple of minutes.</p>
+    <p class="lead">Start a new backup. It may take a couple of minutes.</p>
     <form name="manage_backup_form" method="post" enctype="multipart/form-data" action="manage_backup.php">
     <?php echo form_security_field( 'manage_backup' ); ?>
         <input <?php echo helper_get_tab_index() ?> type="submit" class="btn btn-primary btn-white btn-round" value="Request Backup" />

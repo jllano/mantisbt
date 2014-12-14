@@ -30,17 +30,19 @@ require_once( 'core.php' );
 form_security_validate( 'logo' );
 
 $f_logo_file = gpc_get_file( 'logo_file' );
-if ( is_blank( $f_logo_file['tmp_name'] ) ) {
-	error_parameters( 'logo_file' );
-	trigger_error( ERROR_EMPTY_FIELD, ERROR );
+if ( !is_blank( $f_logo_file['tmp_name'] ) ) {
+	$t_size = $f_logo_file['size'];
+	if ( $t_size > ( 50 * 1024 ) ) {
+		trigger_error( ERROR_FILE_TOO_BIG, ERROR );
+	}
+
+	$t_temp_file_path = $f_logo_file['tmp_name'];
+	copy( $t_temp_file_path, dirname( __FILE__) . '/images/logo.png' );
 }
 
-$t_size = $f_logo_file['size'];
-if ( $t_size > ( 50 * 1024 ) ) {
-	trigger_error( ERROR_FILE_TOO_BIG, ERROR );
+$f_name = gpc_get_string( 'name', 'MantisHub' );
+if ( $f_name != config_get( 'window_title' ) ) {
+	config_set( 'window_title', $f_name );
 }
-
-$t_temp_file_path = $f_logo_file['tmp_name'];
-copy( $t_temp_file_path, dirname( __FILE__) . '/images/logo.png' );
 
 html_meta_redirect( config_get( 'default_home_page' ) );
