@@ -27,6 +27,8 @@
   */
 require_once( 'core.php' );
 
+access_ensure_global_level( ADMINISTRATOR );
+
 form_security_validate( 'logo' );
 
 $f_logo_file = gpc_get_file( 'logo_file' );
@@ -40,7 +42,11 @@ if ( !is_blank( $f_logo_file['tmp_name'] ) ) {
 	copy( $t_temp_file_path, dirname( __FILE__) . '/images/logo.png' );
 }
 
-$f_name = gpc_get_string( 'name', 'MantisHub' );
+$f_name = gpc_get_string( 'name', '' );
+if ( is_blank( $f_name ) ) {
+	$f_name = 'MantisHub';
+}
+
 if ( $f_name != config_get( 'window_title' ) ) {
 	config_set( 'window_title', $f_name );
 }
