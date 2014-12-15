@@ -357,6 +357,7 @@ function html_operation_successful( $p_redirect_url, $p_message = '' ) {
  */
 function html_body_end() {
     event_signal( 'EVENT_LAYOUT_BODY_END' );
+    mantishub_google_analytics();
     mantishub_intercom();
 	echo '</body>', "\n";
 }
