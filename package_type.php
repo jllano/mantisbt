@@ -21,8 +21,8 @@ switch ( $f_package_type ) {
 		exit;
 }
 
-html_page_top1();
-html_page_top2();
+layout_page_header( 'Package Type'  );
+layout_page_begin( 'manage_overview_page.php' );
 
 echo '<br />';
 echo '<br />';
@@ -33,5 +33,5 @@ echo '</center>';
 echo '<br />';
 echo '<br />';
 
-html_page_bottom();
+layout_page_end();
 
