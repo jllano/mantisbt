@@ -39,7 +39,7 @@ print_manage_config_menu( 'logo_page.php' );
     <div class="widget-header widget-header-small">
         <h4 class="widget-title lighter">
             <i class="ace-icon fa fa-upload"></i>
-            <?php echo 'Update Logo' ?>
+            <?php echo 'Update Branding' ?>
         </h4>
     </div>
     <form id="manage-logo-form" name="manage-logo-form" method="post" enctype="multipart/form-data" action="logo_set.php">
@@ -57,7 +57,7 @@ print_manage_config_menu( 'logo_page.php' );
             </tr>
             <tr>
                 <th class="category">
-                    <label for="logo_file"><span class="required">*</span> <span>Logo file (smaller than 50K)</span></label>
+                    <label for="logo_file"><span>Logo file (smaller than 50K)</span></label>
                 </th>
                 <td width="70%">
                     <?php echo form_security_field( 'logo' ); ?>
@@ -69,7 +69,7 @@ print_manage_config_menu( 'logo_page.php' );
         </div>
     </div>
     <div class="widget-toolbox padding-8 clearfix">
-        <input <?php echo helper_get_tab_index() ?> type="submit" class="btn btn-primary btn-white btn-round" value="Upload" />
+        <input <?php echo helper_get_tab_index() ?> type="submit" class="btn btn-primary btn-white btn-round" value="Update" />
     </div>
     </form>
     </div>
