@@ -975,8 +975,12 @@ function layout_footer() {
 	}
 	echo '<div class="col-md-6 col-xs-12 no-padding">' . "\n";
 	echo '<address>' . "\n";
-	echo '<strong>Powered by <a href="http://www.mantisbt.org" title="bug tracking software">MantisBT ' . $t_version_suffix . '</a></strong> <br>' . "\n";
-	echo "<small>Copyright &copy;$t_copyright_years MantisBT Team</small>" . '<br>';
+	# echo '<strong>Powered by <a href="http://www.mantisbt.org" title="bug tracking software">MantisBT ' . $t_version_suffix . '</a></strong> <br>' . "\n";
+	# echo "<small>Copyright &copy;$t_copyright_years MantisBT Team</small>" . '<br>';
+	global $g_mantishub_plan;
+	echo '<small>Hosted at <a href="http://www.mantishub.com">MantisHub</a> (' . $g_mantishub_plan . ' Plan)' . "</small><br />\n";
+
+	#echo '<small>Hosted at <a href="http://www.mantishub.com">MantisHub</a> (' . $g_Copyright &copy;$t_copyright_years MantisBT Team</small>" . '<br>';
 
 	# Show optional user-specified custom copyright statement
 	$t_copyright_statement = config_get( 'copyright_statement' );
@@ -999,10 +1003,10 @@ function layout_footer() {
 	if( !is_page_name( 'login_page' ) ) {
 		echo '<div class="col-md-6 col-xs-12">' . "\n";
 		echo '<div class="pull-right" id="powered-by-mantisbt-logo">' . "\n";
-		$t_mantisbt_logo_url = helper_mantis_url( 'images/mantis_logo.png' );
+		$t_mantisbt_logo_url = helper_mantis_url( 'images/mantishub_logo.png' );
 		echo '<a href="http://www.mantisbt.org" '.
 			'title="Mantis Bug Tracker: a free and open source web based bug tracking system.">' .
-			'<img src="' . $t_mantisbt_logo_url . '" width="102" height="35" ' .
+			'<img src="' . $t_mantisbt_logo_url . '" height="35" ' .
 			'alt="Powered by Mantis Bug Tracker: a free and open source web based bug tracking system." />' .
 			'</a>' . "\n";
 		echo '</div>' . "\n";
