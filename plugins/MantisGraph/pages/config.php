@@ -35,7 +35,7 @@ print_manage_menu( 'manage_plugin_page.php' );
 <div class="col-md-12 col-xs-12">
 <div class="space-10"></div>
 <div class="form-container" >
-<form id="graph-config-form" action="<?php echo plugin_lang_get( 'title' ) . ': ' . plugin_lang_get( 'config' )?>" method="post">
+<form id="graph-config-form" action="<?php echo plugin_page( 'config_edit' )?>" method="post">
 <?php echo form_security_field( 'plugin_graph_config_edit' ) ?>
 
 <input type="hidden" name="font" value="verdana" />
