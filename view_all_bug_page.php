@@ -108,12 +108,12 @@ if( current_user_get_pref( 'refresh_delay' ) > 0 ) {
 	html_meta_redirect( 'view_all_bug_page.php' . $t_query, current_user_get_pref( 'refresh_delay' ) * 60 );
 }
 
-mantishub_top_message();
 layout_page_header_end();
 
 layout_page_begin( __FILE__ );
 
 define( 'VIEW_ALL_INC_ALLOW', true );
+mantishub_top_message();
 include( dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'view_all_inc.php' );
 
 layout_page_end();
