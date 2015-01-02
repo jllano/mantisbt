@@ -132,6 +132,7 @@ while (list ($t_box_title, $t_box_display) = each ($t_boxes)) {
 </div>
 
 <div class="col-md-5 col-xs-12">
+    <?php  include( $g_mantishub_path . 'start_guide_inc.php' ); ?>
 	<?php  include( $g_core_path . 'timeline_inc.php' ); ?>
 	<div class="space-10"></div>
 </div>

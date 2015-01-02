@@ -66,3 +66,10 @@
 	$g_notify_flags['new']['threshold_min'] = DEVELOPER;
 	$g_notify_flags['new']['threshold_max'] = ADMINISTRATOR;
 
+
+    /**
+     * Path to mantishub folder. The default is usually OK
+     * @global string $g_core_path
+     */
+    $g_mantishub_path = $g_absolute_path . 'mantishub' . DIRECTORY_SEPARATOR;
+
