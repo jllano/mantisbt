@@ -241,6 +241,6 @@ helper_call_custom_function( 'issue_create_notify', array( $t_bug_id ) );
 # Allow plugins to post-process bug data with the new bug ID
 event_signal( 'EVENT_REPORT_BUG', array( $t_bug_data, $t_bug_id ) );
 
-email_new_bug( $t_bug_id );
+email_generic( $t_bug_id, 'new', 'email_notification_title_for_action_bug_submitted' );
 
 mantishub_email_response( "Thanks for your email.  We've recorded the issue with reference number $t_bug_id.", /* success */ true );
