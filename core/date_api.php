@@ -261,7 +261,7 @@ function print_date_selection_set( $p_name, $p_format, $p_date = 0, $p_default_d
 			echo '</select>' . "\n";
 		}
 		if( strcasecmp( $t_char, 'Y' ) == 0 ) {
-			echo '<select class="input-xz" ' .  helper_get_tab_index() . ' name="' . $p_name . '_year"' . $t_disable . '>';
+			echo '<select class="input-xs" ' .  helper_get_tab_index() . ' name="' . $p_name . '_year"' . $t_disable . '>';
 			echo $t_blank_line;
 			print_year_range_option_list( $t_date[0], $p_year_start, $p_year_end );
 			echo '</select>' . "\n";
