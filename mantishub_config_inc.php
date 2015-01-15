@@ -19,4 +19,4 @@ if ( is_gold() || is_silver() ) {
 	$g_plugins_force_installed['MantisTouchRedirect'] = 5;
 }
 
-$g_crypto_master_salt = $g_database_name . $g_db_username . $g_db_password;
+$g_crypto_master_salt = 'salt-for-dev-machine-where-normal-salt-is-short' . $g_database_name . $g_db_username . $g_db_password;

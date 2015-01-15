@@ -1,6 +1,8 @@
 # MantisHub Files
 mantishub_plan_inc.php
 package_timestamp.txt
+package_type.txt
+package_type_request.txt
 
 # Mac Files
 .DS_Store

@@ -696,9 +696,10 @@ function html_footer() {
 		$t_version_suffix = ' ' . htmlentities( MANTIS_VERSION . config_get_global( 'version_suffix' ) );
 	}
 
-	echo '<address id="mantisbt-copyright">' . "\n";
-	echo '<address id="version">Powered by <a href="http://www.mantisbt.org" title="bug tracking software">MantisBT ' . $t_version_suffix . "</a></address>\n";
-	# echo 'Copyright &copy;' . $t_copyright_years . ' MantisBT Team';
+	# echo '<address id="version">Powered by <a href="http://www.mantisbt.org" title="bug tracking software">MantisBT ' . $t_version_suffix . "</a></address>\n";
+	# echo '<address id="mantisbt-copyright">Copyright &copy;' . $t_copyright_years . ' MantisBT Team</address>' . "\n";
+	global $g_mantishub_plan;
+	echo 'Hosted at <a href="http://www.mantishub.com">MantisHub</a> (' . $g_mantishub_plan . ' Plan)' . "\n";
 
 	# Show optional user-specified custom copyright statement
 	$t_copyright_statement = config_get( 'copyright_statement' );
@@ -1066,7 +1067,7 @@ function print_manage_menu( $p_page = '' ) {
 	if( access_has_global_level( config_get( 'manage_custom_fields_threshold' ) ) ) {
 		$t_pages['manage_custom_field_page.php'] = array( 'url'   => 'manage_custom_field_page.php', 'label' => 'manage_custom_field_link' );
 	}
-	if( access_has_global_level( config_get( 'manage_global_profile_threshold' ) ) ) {
+	if( config_get( 'enable_profiles' ) == ON && access_has_global_level( config_get( 'manage_global_profile_threshold' ) ) ) {
 		$t_pages['manage_prof_menu_page.php'] = array( 'url'   => 'manage_prof_menu_page.php', 'label' => 'manage_global_profiles_link' );
 	}
 	if( access_has_global_level( config_get( 'manage_plugin_threshold' ) ) ) {

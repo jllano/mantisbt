@@ -53,6 +53,60 @@ html_page_top( lang_get( 'manage_link' ) );
 
 print_manage_menu();
 
+$t_package_type_file_path = dirname( __FILE__ ) . '/package_type.txt';
+$t_package_type = 'mantishub-1.2.x';
+
+if ( file_exists( $t_package_type_file_path ) ) {
+	$t_package_type = trim( @file_get_contents( $t_package_type_file_path ) );
+}
+
+if ( $t_package_type == 'mantishub-1.2.x' || $t_package_type == 'mantishub-1.3.x' || $t_package_type == 'mantishub-1.3.x-m' ) {
+
+	if ( $t_package_type == 'mantishub-1.3.x-m' ) {
+		$t_title = 'Switch to Classic UI';
+		$t_image_prefix = 'classic';
+		$t_target_package_type = 'mantishub-1.3.x';
+	} else {
+		$t_title = 'Switch to Modern UI';
+		$t_image_prefix = 'modern';
+		$t_target_package_type = 'mantishub-1.3.x-m';
+	}
+?>
+
+<center>
+
+<br />
+<br />
+
+<h1><?php echo $t_title; ?></h1>
+<form method="post" action="package_type.php">
+	<?php echo form_security_field( 'package_type' ); ?>
+	<input type="hidden" name="package_type" value="<?php echo $t_target_package_type; ?>" />
+	<input type="submit" value="Switch Now" />
+</form>
+
+<br />
+<br />
+<br />
+
+<img src="images/mantishub/<?php echo $t_image_prefix; ?>_view_issues.png" width="600" border="1"  />
+<br />
+<br />
+<br />
+
+<img src="images/mantishub/<?php echo $t_image_prefix; ?>_my_view.png" width="600" border="1" />
+<br />
+<br />
+<br />
+
+<img src="images/mantishub/<?php echo $t_image_prefix; ?>_view_issue.png" width="600" border="1" />
+<br />
+
+</center>
+
+<?php
+}
+
 # Don't expose internal information on MantisHub.
 html_page_bottom();
 exit;
