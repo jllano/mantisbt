@@ -4308,6 +4308,8 @@ function print_filter_custom_field_date( $p_field_num, $p_field_id ) {
 	switch( $g_filter['custom_fields'][$p_field_id][0] ) {
 		case CUSTOM_FIELD_DATE_ANY:
 		case CUSTOM_FIELD_DATE_NONE:
+            $t_start_disable = false;
+            $t_end_disable = false;
 			break;
 		case CUSTOM_FIELD_DATE_BETWEEN:
 			$t_start_disable = false;
