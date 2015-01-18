@@ -56,7 +56,7 @@ function mantishub_email_response( $p_message, $p_success = false ) {
 }
 
 function mantishub_email_error( $p_error_message ) {
-	$t_message = config_get( 'email_incoming_failed_message', '{error}' );
+	$t_message = config_get( 'email_incoming_failed_message' );
 	$t_message = str_replace( '{error}', $p_error_message, $t_message );
 
 	mantishub_email_response( $t_message );
@@ -250,7 +250,7 @@ event_signal( 'EVENT_REPORT_BUG', array( $t_bug_data, $t_bug_id ) );
 
 email_generic( $t_bug_id, 'new', 'email_notification_title_for_action_bug_submitted' );
 
-$t_message = config_get( 'email_incoming_issue_reported_message', "Thanks for your email.  We've recorded the issue with reference number {issue_id}." );
+$t_message = config_get( 'email_incoming_issue_reported_message' );
 $t_message = str_replace( '{issue_id}', $t_bug_id, $t_message );
 
 mantishub_email_response( $t_message, /* success */ true );
