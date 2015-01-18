@@ -36,7 +36,8 @@ function mantishub_top_message() {
 		$t_issues_count = mantishub_table_row_count( 'bug' );
 
 		if ( $t_issues_count >= 5 ) {
-			echo '<div style="background-color: #fff494; z-index: 10; position: absolute; right: 5px; top: 5px; text-align: right;"><b>Trial Version:</b> Click <a href="http://www.mantishub.com/docs/faq.html#how-do-i-add-payment-method" target="_blank">here</a> to convert to paid and enable daily backups.</div>';
+			$t_trial_conversion_url = config_get( 'mantishub_info_trial_conversion_url' );
+			echo '<div style="background-color: #fff494; z-index: 10; position: absolute; right: 5px; top: 5px; text-align: right;"><b>Trial Version:</b> Click <a href="' . $t_trial_conversion_url . '" target="_blank">here</a> to convert to paid and enable daily backups.</div>';
 		}
 	}
 }
