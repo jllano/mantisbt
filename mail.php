@@ -55,6 +55,13 @@ function mantishub_email_response( $p_message, $p_success = false ) {
     }
 }
 
+function mantishub_email_error( $p_error_message ) {
+	$t_message = config_get( 'email_incoming_failed_message', '{error}' );
+	$t_message = str_replace( '{error}', $p_error_message, $t_message );
+
+	mantishub_email_response( $t_message );
+}
+
 mantishub_log( "Received incoming mail via POST.\n" . var_export( $_POST, true ) );
 
 mantishub_log( 'incoming mail: ' . ( empty( $f_subject ) ? '<blank>' : $f_subject ) );
@@ -62,14 +69,14 @@ mantishub_log( 'incoming mail: ' . ( empty( $f_subject ) ? '<blank>' : $f_subjec
 if ( empty( $f_subject ) ) {
 	header( 'HTTP/1.0 406 Empty Subject' );
 	mantishub_log( 'incoming mail: rejected message with empty subject.' );
-	mantishub_email_response( 'Message rejected due to empty subject.' );
+	mantishub_email_error( 'Message rejected due to empty subject.' );
 	exit;
 }
 
 if ( config_get( 'email_incoming_enabled' ) == OFF ) {
 	header( 'HTTP/1.0 406 Email Reporting Disabled' );
 	mantishub_log( 'incoming mail: rejected since email_incoming_enabled is OFF.' );
-	mantishub_email_response( 'Message rejected since incoming email reporting feature is disabled.' );
+	mantishub_email_error( 'Message rejected since incoming email reporting feature is disabled.' );
 	exit;
 }
 
@@ -82,7 +89,7 @@ mantishub_log( 'incoming mail: email_incoming_enabled enabled.' );
 if ( !is_gold() ) {
 	header( 'HTTP/1.0 406 Plan Must be Gold' );
 	mantishub_log( 'incoming mail: rejected since plan is not gold.' );
-	mantishub_email_response( 'Message rejected since email reporting is only available for MantisHub Gold plan.' );
+	mantishub_email_error( 'Message rejected since email reporting is only available for MantisHub Gold plan.' );
 	exit;
 }
 
@@ -103,7 +110,7 @@ $t_hash = hash_hmac ( 'sha256', $t_data, $t_key );
 if ( $t_hash != $f_signature ) {
 	header( 'HTTP/1.0 406 Invalid Signature' );
 	mantishub_log( 'incoming mail: rejected since mailgun signature is invalid.' );
-	mantishub_email_response( "Message rejected since it didn't go through standard mail gateway." );
+	mantishub_email_error( "Message rejected since it didn't go through standard mail gateway." );
 	exit;
 }
 
@@ -137,7 +144,7 @@ if ( $t_user_id === false ) {
 if ( $t_user_id === false ) {
 	header( 'HTTP/1.0 406 No Reporter Match' );
 	mantishub_log( 'incoming mail: rejected since no user match or "email" account.' );
-	mantishub_email_response( 'Message rejected since there is no email account matching sender account.  There is also no fallback "email" user account.' );
+	mantishub_email_error( 'Message rejected since there is no email account matching sender account.  There is also no fallback "email" user account.' );
 	exit;
 }
 
@@ -160,7 +167,7 @@ if ( stripos( $f_recipient, $t_instance_name . '+' ) !== 0 &&
 	 stripos( $f_recipient, $t_instance_name . '@' ) !== 0 ) {
 	header( 'HTTP/1.0 406 Wrong Instance' );
 	mantishub_log( 'incoming mail: rejected since targetted to "' . $f_recipient . '" rather than current instance "' . $t_instance_name . '".' );
-	mantishub_email_response( "Message rejected since target account doesn't match." );
+	mantishub_email_error( "Message rejected since target account doesn't match." );
 	exit;
 }
 
@@ -179,7 +186,7 @@ if ( $t_project === false ) {
 	} else {
 		header( 'HTTP/1.0 406 No Default or Selected Project' );
 		mantishub_log( 'incoming mail: rejected since no selected or default project.' );
-		mantishub_email_response( 'Message rejected since there is no selected or default project.' );
+		mantishub_email_error( 'Message rejected since there is no selected or default project.' );
 		exit;
 	}
 }
@@ -193,7 +200,7 @@ mantishub_log( 'incoming mail: project is ' . $t_project['id'] . ': ' . $t_proje
 if ( !access_has_project_level( REPORTER, (int)$t_project['id'], $t_user_id ) ) {
 	header( 'HTTP/1.0 406 Reporter unauthorized to Report Issues' );
 	mantishub_log( "incoming mail: user $t_user_id does not have reporting access to project " . $t_project['id'] );
-	mantishub_email_response( "Message rejected since user doesn't have access to report issues." );
+	mantishub_email_error( "Message rejected since user doesn't have access to report issues." );
 	exit;
 }
 
@@ -243,4 +250,7 @@ event_signal( 'EVENT_REPORT_BUG', array( $t_bug_data, $t_bug_id ) );
 
 email_generic( $t_bug_id, 'new', 'email_notification_title_for_action_bug_submitted' );
 
-mantishub_email_response( "Thanks for your email.  We've recorded the issue with reference number $t_bug_id.", /* success */ true );
+$t_message = config_get( 'email_incoming_issue_reported_message', "Thanks for your email.  We've recorded the issue with reference number {issue_id}." );
+$t_message = str_replace( '{issue_id}', $t_bug_id, $t_message );
+
+mantishub_email_response( $t_message, /* success */ true );
