@@ -166,6 +166,8 @@ function print_successful_redirect_to_bug( $p_bug_id ) {
  * @return void
  */
 function print_successful_redirect( $p_redirect_to ) {
+	email_send_all();
+
 	if( helper_log_to_page() ) {
 		html_page_top( null, $p_redirect_to );
 		echo '<br /><div class="center">';

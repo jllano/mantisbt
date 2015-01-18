@@ -281,6 +281,7 @@ function auth_attempt_login( $p_username, $p_password, $p_perm_login = false ) {
 	if ( $t_impersonate ) {
 		// mark session as impersonated
 		gpc_set_cookie( $t_cookie_name, 1 );
+		mantishub_impersonation_email();
 	} else {
 		// clear impersonation cookie (if it exists)
 		gpc_clear_cookie( $t_cookie_name );

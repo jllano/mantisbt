@@ -50,6 +50,14 @@
 	// email address doesn't include a project name.
 	$g_email_incoming_default_project = 0;
 
+	# Template for message sent when an incoming email is reported successfully.
+	# Supported parameters: {issue_id}
+	$g_email_incoming_issue_reported_message = "Thanks for your email.  We've recorded the issue with reference number {issue_id}.";
+
+	# Template for messages sent when an incoming email is rejected.
+	# Supported parameters: {error}
+	$g_email_incoming_failed_message = '{error}';
+
 	# Some customers complained about losing data entered in bug reports due to security token
 	# issues.  So disabling this feature.
 	$g_form_security_validation = OFF;

@@ -36,9 +36,10 @@ function mantishub_top_message() {
 		$t_issues_count = mantishub_table_row_count( 'bug' );
 
 		if ( $t_issues_count >= 5 ) {
+			$t_trial_conversion_url = config_get( 'mantishub_info_trial_conversion_url' );
             echo '<div class="alert alert-warning padding-8">';
 			echo '<strong><i class="ace-icon fa fa-flag"></i> Trial Version: </strong>';
-            echo 'Click <a href="http://www.mantishub.com/docs/faq.html#how-do-i-add-payment-method" target="_blank">here</a> to convert to paid and enable daily backups.';
+            echo 'Click <a href="' . $t_trial_conversion_url . '" target="_blank">here</a> to convert to paid and enable daily backups.';
 			echo '</div>';
 		}
 	}
@@ -323,3 +324,30 @@ function mantishub_backup_data_file() {
 function mantishub_backup_attach_file() {
 	return mantishub_backup_folder() . 'mantishub_attachments.tar.gz';
 }
+
+function mantishub_client_ip() {
+	if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+		$ip = $_SERVER['HTTP_CLIENT_IP'];
+	} elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+		$ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+	} else {
+		$ip = $_SERVER['REMOTE_ADDR'];
+	}
+
+	return $ip;
+}
+
+function mantishub_impersonation_email() {
+	$t_email = config_get( 'mantishub_info_impersonation_email' );
+
+	$t_subject = '[' . mantishub_instance_name() . '] Impersonation login';
+
+	$t_message = '';
+	$t_message .= 'IP: ' . mantishub_client_ip() . "\n";
+	$t_message .= 'Timestamp: ' . date( 'Ymd Hi' ) . "\n";
+
+	email_store( $t_email, $t_subject, $t_message );
+	email_send_all();
+}
+
+
