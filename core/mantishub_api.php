@@ -35,8 +35,8 @@ function mantishub_top_message() {
 	if ( $g_mantishub_info_trial && current_user_is_administrator() ) {
 		$t_issues_count = mantishub_table_row_count( 'bug' );
 
-		if ( $t_issues_count >= 5 ) {
-			$t_trial_conversion_url = config_get( 'mantishub_info_trial_conversion_url' );
+		$t_trial_conversion_url = config_get( 'mantishub_info_trial_conversion_url', '' );
+		if ( $t_issues_count >= 5 && !is_blank( $t_trial_conversion_url ) ) {
             echo '<div class="alert alert-warning padding-8">';
 			echo '<strong><i class="ace-icon fa fa-flag"></i> Trial Version: </strong>';
             echo 'Click <a href="' . $t_trial_conversion_url . '" target="_blank">here</a> to convert to paid and enable daily backups.';

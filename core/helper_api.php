@@ -207,11 +207,11 @@ function get_enum_element( $p_enum_name, $p_val, $p_user = null, $p_project = nu
  */
 function helper_check_variables_equal( $p_var1, $p_var2, $p_strict ) {
 	if( $p_strict ) {
-		if( gettype( $p_var1 ) !== gettype( $p_var2 ) ) {
+		#if( gettype( $p_var1 ) !== gettype( $p_var2 ) ) {
 			# Reaching this point is a a sign that you need to check the types
 			# of the parameters passed to this function. They should match.
-			trigger_error( ERROR_TYPE_MISMATCH, ERROR );
-		}
+		#	trigger_error( ERROR_TYPE_MISMATCH, ERROR );
+		#}
 
 		# We need to be careful when comparing an array of
 		# version number strings (["1.0", "1.1", "1.10"]) to
