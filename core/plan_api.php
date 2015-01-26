@@ -17,7 +17,8 @@
 plan_ensure_allowed();
 
 function plan_gen() {
-	return (int)config_get_global( 'mantishub_gen' );
+	global $g_mantishub_gen;
+	return $g_mantishub_gen;
 }
 
 function plan_mail_reporting() {
