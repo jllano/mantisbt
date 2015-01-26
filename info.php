@@ -33,3 +33,5 @@ echo 'Attachments=' . mantishub_table_row_count( 'bug_file' ) . "\n";
 echo 'Server IP=' . $_SERVER['SERVER_ADDR'] . "\n";
 echo 'Trial='. $g_mantishub_info_trial . "\n";
 echo 'Custom_Logo=' . ( file_exists( dirname( __FILE__ ) . '/images/logo.png' ) ? '1' : '0' ) . "\n";
+echo 'Generation=' . config_get_global( 'mantishub_gen' ) . "\n";
+

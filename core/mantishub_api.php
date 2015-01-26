@@ -96,13 +96,7 @@ function mantishub_google_analytics() {
 		echo '</div>' . "\n";
 		echo '</noscript>' . "\n";
 	} else {
-		if ( is_gold() ) {
-			$t_value = '24.95';
-		} else if ( is_silver() ) {
-			$t_value = '19.95';
-		} else {
-			$t_value = '14.95';
-		}
+		$t_value = plan_price();
 
 		# <!-- Google Code for Trial Converts Conversion Page -->
 		echo '<script type="text/javascript">' . "\n";

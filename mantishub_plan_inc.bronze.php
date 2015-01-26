@@ -16,17 +16,3 @@
 
 $g_mantishub_plan = 'Bronze';
 
-function is_gold() {
-	global $g_mantishub_plan;
-	return $g_mantishub_plan == 'Gold';
-}
-
-function is_silver() {
-	global $g_mantishub_plan;
-	return $g_mantishub_plan == 'Silver';
-}
-
-function is_bronze() {
-	global $g_mantishub_plan;
-	return $g_mantishub_plan == 'Bronze';
-}

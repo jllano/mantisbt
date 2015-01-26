@@ -81,3 +81,7 @@
      */
     $g_mantishub_path = $g_absolute_path . 'mantishub' . DIRECTORY_SEPARATOR;
 
+	if ( !isset( $g_mantishub_gen ) ) {
+		$g_mantishub_gen = 1;
+	}
+
