@@ -16,6 +16,11 @@
 
 $g_mantishub_plan = 'Bronze';
 
+function is_platinum() {
+	global $g_mantishub_plan;
+	return $g_mantishub_plan == 'Platinum';
+}
+
 function is_gold() {
 	global $g_mantishub_plan;
 	return $g_mantishub_plan == 'Gold';

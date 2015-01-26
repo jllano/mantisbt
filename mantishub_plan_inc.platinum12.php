@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with MantisBT.  If not, see <http://www.gnu.org/licenses/>.
 
-$g_mantishub_plan = 'Gold';
+$g_mantishub_plan = 'Platinum';
 
 function is_platinum() {
 	global $g_mantishub_plan;
