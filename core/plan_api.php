@@ -21,26 +21,26 @@ function plan_gen() {
 }
 
 function plan_mail_reporting() {
-	return ( ( plan_gen() == 1 && is_gold() ) || is_platinum() );
+	return ( ( plan_gen() == 1 && plan_is_gold() ) || plan_is_platinum() );
 }
 
 function plan_mantistouch() {
-	return !is_bronze();
+	return !plan_is_bronze();
 }
 
 function plan_ensure_allowed() {
-	if ( plan_gen() > 1 && is_silver() ) {
+	if ( plan_gen() > 1 && plan_is_silver() ) {
 		echo "<h1>Silver plan is no longer offered.</h1>";
 		exit;
 	}
 }
 
 function plan_price() {
-	if ( is_platinum() ) {
+	if ( plan_is_platinum() ) {
 		$t_value = '49.95';
-	} else if ( is_gold() ) {
+	} else if ( plan_is_gold() ) {
 		$t_value = '24.95';
-	} else if ( is_silver() ) {
+	} else if ( plan_is_silver() ) {
 		$t_value = '19.95';
 	} else {
 		$t_value = '14.95';
@@ -49,22 +49,22 @@ function plan_price() {
 	return $t_value;
 }
 
-function is_platinum() {
+function plan_is_platinum() {
 	global $g_mantishub_plan;
 	return $g_mantishub_plan == 'Platinum';
 }
 
-function is_gold() {
+function plan_is_gold() {
 	global $g_mantishub_plan;
 	return $g_mantishub_plan == 'Gold';
 }
 
-function is_silver() {
+function plan_is_silver() {
 	global $g_mantishub_plan;
 	return $g_mantishub_plan == 'Silver';
 }
 
-function is_bronze() {
+function plan_is_bronze() {
 	global $g_mantishub_plan;
 	return $g_mantishub_plan == 'Bronze';
 }
