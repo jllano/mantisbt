@@ -50,23 +50,24 @@ function plan_price() {
 	return $t_value;
 }
 
-function plan_is_platinum() {
+function plan_name() {
 	global $g_mantishub_plan;
-	return $g_mantishub_plan == 'Platinum';
+	return $g_mantishub_plan;
+}
+
+function plan_is_platinum() {
+	return plan_name() == 'Platinum';
 }
 
 function plan_is_gold() {
-	global $g_mantishub_plan;
-	return $g_mantishub_plan == 'Gold';
+	return plan_name() == 'Gold';
 }
 
 function plan_is_silver() {
-	global $g_mantishub_plan;
-	return $g_mantishub_plan == 'Silver';
+	return plan_name() == 'Silver';
 }
 
 function plan_is_bronze() {
-	global $g_mantishub_plan;
-	return $g_mantishub_plan == 'Bronze';
+	return plan_name() == 'Bronze';
 }
 
