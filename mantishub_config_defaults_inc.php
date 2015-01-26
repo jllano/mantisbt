@@ -74,3 +74,7 @@
 	$g_notify_flags['new']['threshold_min'] = DEVELOPER;
 	$g_notify_flags['new']['threshold_max'] = ADMINISTRATOR;
 
+	if ( !isset( $g_mantishub_gen ) ) {
+		$g_mantishub_gen = 1;
+	}
+
