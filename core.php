@@ -89,6 +89,8 @@ require_once( dirname( __FILE__ ) . DIRECTORY_SEPARATOR . $t_plan_include_file )
 # Include MantisHub defaults after plan
 require_once( dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'mantishub_config_defaults_inc.php' );
 
+require_api( 'plan_api.php' );
+
 # config_inc may not be present if this is a new install
 $t_config_inc_found = false;
 

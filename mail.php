@@ -86,7 +86,7 @@ mantishub_log( 'incoming mail: email_incoming_enabled enabled.' );
 # Mail Reporting only available for Gold Plan
 #
 
-if ( !is_gold() ) {
+if ( !plan_mail_reporting() ) {
 	header( 'HTTP/1.0 406 Plan Must be Gold' );
 	mantishub_log( 'incoming mail: rejected since plan is not gold.' );
 	mantishub_email_error( 'Message rejected since email reporting is only available for MantisHub Gold plan.' );

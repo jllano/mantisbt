@@ -15,7 +15,7 @@ $g_system_font_folder	= dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'fonts' . DI
 // Don't allow per-project upload path.
 $g_allow_per_project_upload_path = OFF;
 
-if ( is_gold() || is_silver() ) {
+if ( plan_mantistouch() ) {
 	$g_plugins_force_installed['MantisTouchRedirect'] = 5;
 }
 
