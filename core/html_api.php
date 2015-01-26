@@ -129,7 +129,7 @@ function html_rss_link() {
  * @return void
  */
 function html_javascript_link( $p_filename ) {
-	echo "\t", '<script type="text/javascript" src="', helper_mantis_url( 'javascript/' . $p_filename ), '?mui1"></script>' . "\n";
+	echo "\t", '<script type="text/javascript" src="', helper_mantis_url( 'javascript/' . $p_filename ), '?mui2"></script>' . "\n";
 }
 
 /**
@@ -212,7 +212,7 @@ function html_css() {
  * @return void
  */
 function html_css_link( $p_filename ) {
-	echo "\t", '<link rel="stylesheet" type="text/css" href="', string_sanitize_url( helper_mantis_url( 'css/' . $p_filename ), true ), '?mui1" />' . "\n";
+	echo "\t", '<link rel="stylesheet" type="text/css" href="', string_sanitize_url( helper_mantis_url( 'css/' . $p_filename ), true ), '?mui2" />' . "\n";
 }
 
 

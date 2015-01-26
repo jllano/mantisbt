@@ -243,6 +243,11 @@ textarea.input-xs, select.input-xs[multiple] {
     .input-sm {
         width: 120px !important;
     }
+
+    .dropdown-menu {
+        max-height: 500px;
+        overflow-y: scroll;
+    }
 }
 
 /* Medium devices (desktops, 992px and up) */
@@ -294,6 +299,11 @@ textarea.input-xs, select.input-xs[multiple] {
     .rtl .sidebar.menu-min ~ .footer .footer-inner {
         right: 43px !important;
     }
+
+    .dropdown-menu {
+        max-height: 500px;
+        overflow-y: scroll;
+    }
 }
 
 /* Large devices (large desktops, 1200px and up) */
@@ -344,6 +354,11 @@ textarea.input-xs, select.input-xs[multiple] {
 
     .rtl .sidebar.menu-min ~ .footer .footer-inner {
         right: 43px !important;
+    }
+
+    .dropdown-menu {
+        max-height: 500px;
+        overflow-y: scroll;
     }
 }
 
