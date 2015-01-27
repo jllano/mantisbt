@@ -65,6 +65,9 @@ form_security_validate( 'bug_update' );
 
 $f_bug_id = gpc_get_int( 'bug_id' );
 $t_existing_bug = bug_get( $f_bug_id, true );
+$f_action_type = gpc_get_string( 'action_type', 'update' );
+
+$t_update_action = $f_action_type == 'update';
 
 if( helper_get_current_project() !== $t_existing_bug->project_id ) {
 	$g_project_override = $t_existing_bug->project_id;
@@ -265,7 +268,7 @@ foreach ( $t_related_custom_field_ids as $t_cf_id ) {
 	$t_cf_def = custom_field_get_definition( $t_cf_id );
 
 	if( !gpc_isset_custom_field( $t_cf_id, $t_cf_def['type'] ) ) {
-		if( $t_cf_def[$t_cf_require_check] ) {
+		if( $t_cf_def[$t_cf_require_check] && $t_update_action ) {
 			# A value for the custom field was expected however
 			# no value was given by the user.
 			error_parameters( lang_get_defaulted( custom_field_get_field( $t_cf_id, 'name' ) ) );
