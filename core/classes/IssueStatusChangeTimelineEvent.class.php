@@ -124,7 +124,6 @@ class IssueStatusChangeTimelineEvent extends TimelineEvent {
 				return '';
 		}
 
-		$t_html = $this->html_start();
 		$t_html .= '<div class="action">' . $t_string . '</div>';
 		$t_html .= $this->html_end();
 
