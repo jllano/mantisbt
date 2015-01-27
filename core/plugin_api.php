@@ -975,7 +975,7 @@ function plugin_register_installed() {
  * @return void
  */
 function plugin_init_installed() {
-	if( OFF == config_get_global( 'plugins_enabled' ) || !db_table_exists( db_get_table( 'plugin' ) ) ) {
+	if( OFF == config_get_global( 'plugins_enabled' ) ) {
 		return;
 	}
 
