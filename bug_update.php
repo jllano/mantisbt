@@ -70,17 +70,19 @@ if( helper_get_current_project() !== $t_existing_bug->project_id ) {
 	$g_project_override = $t_existing_bug->project_id;
 }
 
+# *** THIS CHECK BREAKS REPORTER CLOSING ISSUE SCENARIO ***
 # Ensure that the user has permission to update bugs. This check also factors
 # in whether the user has permission to view private bugs. The
 # $g_limit_reporters option is also taken into consideration.
-access_ensure_bug_level( config_get( 'update_bug_threshold' ), $f_bug_id );
+# access_ensure_bug_level( config_get( 'update_bug_threshold' ), $f_bug_id );
 
+# *** THIS CHECK BREAKS REPORTER RE-OPENING ISSUE SCENARIO ***
 # Check if the bug is in a read-only state and whether the current user has
 # permission to update read-only bugs.
-if( bug_is_readonly( $f_bug_id ) ) {
-	error_parameters( $f_bug_id );
-	trigger_error( ERROR_BUG_READ_ONLY_ACTION_DENIED, ERROR );
-}
+#if( bug_is_readonly( $f_bug_id ) ) {
+#	error_parameters( $f_bug_id );
+#	trigger_error( ERROR_BUG_READ_ONLY_ACTION_DENIED, ERROR );
+#}
 
 $t_updated_bug = clone $t_existing_bug;
 
@@ -155,7 +157,6 @@ if( ( $t_resolve_issue || $t_close_issue ) &&
 
 # Validate any change to the status of the issue.
 if( $t_existing_bug->status !== $t_updated_bug->status ) {
-	access_ensure_bug_level( config_get( 'update_bug_status_threshold' ), $f_bug_id );
 	if( !bug_check_workflow( $t_existing_bug->status, $t_updated_bug->status ) ) {
 		error_parameters( lang_get( 'status' ) );
 		trigger_error( ERROR_CUSTOM_FIELD_INVALID_VALUE, ERROR );
@@ -169,7 +170,8 @@ if( $t_existing_bug->status !== $t_updated_bug->status ) {
 		     config_get( 'allow_reporter_close' ) ) {
 			$t_can_bypass_status_access_thresholds = true;
 		} else if( $t_reopen_issue &&
-		            $t_existing_bug->status < $t_closed_status &&
+		            $t_existing_bug->status >= $t_resolved_status &&
+		            $t_existing_bug->status <= $t_closed_status &&
 		            $t_existing_bug->reporter_id === auth_get_current_user_id() &&
 		            config_get( 'allow_reporter_reopen' ) ) {
 			$t_can_bypass_status_access_thresholds = true;
@@ -242,7 +244,8 @@ if( $t_existing_bug->target_version !== $t_updated_bug->target_version ) {
 }
 
 # Ensure that the user has permission to change the view status of the issue.
-if( $t_existing_bug->view_state !== $t_updated_bug->view_state ) {
+# NOTE: Cast $t_existing_bug->view_state since it is of type string.
+if( (int)$t_existing_bug->view_state !== $t_updated_bug->view_state ) {
 	access_ensure_bug_level( config_get( 'change_view_status_threshold' ), $f_bug_id );
 }
 

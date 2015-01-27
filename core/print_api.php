@@ -166,8 +166,6 @@ function print_successful_redirect_to_bug( $p_bug_id ) {
  * @return void
  */
 function print_successful_redirect( $p_redirect_to ) {
-	email_send_all();
-
 	if( helper_log_to_page() ) {
         layout_page_header( null, $p_redirect_to );
         layout_page_begin();
