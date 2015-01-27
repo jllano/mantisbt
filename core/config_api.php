@@ -86,7 +86,11 @@ function config_get( $p_option, $p_default = null, $p_user = null, $p_project = 
 		# @@ debug @@ if( ! db_is_connected() ) { echo "no db "; }
 		# @@ debug @@ echo "lu table=" . ( db_table_exists( $t_config_table ) ? "yes " : "no " );
 		if( !$g_cache_db_table_exists ) {
-			$g_cache_db_table_exists = ( true === db_is_connected() ) && db_table_exists( db_get_table( 'config' ) );
+			if( !defined( 'MANTIS_MAINTENANCE_MODE' ) ) {
+				$g_cache_db_table_exists = ( true === db_is_connected() );
+			} else {
+				$g_cache_db_table_exists = false;
+			}
 		}
 
 		if( $g_cache_db_table_exists ) {
