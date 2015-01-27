@@ -693,7 +693,7 @@ function html_footer() {
 	$t_version_suffix = '';
 	$t_copyright_years = ' 2000 - ' . date( 'Y' );
 	if( config_get( 'show_version' ) == ON ) {
-		$t_version_suffix = ' ' . htmlentities( MANTIS_VERSION . config_get_global( 'version_suffix' ) );
+		$t_version_suffix = ' ' . htmlentities( MANTIS_VERSION . ' ' . config_get_global( 'version_suffix' ) );
 	}
 
 	# echo '<address id="version">Powered by <a href="http://www.mantisbt.org" title="bug tracking software">MantisBT ' . $t_version_suffix . "</a></address>\n";
@@ -1337,7 +1337,6 @@ function print_summary_menu( $p_page = '' ) {
 		}
 	}
 
-	$t_pages['print_all_bug_page.php'] = array( 'url'=>'print_all_bug_page.php', 'label'=>'print_all_bug_page_link' );
 	$t_pages['summary_page.php'] = array( 'url'=>'summary_page.php', 'label'=>'summary_link' );
 	# Remove the link from the current page
 	if( isset( $t_pages[$p_page] ) ) {

@@ -35,8 +35,8 @@ function mantishub_top_message() {
 	if ( $g_mantishub_info_trial && current_user_is_administrator() ) {
 		$t_issues_count = mantishub_table_row_count( 'bug' );
 
-		if ( $t_issues_count >= 5 ) {
-			$t_trial_conversion_url = config_get( 'mantishub_info_trial_conversion_url' );
+		$t_trial_conversion_url = config_get( 'mantishub_info_trial_conversion_url', '' );
+		if ( $t_issues_count >= 5 && !is_blank( $t_trial_conversion_url ) ) {
 			echo '<div style="background-color: #fff494; z-index: 10; position: absolute; right: 5px; top: 5px; text-align: right;"><b>Trial Version:</b> Click <a href="' . $t_trial_conversion_url . '" target="_blank">here</a> to convert to paid and enable daily backups.</div>';
 		}
 	}
@@ -93,13 +93,7 @@ function mantishub_google_analytics() {
 		echo '</div>' . "\n";
 		echo '</noscript>' . "\n";
 	} else {
-		if ( is_gold() ) {
-			$t_value = '24.95';
-		} else if ( is_silver() ) {
-			$t_value = '19.95';
-		} else {
-			$t_value = '14.95';
-		}
+		$t_value = plan_price();
 
 		# <!-- Google Code for Trial Converts Conversion Page -->
 		echo '<script type="text/javascript">' . "\n";

@@ -21,6 +21,9 @@
 	// Email
 	$g_from_name	 = 'MantisHub';
 
+	// Don't send email synchronously, leave it to backgroud scripts
+	$g_email_send_using_cronjob = ON;
+
 	// General Settings
 	$g_allow_reporter_close	= ON;
 	$g_bug_readonly_status_threshold = CLOSED;
@@ -73,4 +76,8 @@
 	# By default notify developers and above for newly created issues.
 	$g_notify_flags['new']['threshold_min'] = DEVELOPER;
 	$g_notify_flags['new']['threshold_max'] = ADMINISTRATOR;
+
+	if ( !isset( $g_mantishub_gen ) ) {
+		$g_mantishub_gen = 1;
+	}
 
