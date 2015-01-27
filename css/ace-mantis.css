@@ -105,6 +105,9 @@
 .login-container {
     width: 100%;
 }
+.login-container img {
+    max-height: 40px;
+}
 
 .signup-box .toolbar {
     background: none repeat scroll 0 0 #393939;
@@ -248,6 +251,14 @@ textarea.input-xs, select.input-xs[multiple] {
         max-height: 500px;
         overflow-y: scroll;
     }
+
+    .login-container {
+        width: 90%;
+    }
+
+    .login-container img {
+        max-height: 80px;
+    }
 }
 
 /* Medium devices (desktops, 992px and up) */
@@ -304,6 +315,14 @@ textarea.input-xs, select.input-xs[multiple] {
         max-height: 500px;
         overflow-y: scroll;
     }
+
+    .login-container {
+        width: 90%;
+    }
+
+    .login-container img {
+        max-height: 120px;
+    }
 }
 
 /* Large devices (large desktops, 1200px and up) */
@@ -359,6 +378,14 @@ textarea.input-xs, select.input-xs[multiple] {
     .dropdown-menu {
         max-height: 500px;
         overflow-y: scroll;
+    }
+
+    .login-container {
+        width: 80%;
+    }
+
+    .login-container img {
+        max-height: 120px;
     }
 }
 
