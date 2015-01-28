@@ -152,7 +152,7 @@ if( 0 == $t_install_state || 2 == $t_install_state ) {
 <div class="widget-box widget-color-blue2">
 <div class="widget-header widget-header-small">
 	<h4 class="widget-title lighter">
-		Checking Installation...
+		Checking Installation
 	</h4>
 </div>
 
@@ -296,6 +296,7 @@ print_test( 'Checking if safe mode is enabled for install script',
 <?php
 	# Check for custom config files in obsolete locations
 	$t_config_files = array(
+		'config_inc.php' => 'move',
 		'custom_constants_inc.php' => 'move',
 		'custom_strings_inc.php' => 'move',
 		'custom_functions_inc.php' => 'move',
@@ -703,13 +704,8 @@ if( !$g_database_upgrade ) {
 		Default Time Zone
 	</td>
 	<td>
-<<<<<<< HEAD
-		<select id="timezone" name="timezone" class="input-sm">
-			<?php print_timezone_option_list( config_get_global( 'default_timezone' ) ) ?>
-=======
 		<select id="timezone" name="timezone">
 			<?php print_timezone_option_list( $t_tz ) ?>
->>>>>>> 0b7e1260c56dbfbfcb606bb758642594da515cb5
 		</select>
 	</td>
 </tr>
@@ -1101,7 +1097,6 @@ if( 4 == $t_install_state ) {
 
 # all checks have passed, install the database
 if( 5 == $t_install_state ) {
-	$t_config_filename = $g_config_path . 'config_inc.php';
 	$t_config_exists = file_exists( $t_config_filename );
 	?>
 
@@ -1118,10 +1113,10 @@ if( 5 == $t_install_state ) {
 <div class="table-responsive">
 <table class="table table-bordered table-condensed">
 <tr>
-	<td>
-		<?php echo ( $t_config_exists ? 'Updating' : 'Creating' ); ?>
-		Configuration File (config/config_inc.php)<br />
-	</td>
+    <td>
+        <?php echo ( $t_config_exists ? 'Updating' : 'Creating' ); ?>
+        Configuration File (config/config_inc.php)<br />
+    </td>
 <?php
 	# Generating the config_inc.php file
 
@@ -1190,7 +1185,7 @@ if( 5 == $t_install_state ) {
 			( $f_db_schema != config_get( 'db_schema', '' ) ) ||
 			( $f_db_username != config_get( 'db_username', '' ) ) ||
 			( $f_db_password != config_get( 'db_password', '' ) ) ) {
-			print_test_result( BAD, false, 'file ' . $g_config_path . 'config_inc.php' . ' already exists and has different settings' );
+			print_test_result( BAD, false, 'file ' . $t_config_filename . ' already exists and has different settings' );
 		} else {
 			print_test_result( GOOD, false );
 			$t_write_failed = false;
@@ -1202,7 +1197,7 @@ if( 5 == $t_install_state ) {
 	if( $t_crypto_master_salt === null ) {
 		print_test( 'Setting Cryptographic salt in config file', false, false,
 					'Unable to find a random number source for cryptographic purposes. You will need to edit ' .
-					$g_config_path . 'config_inc.php' . ' and set a value for $g_crypto_master_salt manually' );
+					$t_config_filename . ' and set a value for $g_crypto_master_salt manually' );
 	}
 
 	if( true == $t_write_failed ) {
@@ -1213,7 +1208,7 @@ if( 5 == $t_install_state ) {
 			<tr>
 				<td>
 					Please add the following lines to
-					<em>'<?php echo $g_absolute_path; ?>config_inc.php'</em>
+					<em>'<?php echo $t_config_filename; ?>'</em>
 					before continuing:
 				</td>
 			</tr>
@@ -1253,18 +1248,14 @@ if( 6 == $t_install_state ) {
 <div class="widget-box widget-color-blue2">
 <div class="widget-header widget-header-small">
 	<h4 class="widget-title lighter">
-		Checking Installation...
+		Checking Installation
 	</h4>
 </div>
 <div class="widget-body">
 <div class="widget-main no-padding">
 <div class="table-responsive">
 <table class="table table-bordered table-condensed">
-<tr>
-	<td bgcolor="#e8e8e8" colspan="2">
-		<span class="title">Checking Installation</span>
-	</td>
-</tr>
+
 
 <!-- Checking register_globals are off -->
 <?php print_test( 'Checking for register_globals are off for mantis', !ini_get_bool( 'register_globals' ), false, 'change php.ini to disable register_globals setting' )?>
@@ -1374,7 +1365,7 @@ if( 7 == $t_install_state ) {
 <div class="widget-box widget-color-blue2">
 <div class="widget-header widget-header-small">
 	<h4 class="widget-title lighter">
-		Installation Complete...
+		Installation Complete
 	</h4>
 </div>
 <div class="widget-body">
@@ -1412,7 +1403,7 @@ if( $g_failed && $t_install_state != 1 ) {
 <div class="widget-box widget-color-blue2">
 <div class="widget-header widget-header-small">
 	<h4 class="widget-title lighter">
-		Installation Failed...
+		Installation Failed
 	</h4>
 </div>
 <div class="widget-body">

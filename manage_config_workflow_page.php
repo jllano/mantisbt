@@ -317,10 +317,10 @@ function access_begin( $p_section_name ) {
 	echo '   <div class="widget-main no-padding">';
     echo '        <div class="widget-toolbox padding-8 clearfix">';
     echo            lang_get( 'access_change' );
-	echo '        </div>';
-	echo '        <div class="table-responsive">';
-	echo '        <table class="table table-striped table-bordered table-condensed">';
-	echo '        <tbody>';
+    echo '        </div>';
+    echo '        <div class="table-responsive">';
+    echo '        <table class="table table-striped table-bordered table-condensed">';
+    echo '        <tbody>';
 }
 
 /**
@@ -377,12 +377,12 @@ function access_row() {
 		}
 
 		if( $t_can_change ) {
-			echo '<td class="width70" ' . $t_color . '><select name="access_change_' . $t_status . '" class="input-sm">' . "\n";
+			echo '<td' . $t_color . '><select name="access_change_' . $t_status . '" class="input-sm">' . "\n";
 			print_enum_string_option_list( 'access_levels', $t_level_project );
 			echo '</select> </td>' . "\n";
 			$g_can_change_flags = true;
 		} else {
-			echo '<td class="width70 center ' . $t_color . '">'
+			echo '<td class="center ' . $t_color . '">'
 				. MantisEnum::getLabel( lang_get( 'access_levels_enum_string' ), $t_level_project )
 				. '</td>' . "\n";
 		}

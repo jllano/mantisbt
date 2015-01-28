@@ -104,15 +104,14 @@ class TimelineEvent {
 		$t_avatar = user_get_avatar( $this->user_id, 40 );
 		$t_html = '<div class="profile-activity clearfix">';
 
-		if( !empty( $t_avatar ) ) {
+        if( !empty( $t_avatar ) ) {
 			$t_avatar_url = $t_avatar[0];
 			$t_html .= '<img class="pull-left" src="' . $t_avatar_url . '"/>';
 		} else {
 			$t_html .= '<i class="pull-left thumbicon fa ' . $t_action_icon . ' btn-primary no-hover"></i>';
 		}
-
-        return $t_html;
-    }
+		return $t_html;
+	}
 
 	/**
 	 * Returns html string representing the ending block of a timeline entry
