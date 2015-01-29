@@ -86,10 +86,12 @@ function config_get( $p_option, $p_default = null, $p_user = null, $p_project = 
 		# @@ debug @@ if( ! db_is_connected() ) { echo "no db "; }
 		# @@ debug @@ echo "lu table=" . ( db_table_exists( $t_config_table ) ? "yes " : "no " );
 		if( !$g_cache_db_table_exists ) {
-			if( !defined( 'MANTIS_MAINTENANCE_MODE' ) ) {
-				$g_cache_db_table_exists = ( true === db_is_connected() );
+			if( defined( 'MANTIS_MAINTENANCE_MODE' ) ) {
+				# During install/upgrade check that db connection is active + table exists (new vs. upgrade)
+				$g_cache_db_table_exists = ( true === db_is_connected() ) && db_table_exists( db_get_table( 'config' ) );
 			} else {
-				$g_cache_db_table_exists = false;
+				# During normal execution no need to check that table exists, which is an expensive operation.
+				$g_cache_db_table_exists = true === db_is_connected();
 			}
 		}
 
