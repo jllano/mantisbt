@@ -477,10 +477,10 @@ function install_stored_filter_migrate() {
 
 		# Ff the filter version does not match the latest version, pass it through filter_ensure_valid_filter to do any updates
 		# This will set default values for filter fields
-		if( $t_filter_arr['_version'] == "v8" ) {
+		#if( $t_filter_arr['_version'] == "v8" ) {
 			$t_filter_arr['_version'] = FILTER_VERSION;
 			// $t_filter_arr = filter_ensure_valid_filter( $t_filter_arr );
-		}
+		#}
 
 		# For any fields that are being renamed, we can now perform the rename and migrate existing data.
 		# We unset the old field when done to ensure the filter contains only current optimised data.
