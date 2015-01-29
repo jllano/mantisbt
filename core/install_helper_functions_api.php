@@ -469,9 +469,10 @@ function install_stored_filter_migrate() {
 		# serialized or json encoded data in filter table is invalid - abort upgrade as this should not be possible
 		# so we should investigate and fix underlying data issue first if necessary
 		if( $t_filter_arr === false ) {
-			echo "Failed - Unable to deserialize file\n";
-			var_dump( $t_row['filter_string'] );
-			return 1; # Fatal: invalid data found in filters table
+			# sometimes there are corrupt entries - see 
+			$t_delete_query = 'DELETE FROM {filters} WHERE id=' . db_param();
+			$t_delete_result = db_query( $t_delete_query, array( $t_row['id'] ) );
+			continue;
 		}
 
 		# Ff the filter version does not match the latest version, pass it through filter_ensure_valid_filter to do any updates
