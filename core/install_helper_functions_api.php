@@ -643,7 +643,9 @@ function install_check_config_serialization() {
 
 		$t_config = unserialize( $value );
 		if( $t_config === false ) {
-			return 1; # Fatal: invalid data found in config table
+			# temp fix to accommodate for instances that failed during upgrading configs
+			continue;
+			#return 1; # Fatal: invalid data found in config table
 		}
 
 		$t_json_config = json_encode( $t_config );
