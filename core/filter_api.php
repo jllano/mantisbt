@@ -485,7 +485,8 @@ function filter_ensure_valid_filter( array $p_filter_arr ) {
 		$p_filter_arr['_version'] = FILTER_VERSION;
 	}
 	$t_cookie_vers = (int)substr( $p_filter_arr['_version'], 1 );
-	if( substr( FILTER_VERSION, 1 ) > $t_cookie_vers ) {
+	$t_current_version = (int)substr( FILTER_VERSION, 1 );
+	if( $t_current_version > $t_cookie_vers ) {
 		# if the version is old, update it
 		$p_filter_arr['_version'] = FILTER_VERSION;
 	}
