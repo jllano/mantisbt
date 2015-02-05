@@ -3932,18 +3932,17 @@ function print_filter_do_filter_by_date( $p_hide_checkbox = false ) {
 			<td colspan="2">
 				<label>
 					<input type="checkbox" id="use_date_filters" name="<?php
-						echo FILTER_PROPERTY_FILTER_BY_DATE ?>"<?php
-						check_checked( gpc_string_to_bool( $g_filter[FILTER_PROPERTY_FILTER_BY_DATE] ), true ) ?> />
-					<?php echo lang_get( 'use_date_filters' )?>
+					echo FILTER_PROPERTY_FILTER_BY_DATE ?>"<?php
+					check_checked(gpc_string_to_bool($g_filter[FILTER_PROPERTY_FILTER_BY_DATE]), true) ?> />
+					<?php echo lang_get('use_date_filters') ?>
 				</label>
 			</td>
 		</tr>
 <?php
-	}
-
-	$t_menu_disabled =  '';
-	if( 'on' !== $g_filter[FILTER_PROPERTY_FILTER_BY_DATE] ) {
-		$t_menu_disabled = ' disabled="disabled" ';
+		$t_menu_disabled = '';
+		if ('on' !== $g_filter[FILTER_PROPERTY_FILTER_BY_DATE]) {
+			$t_menu_disabled = ' disabled="disabled" ';
+		}
 	}
 ?>
 

@@ -180,7 +180,7 @@ foreach ( $t_plugins_installed as $t_basename => $t_plugin ) {
 
 	echo '<tr>';
 	echo '<td class="small center">',$t_name,'<input type="hidden" name="change_',$t_basename,'" value="1"/></td>';
-	echo '<td class="small">',$t_description,$t_author,$t_url,'</td>';
+	echo '<td class="small">',$t_description,'</td>';
 	echo '<td class="small center">',$t_depends,'</td>';
 	if( 'MantisCore' == $t_basename ) {
 		echo '<td>&#160;</td><td>&#160;</td>';
@@ -309,7 +309,8 @@ if( 0 < count( $t_plugins_available ) ) {
 
 		echo '<tr>';
 		echo '<td class="small center">',$t_name,'</td>';
-		echo '<td class="small">',$t_description,$t_author,$t_url,'</td>';
+
+		echo '<td class="small">',$t_description,'</td>';
 		echo '<td class="center">',$t_depends,'</td>';
 		echo '<td class="center">';
 		if( $t_ready ) {
