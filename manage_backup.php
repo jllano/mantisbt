@@ -69,8 +69,9 @@ copy( $t_config_folder . 'custom_relationships_inc.php', $t_backup_data_folder .
 $t_cmd = "mysqldump -h $t_db_hostname -u $t_db_username -p$t_db_password $t_db_name > " . $t_backup_data_folder . "db.sql";
 exec( $t_cmd );
 
-chdir( $t_backup_data_folder );
-$t_cmd = 'zip ' . mantishub_backup_data_file() . ' -r -9 ' . $t_backup_data_folder;
+unlink( mantishub_backup_data_file() );
+chdir( dirname( $t_backup_data_folder ) );
+$t_cmd = 'zip ' . mantishub_backup_data_file() . ' -r -9 data';
 exec( $t_cmd );
 
 $t_cmd = "rm -rf $t_backup_data_folder";
@@ -78,8 +79,9 @@ exec( $t_cmd );
 
 $t_attach_folder = dirname( __FILE__ ) . '/attach';
 
-chdir( $t_attach_folder );
-$t_cmd = 'zip ' . mantishub_backup_attach_file() . ' -r -9 ' . $t_attach_folder;
+unlink( mantishub_backup_attach_file() );
+chdir( dirname( $t_attach_folder ) );
+$t_cmd = 'zip ' . mantishub_backup_attach_file() . ' -r -9 attach';
 exec( $t_cmd );
 
 unlink( mantishub_in_progress_file() );
