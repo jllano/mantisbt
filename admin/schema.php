@@ -50,6 +50,8 @@ if( !function_exists( 'db_null_date' ) ) {
 function installer_db_now() {
 	global $g_db;
 
+	# Timezone must not be set to UTC prior to calling BindTimestamp(), as
+	# ADOdb assumes a local timestamp and does the UTC conversion itself.
 	return $g_db->BindTimeStamp( time() );
 }
 
