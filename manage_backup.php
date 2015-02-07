@@ -51,6 +51,7 @@ $t_db_name = config_get( 'database_name' );
 $t_backup_data_folder = $t_backup_folder . 'data/';
 $t_instance_root = dirname( __FILE__ ) . '/';
 $t_config_folder = $t_instance_root . 'config/';
+$t_original_current_directory = getcwd();
 
 $t_cmd = "rm -rf $t_backup_data_folder";
 exec( $t_cmd );
@@ -68,7 +69,9 @@ copy( $t_config_folder . 'custom_relationships_inc.php', $t_backup_data_folder .
 $t_cmd = "mysqldump -h $t_db_hostname -u $t_db_username -p$t_db_password $t_db_name > " . $t_backup_data_folder . "db.sql";
 exec( $t_cmd );
 
-$t_cmd = 'zip ' . mantishub_backup_data_file() . ' -r ' . $t_backup_data_folder . ' .';
+unlink( mantishub_backup_data_file() );
+chdir( dirname( $t_backup_data_folder ) );
+$t_cmd = 'zip ' . mantishub_backup_data_file() . ' -r -9 data';
 exec( $t_cmd );
 
 $t_cmd = "rm -rf $t_backup_data_folder";
@@ -76,7 +79,9 @@ exec( $t_cmd );
 
 $t_attach_folder = dirname( __FILE__ ) . '/attach';
 
-$t_cmd = 'zip ' . mantishub_backup_attach_file() . ' -r ' . $t_attach_folder . ' .';
+unlink( mantishub_backup_attach_file() );
+chdir( dirname( $t_attach_folder ) );
+$t_cmd = 'zip ' . mantishub_backup_attach_file() . ' -r -9 attach';
 exec( $t_cmd );
 
 unlink( mantishub_in_progress_file() );
@@ -85,6 +90,8 @@ if ( !is_blank( $t_user_email ) ) {
 	$t_cmd = 'echo "Go to Manage > Backups and download it from there." | mail -r "' . $t_from . '" -s "Your backup is ready" ' . $t_user_email;
 	exec( $t_cmd );
 }
+
+chdir( $t_original_current_directory );
 
 print_successful_redirect( 'manage_backup_page.php' );
 

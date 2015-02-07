@@ -42,11 +42,11 @@
 
 	switch ( $f_type ) {
 		case 'data':
-			$t_filename = 'mantishub_data.tar.gz';
+			$t_filename = mantishub_backup_data_file_name();
 			$t_local_disk_file = mantishub_backup_data_file();
 			break;
 		case 'attach':
-			$t_filename = 'mantishub_attachments.tar.gz';
+			$t_filename = mantishub_backup_attach_file_name();
 			$t_local_disk_file = mantishub_backup_attach_file();
 			break;
 		default:

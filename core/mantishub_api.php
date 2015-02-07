@@ -311,12 +311,20 @@ function mantishub_backup_in_progress() {
 	return file_exists( mantishub_in_progress_file() );
 }
 
+function mantishub_backup_data_file_name() {
+	return 'mantishub_data.zip';
+}
+
 function mantishub_backup_data_file() {
-	return mantishub_backup_folder() . 'mantishub_data.zip';
+	return mantishub_backup_folder() . mantishub_backup_data_file_name();
+}
+
+function mantishub_backup_attach_file_name() {
+	return 'mantishub_attachments.zip';
 }
 
 function mantishub_backup_attach_file() {
-	return mantishub_backup_folder() . 'mantishub_attachments.zip';
+	return mantishub_backup_folder() . mantishub_backup_attach_file_name();
 }
 
 function mantishub_client_ip() {
