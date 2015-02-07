@@ -17,23 +17,52 @@ header( 'Content-Type: text' );
 
 html_robots_noindex();
 
-$t_issues_count = (int)mantishub_table_row_count( 'bug' );
+$f_json = gpc_get_bool( 'json', false );
 
-echo 'Package_Timestamp=' . @file_get_contents( dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'package_timestamp.txt' );
-echo 'Creation_Date=' . strftime( '%m/%d/%Y %H:%M:%S', $g_mantishub_info_creation_date ) . "\n";
+$t_info = array();
 
+$t_info['generation'] = config_get_global( 'mantishub_gen' );
+$t_info['package_type'] = trim( @file_get_contents( dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'package_type.txt' ) );
+$t_info['package_timestamp'] = trim( @file_get_contents( dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'package_timestamp.txt' ) );
+$t_info['trial'] = $g_mantishub_info_trial;
+$t_info['plan'] = plan_name();
+
+$t_issues_count = mantishub_table_row_count( 'bug' );
+
+$t_info['users_count'] = mantishub_table_row_count( 'user' );
+$t_info['projects_count'] = mantishub_table_row_count( 'project' );
+$t_info['issues_count'] = $t_issues_count;
+$t_info['attachments_count'] = mantishub_table_row_count( 'bug_file' );
+$t_info['server_ip'] = $_SERVER['SERVER_ADDR'];
+$t_info['logo'] = file_exists( dirname( __FILE__ ) . '/images/logo.png' );
+$t_info['creation_timestamp'] = strftime( '%m/%d/%Y %H:%M:%S', $g_mantishub_info_creation_date );
 if ( $t_issues_count > 0 ) {
-	echo 'Last_Issue_Update=' . strftime( '%m/%d/%Y %H:%M:%S', mantishub_last_issue_update() ) . "\n";
+	$t_info['last_activity_timestamp'] = strftime( '%m/%d/%Y %H:%M:%S', mantishub_last_issue_update() );
+} else {
+	$t_info['last_activity_timestamp'] = $t_info['creation_date'];
 }
 
-echo 'Issues=' . $t_issues_count . "\n";
-echo 'Projects=' . mantishub_table_row_count( 'project' ) . "\n";
-echo 'Users=' . mantishub_table_row_count( 'user' ) . "\n";
-echo 'Attachments=' . mantishub_table_row_count( 'bug_file' ) . "\n";
-echo 'Server IP=' . $_SERVER['SERVER_ADDR'] . "\n";
-echo 'Trial='. $g_mantishub_info_trial . "\n";
-echo 'Custom_Logo=' . ( file_exists( dirname( __FILE__ ) . '/images/logo.png' ) ? '1' : '0' ) . "\n";
-echo 'Plan=' . plan_name() . "\n";
-echo 'Package_Type=' . @file_get_contents( dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'package_type.txt' );
-echo 'Generation=' . config_get_global( 'mantishub_gen' ) . "\n";
+$t_json = json_encode( $t_info );
+$t_json_filename = $g_config_path . 'info.json';
+
+# In dev machine, this access may not be granted
+@file_put_contents( $t_json_filename, $t_json );
+
+if ( $f_json ) {
+	echo $t_json;
+} else {
+	echo 'Package_Timestamp=' . $t_info['package_timestamp'] . "\n";
+	echo 'Creation_Date=' . $t_info['creation_timestamp'] . "\n";
+	echo 'Last_Issue_Update=' . $t_info['last_activity_timestamp'] . "\n";
+	echo 'Issues=' . $t_info['issues_count'] . "\n";
+	echo 'Projects=' . $t_info['projects_count'] . "\n";
+	echo 'Users=' . $t_info['users_count'] . "\n";
+	echo 'Attachments=' . $t_info['attachments_count'] . "\n";
+	echo 'Server IP=' . $t_info['server_ip'] . "\n";
+	echo 'Trial='. ( $t_info['trial'] ? '1' : '0' ) . "\n";
+	echo 'Custom_Logo=' . ( $t_info['logo'] ? '1' : '0' ) . "\n";
+	echo 'Plan=' . plan_name() . "\n";
+	echo 'Package_Type=' . $t_info['package_type'] . "\n";
+	echo 'Generation=' . $t_info['generation'] . "\n";
+}
 
