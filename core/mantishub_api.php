@@ -228,6 +228,7 @@ function mantishub_intercom() {
 	 		$t_user_created = current_user_get_field( 'date_created' );
 	 		$t_user_language = user_pref_get_language( auth_get_current_user_id() );
 			$t_username = current_user_get_field( 'username' );
+			$t_generation = config_get_global( 'mantishub_gen' );
 
 			$t_security_token = 'Jfm5VSe9aRpM8dAtk9A8Ae5h6TxUnmcF_KFK5EX-';
 
@@ -242,6 +243,7 @@ function mantishub_intercom() {
 			echo 'id: "' . $t_company_id . '",';
 			echo 'name: "' . $t_company_name . '",';
 			echo '"ip": "' . $_SERVER['SERVER_ADDR'] . '"';
+			echo '"gen": "' . $t_generation . '"';
 			echo '},';
 			echo 'app_id: "eb7d1d2171933b95f1ecb4fc4d1db866879776d2"';
 			echo '}';
