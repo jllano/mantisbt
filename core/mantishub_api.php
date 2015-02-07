@@ -312,11 +312,11 @@ function mantishub_backup_in_progress() {
 }
 
 function mantishub_backup_data_file() {
-	return mantishub_backup_folder() . 'mantishub_data.tar.gz';
+	return mantishub_backup_folder() . 'mantishub_data.zip';
 }
 
 function mantishub_backup_attach_file() {
-	return mantishub_backup_folder() . 'mantishub_attachments.tar.gz';
+	return mantishub_backup_folder() . 'mantishub_attachments.zip';
 }
 
 function mantishub_client_ip() {
