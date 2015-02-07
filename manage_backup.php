@@ -53,6 +53,9 @@ $t_instance_root = dirname( __FILE__ ) . '/';
 $t_config_folder = $t_instance_root . 'config/';
 $t_original_current_directory = getcwd();
 
+exec( 'rm ' . $t_backup_folder . 'mantishub_*.zip' );
+exec( 'rm ' . $t_backup_folder . 'mantishub_*.tar.gz' );
+
 $t_cmd = "rm -rf $t_backup_data_folder";
 exec( $t_cmd );
 
