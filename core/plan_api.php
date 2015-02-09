@@ -22,7 +22,7 @@ function plan_gen() {
 }
 
 function plan_mail_reporting() {
-	return ( ( plan_gen() == 1 && plan_is_gold() ) || plan_is_platinum() );
+	return plan_is_gold();
 }
 
 function plan_mantistouch() {
