@@ -242,7 +242,7 @@ function mantishub_intercom() {
 			echo '"company": {';
 			echo 'id: "' . $t_company_id . '",';
 			echo 'name: "' . $t_company_name . '",';
-			echo '"ip": "' . $_SERVER['SERVER_ADDR'] . '"';
+			echo '"ip": "' . $_SERVER['SERVER_ADDR'] . '",';
 			echo '"gen": "' . $t_generation . '"';
 			echo '},';
 			echo 'app_id: "eb7d1d2171933b95f1ecb4fc4d1db866879776d2"';
