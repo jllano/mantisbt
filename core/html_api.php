@@ -779,7 +779,7 @@ function html_body_end() {
 
 	echo '</div>', "\n";
 
-	mantishub_intercom();
+	mantishub_support_widget();
 
 	echo '</body>', "\n";
 }

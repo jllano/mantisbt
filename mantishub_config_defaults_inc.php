@@ -81,3 +81,4 @@
 		$g_mantishub_gen = 1;
 	}
 
+	$g_in_app_support_enabled = ON;
