@@ -89,3 +89,5 @@
 	}
 
 	$g_in_app_support_enabled = ON;
+	$g_mantishub_info_impersonation_email = '';
+

@@ -368,14 +368,16 @@ function mantishub_client_ip() {
 function mantishub_impersonation_email() {
 	$t_email = config_get( 'mantishub_info_impersonation_email' );
 
-	$t_subject = '[' . mantishub_instance_name() . '] Impersonation login';
+	if ( !is_blank( $t_email ) ) {
+		$t_subject = '[' . mantishub_instance_name() . '] Impersonation login';
 
-	$t_message = '';
-	$t_message .= 'IP: ' . mantishub_client_ip() . "\n";
-	$t_message .= 'Timestamp: ' . date( 'Ymd Hi' ) . "\n";
+		$t_message = '';
+		$t_message .= 'IP: ' . mantishub_client_ip() . "\n";
+		$t_message .= 'Timestamp: ' . date( 'Ymd Hi' ) . "\n";
 
-	email_store( $t_email, $t_subject, $t_message );
-	email_send_all();
+		email_store( $t_email, $t_subject, $t_message );
+		email_send_all();
+	}
 }
 
 

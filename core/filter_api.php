@@ -3926,6 +3926,7 @@ function print_filter_do_filter_by_date( $p_hide_checkbox = false ) {
 ?>
 		<table cellspacing="0" cellpadding="0">
 <?php
+	$t_menu_disabled = '';
 	if( !$p_hide_checkbox ) {
 ?>
 		<tr>
@@ -3939,7 +3940,6 @@ function print_filter_do_filter_by_date( $p_hide_checkbox = false ) {
 			</td>
 		</tr>
 <?php
-		$t_menu_disabled = '';
 		if ('on' !== $g_filter[FILTER_PROPERTY_FILTER_BY_DATE]) {
 			$t_menu_disabled = ' disabled="disabled" ';
 		}
