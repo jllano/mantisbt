@@ -380,4 +380,17 @@ function mantishub_impersonation_email() {
 	}
 }
 
+function mantishub_wrap_email( $p_issue_id, $p_message ) {
+	$t_message = $p_message;
+	$t_message .= "This email is a service from MantisHub. To learn more about using MantisHub, see our support portal at http://support.mantishub.com\n";
+	return $t_message;
+}
+
+function mantishub_reply_to_address() {
+	if ( plan_mail_reporting() ) {
+		return mantishub_instance_name() . '@mantishub.com';
+	}
+
+	return null;
+}
 

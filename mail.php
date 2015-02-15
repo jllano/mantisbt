@@ -36,6 +36,59 @@ require_api( 'project_api.php' );
 
 $f_subject = trim( gpc_get_string( 'subject', '' ) );
 $f_sender = gpc_get_string( 'sender' );
+$f_headers = gpc_get_string( 'message-headers' );
+
+function mantishub_email_get_issue_id( $p_headers ) {
+	$t_in_reply_to = '';
+	$t_headers = json_decode( $p_headers );
+	$t_header_name = '';
+	foreach ( $t_headers as $t_header ) {
+		if ( stripos( $t_header[1], '<mantishub-' ) !== false ) {
+			if ( $t_header[0] == 'In-Reply-To' || $t_header[0] == 'References' ) {
+				$t_header_name = $t_header[0];
+				$t_header_value = $t_header[1];
+				break;
+			}
+		}
+	}
+
+	mantishub_log( "incoming mail: email get issue id" );
+
+	if ( empty( $t_header_value ) ) {
+		return 0;
+	}
+
+	$t_matches = array();
+
+	mantishub_log( "incoming mail: header = $t_header_name: '$t_header_value'" );
+
+	if ( preg_match ( '<(mantishub-(\d+)\+([^@]+)@.*\.mantishub.com)>', $t_header_value, &$t_matches ) != 1 ||
+		 count( $t_matches ) != 4 ) {
+		header( 'HTTP/1.0 406 Header value did not match regexp' );
+		mantishub_log( "incoming mail: rejected due to regexp mismatch for '$t_header_value'" );
+		mantishub_email_error( "Message rejected due to to regexp mismatch for '$t_header_value'" );
+		exit;
+	}
+
+	$t_issue_id = (int)$t_matches[2];
+	$t_md5 = $t_matches[3];
+
+	mantishub_log( "incoming mail: issue id = '$t_issue_id' and md5 = '$t_md5'" );
+
+	$t_date_submitted = bug_get_field( $t_issue_id, 'date_submitted' );
+	$t_expected_md5 = md5( $t_issue_id . $t_date_submitted );
+
+	if ( $t_md5 != $t_expected_md5 ) {
+		header( 'HTTP/1.0 406 hash mismatch in In-Reply-To' );
+		mantishub_log( "incoming mail: rejected due hash mismatch in In-Reply-To." );
+		mantishub_email_error( "Message rejected due hash mismatch in In-Reply-To." );
+		exit;
+	}
+
+	mantishub_log( "incoming mail: email get issue id - md5 match" );
+
+	return $t_issue_id;
+}
 
 function mantishub_email_response( $p_message, $p_success = false ) {
     global $f_sender, $f_subject;
@@ -156,39 +209,48 @@ auth_attempt_script_login( $t_reporter_username );
 
 mantishub_log( 'incoming mail: user authenticated.' );
 
-#
-# Get project name.
-#
+$t_bug_id = mantishub_email_get_issue_id( $f_headers );
+$t_new_issue = $t_bug_id == 0;
+mantishub_log( 'incoming mail: issue id is ' . $t_bug_id );
 
-$f_recipient = gpc_get_string( 'recipient' );
-$t_instance_name = mantishub_instance_name();
+if ( $t_new_issue ) {
+	#
+	# Get project name.
+	#
 
-if ( stripos( $f_recipient, $t_instance_name . '+' ) !== 0 &&
-	 stripos( $f_recipient, $t_instance_name . '@' ) !== 0 ) {
-	header( 'HTTP/1.0 406 Wrong Instance' );
-	mantishub_log( 'incoming mail: rejected since targetted to "' . $f_recipient . '" rather than current instance "' . $t_instance_name . '".' );
-	mantishub_email_error( "Message rejected since target account doesn't match." );
-	exit;
-}
+	$f_recipient = gpc_get_string( 'recipient' );
+	$t_instance_name = mantishub_instance_name();
 
-$t_project = mantishub_mailgun_project_from_recipient( $f_recipient );
-if ( $t_project === false ) {
-	mantishub_log( 'incoming mail: project name not specified in recipient.' );
-
-	$t_default_project_id = config_get( 'email_incoming_default_project' );
-	if ( $t_default_project_id == 0 ) {
-		mantishub_log( 'incoming mail: no default target project in config. Falling back to user default project.' );
-		$t_default_project_id = user_pref_get_pref( $t_user_id, 'default_project' );
-	}
-
-	if ( $t_default_project_id != 0 ) {
-		$t_project = project_get_row( $t_default_project_id );
-	} else {
-		header( 'HTTP/1.0 406 No Default or Selected Project' );
-		mantishub_log( 'incoming mail: rejected since no selected or default project.' );
-		mantishub_email_error( 'Message rejected since there is no selected or default project.' );
+	if ( stripos( $f_recipient, $t_instance_name . '+' ) !== 0 &&
+		 stripos( $f_recipient, $t_instance_name . '@' ) !== 0 ) {
+		header( 'HTTP/1.0 406 Wrong Instance' );
+		mantishub_log( 'incoming mail: rejected since targetted to "' . $f_recipient . '" rather than current instance "' . $t_instance_name . '".' );
+		mantishub_email_error( "Message rejected since target account doesn't match." );
 		exit;
 	}
+
+	$t_project = mantishub_mailgun_project_from_recipient( $f_recipient );
+	if ( $t_project === false ) {
+		mantishub_log( 'incoming mail: project name not specified in recipient.' );
+
+		$t_default_project_id = config_get( 'email_incoming_default_project' );
+		if ( $t_default_project_id == 0 ) {
+			mantishub_log( 'incoming mail: no default target project in config. Falling back to user default project.' );
+			$t_default_project_id = user_pref_get_pref( $t_user_id, 'default_project' );
+		}
+
+		if ( $t_default_project_id != 0 ) {
+			$t_project = project_get_row( $t_default_project_id );
+		} else {
+			header( 'HTTP/1.0 406 No Default or Selected Project' );
+			mantishub_log( 'incoming mail: rejected since no selected or default project.' );
+			mantishub_email_error( 'Message rejected since there is no selected or default project.' );
+			exit;
+		}
+	}
+} else {
+	$t_project_id = bug_get_field( $t_bug_id, 'project_id' );
+	$t_project = project_get_row( $t_project_id );
 }
 
 mantishub_log( 'incoming mail: project is ' . $t_project['id'] . ': ' . $t_project['name'] );
@@ -216,24 +278,53 @@ $f_stripped_text = trim( gpc_get_string( 'stripped-text', '' ) );
 
 if ( empty( $f_stripped_text ) ) {
 	$f_stripped_text = trim( gpc_get_string( 'body-plain', '' ) );
+} else {
+	# mailgun returns stripped text terminated with >
+	$f_stripped_text = trim( $f_stripped_text );
+	if ( substr( $f_stripped_text, -1, 1 ) == '>' ) {
+		$f_stripped_text = substr( $f_stripped_text, 0, strlen( $f_stripped_text ) - 1 );
+		$f_stripped_text = trim( $f_stripped_text );
+	}
 }
 
-if ( empty( $f_stripped_text ) ) {
-	$f_stripped_text = $f_subject;
-}
+if ( $t_new_issue ) {
+	if ( empty( $f_stripped_text ) ) {
+		$f_stripped_text = $f_subject;
+	}
 
-$t_bug = new BugData;
-$t_bug->summary = $f_subject;
-$t_bug->description = $f_stripped_text;
-$t_bug->project_id = (int)$t_project['id'];
-$t_bug->reporter_id = $t_user_id;
+	$t_bug = new BugData;
+	$t_bug->summary = $f_subject;
+	$t_bug->description = $f_stripped_text;
+	$t_bug->project_id = (int)$t_project['id'];
+	$t_bug->reporter_id = $t_user_id;
 
-if ( $t_generic_user ) {
-	$t_bug->additional_information = 'MantisHub Email Delivery From: ' . $f_from;
-}
+	if ( $t_generic_user ) {
+		$t_bug->additional_information = 'MantisHub Email Delivery From: ' . $f_from;
+	}
 
-$t_bug_id = $t_bug->create();
-mantishub_log( 'incoming mail: accepted as issue ' . $t_bug_id . ' with ' . $f_attachment_count . ' attachments.' );
+	$t_bug_id = $t_bug->create();
+
+	mantishub_log( 'incoming mail: accepted as issue ' . $t_bug_id . ' with ' . $f_attachment_count . ' attachments.' );
+} else {
+	if ( is_blank( $f_stripped_text ) ) {
+		header( 'HTTP/1.0 406 Blank note in reply to issue notification' );
+		mantishub_log( "incoming mail: rejected reply with empty note." );
+		mantishub_email_error( "Message rejected since it has an empty note." );
+		exit;
+	}
+
+	$t_note_text = $f_stripped_text;
+
+	if ( $t_generic_user ) {
+		$t_note_text .= "\n\nMantisHub Email Delivery From: " . $f_from;
+	}
+
+	mantishub_log( "incoming mail: adding note to issue id $t_bug_id, text='$t_note_text'" );
+
+	$t_bugnote_id = bugnote_add( $t_bug_id, $t_note_text );
+
+	mantishub_log( "incoming mail: accepted issue note $t_bugnote_id for issue $t_bug_id" );
+} 
 
 for ( $i = 1; $i <= (int)$f_attachment_count; ++$i ) {
 	$t_file = $_FILES['attachment-' . $i];
@@ -243,14 +334,16 @@ for ( $i = 1; $i <= (int)$f_attachment_count; ++$i ) {
 
 mantishub_log( 'incoming mail: done with issue ' . $t_bug_id );
 
-helper_call_custom_function( 'issue_create_notify', array( $t_bug_id ) );
+if ( $t_new_issue ) {
+	helper_call_custom_function( 'issue_create_notify', array( $t_bug_id ) );
 
-# Allow plugins to post-process bug data with the new bug ID
-event_signal( 'EVENT_REPORT_BUG', array( $t_bug_data, $t_bug_id ) );
+	# Allow plugins to post-process bug data with the new bug ID
+	event_signal( 'EVENT_REPORT_BUG', array( $t_bug_data, $t_bug_id ) );
 
-email_generic( $t_bug_id, 'new', 'email_notification_title_for_action_bug_submitted' );
+	email_generic( $t_bug_id, 'new', 'email_notification_title_for_action_bug_submitted' );
 
-$t_message = config_get( 'email_incoming_issue_reported_message' );
-$t_message = str_replace( '{issue_id}', $t_bug_id, $t_message );
+	$t_message = config_get( 'email_incoming_issue_reported_message' );
+	$t_message = str_replace( '{issue_id}', $t_bug_id, $t_message );
 
-mantishub_email_response( $t_message, /* success */ true );
+	mantishub_email_response( $t_message, /* success */ true );
+}
