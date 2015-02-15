@@ -271,12 +271,18 @@ function mantishub_support_widget() {
 
 function mantishub_zendesk() {
 	if ( auth_is_user_authenticated() ) {
-		$t_user_email = current_user_get_field( 'email' );
-
 		if ( current_user_is_administrator() ) {
-				echo <<< HTML
+			$t_user_email = current_user_get_field( 'email' );
+			$t_realname = current_user_get_field( 'realname' );
+
+			echo <<< HTML
 					<!-- Support Widget -->
 					<script>/*<![CDATA[*/window.zEmbed||function(e,t){var n,o,d,i,s,a=[],r=document.createElement("iframe");window.zEmbed=function(){a.push(arguments)},window.zE=window.zE||window.zEmbed,r.src="javascript:false",r.title="",r.role="presentation",(r.frameElement||r).style.cssText="display: none",d=document.getElementsByTagName("script"),d=d[d.length-1],d.parentNode.insertBefore(r,d),i=r.contentWindow,s=i.document;try{o=s}catch(c){n=document.domain,r.src='javascript:var d=document.open();d.domain="'+n+'";void(0);',o=s}o.open()._l=function(){var o=this.createElement("script");n&&(this.domain=n),o.id="js-iframe-async",o.src=e,this.t=+new Date,this.zendeskHost=t,this.zEQueue=a,this.body.appendChild(o)},o.write('<body onload="document._l();">'),o.close()}("//assets.zendesk.com/embeddable_framework/main.js","mantishub.zendesk.com");/*]]>*/</script>
+<script>
+  zE(function() {
+    zE.identify( { name: '$t_realname', email: '$t_user_email' });
+  });
+</script>
 					<!-- End of Support Widget -->
 HTML;
 		}
