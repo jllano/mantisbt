@@ -36,59 +36,6 @@ require_api( 'project_api.php' );
 
 $f_subject = trim( gpc_get_string( 'subject', '' ) );
 $f_sender = gpc_get_string( 'sender' );
-$f_headers = gpc_get_string( 'message-headers' );
-
-function mantishub_email_get_issue_id( $p_headers ) {
-	$t_in_reply_to = '';
-	$t_headers = json_decode( $p_headers );
-	$t_header_name = '';
-	foreach ( $t_headers as $t_header ) {
-		if ( stripos( $t_header[1], '<mantishub-' ) !== false ) {
-			if ( $t_header[0] == 'In-Reply-To' || $t_header[0] == 'References' ) {
-				$t_header_name = $t_header[0];
-				$t_header_value = $t_header[1];
-				break;
-			}
-		}
-	}
-
-	mantishub_log( "incoming mail: email get issue id" );
-
-	if ( empty( $t_header_value ) ) {
-		return 0;
-	}
-
-	$t_matches = array();
-
-	mantishub_log( "incoming mail: header = $t_header_name: '$t_header_value'" );
-
-	if ( preg_match ( '<(mantishub-(\d+)\+([^@]+)@.*\.mantishub.com)>', $t_header_value, &$t_matches ) != 1 ||
-		 count( $t_matches ) != 4 ) {
-		header( 'HTTP/1.0 406 Header value did not match regexp' );
-		mantishub_log( "incoming mail: rejected due to regexp mismatch for '$t_header_value'" );
-		mantishub_email_error( "Message rejected due to to regexp mismatch for '$t_header_value'" );
-		exit;
-	}
-
-	$t_issue_id = (int)$t_matches[2];
-	$t_md5 = $t_matches[3];
-
-	mantishub_log( "incoming mail: issue id = '$t_issue_id' and md5 = '$t_md5'" );
-
-	$t_date_submitted = bug_get_field( $t_issue_id, 'date_submitted' );
-	$t_expected_md5 = md5( $t_issue_id . $t_date_submitted );
-
-	if ( $t_md5 != $t_expected_md5 ) {
-		header( 'HTTP/1.0 406 hash mismatch in In-Reply-To' );
-		mantishub_log( "incoming mail: rejected due hash mismatch in In-Reply-To." );
-		mantishub_email_error( "Message rejected due hash mismatch in In-Reply-To." );
-		exit;
-	}
-
-	mantishub_log( "incoming mail: email get issue id - md5 match" );
-
-	return $t_issue_id;
-}
 
 function mantishub_email_response( $p_message, $p_success = false ) {
     global $f_sender, $f_subject;
@@ -209,7 +156,17 @@ auth_attempt_script_login( $t_reporter_username );
 
 mantishub_log( 'incoming mail: user authenticated.' );
 
-$t_bug_id = mantishub_email_get_issue_id( $f_headers );
+$f_recipient = gpc_get_string( 'recipient' );
+
+$t_abort_error = '';
+$t_bug_id = mantishub_mailgun_issue_from_recipient( $f_recipient, &$t_abort_error );
+if ( $t_bug_id == 0 && !is_blank( $t_abort_error ) ) {
+	header( 'HTTP/1.0 406 ' . $t_abort_error );
+	mantishub_log( 'incoming mail: rejected. Error: ' . $t_abort_error );
+	mantishub_email_error( 'Message rejected.  Error: ' . $t_abort_error );
+	exit;
+}
+
 $t_new_issue = $t_bug_id == 0;
 mantishub_log( 'incoming mail: issue id is ' . $t_bug_id );
 
@@ -218,7 +175,6 @@ if ( $t_new_issue ) {
 	# Get project name.
 	#
 
-	$f_recipient = gpc_get_string( 'recipient' );
 	$t_instance_name = mantishub_instance_name();
 
 	if ( stripos( $f_recipient, $t_instance_name . '+' ) !== 0 &&
@@ -316,7 +272,7 @@ if ( $t_new_issue ) {
 	$t_note_text = $f_stripped_text;
 
 	if ( $t_generic_user ) {
-		$t_note_text .= "\n\nMantisHub Email Delivery From: " . $f_from;
+		$t_note_text .= "\n\n---\n" . $f_from;
 	}
 
 	mantishub_log( "incoming mail: adding note to issue id $t_bug_id, text='$t_note_text'" );

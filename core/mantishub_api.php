@@ -183,6 +183,60 @@ function mantishub_mailgun_project_from_recipient( $p_recipient ) {
 	return $t_project_found;
 }
 
+function mantishub_mailgun_issue_from_recipient( $p_recipient, &$p_abort_error ) {
+	$p_abort_error = '';
+	$t_instance_name = mantishub_instance_name();
+	$t_instance_name = strtolower( $t_instance_name );
+
+	$t_before_at = strtolower( $p_recipient );
+	$t_before_at = substr( $t_before_at, 0, strpos( $t_before_at, '@' ) );
+
+	// If instancename@domain.com, then return false since project is not specified.
+	if ( $t_before_at == $t_instance_name ) {
+		return 0;
+	}
+
+	$t_between_plus_and_at = str_replace( $t_instance_name . '+', '', $t_before_at );
+
+	# Don't match an issue if a project exists with the same name.
+	$t_project_id = project_get_id_by_name( $t_between_plus_and_at );
+	if ( $t_project_id != 0 ) {
+		return 0;
+	}
+
+	$t_parts = explode( '-', $t_between_plus_and_at );
+	if ( count( $t_parts ) != 2 ) {
+		$p_abort_error = "missing token from recipient address.";
+		return 0;
+	}
+
+	$t_id = $t_parts[0];
+
+	if ( !is_numeric( $t_id ) ) {
+		return 0;
+	}
+
+	mantishub_log( 'incoming mail: issue id = ' . $t_id );
+
+	if ( !bug_exists( $t_id ) ) {
+		$p_abort_error = "issue $t_id doesn't exist.";
+		return 0;
+	}
+
+	$t_md5 = $t_parts[1];
+	mantishub_log( 'incoming mail: received md5 = ' . $t_md5 );
+
+	$t_expected_md5 = md5( $t_id . config_get( 'crypto_master_salt' ) );
+	mantishub_log( 'incoming mail: expected md5 = ' . $t_expected_md5 );
+
+	if ( $t_md5 != $t_expected_md5 ) {
+		$p_abort_error = "Invalid recipient address";
+		return 0;
+	}
+
+	return $t_id;
+}
+
 function mantishub_log( $p_message ) {
 	global $global_log_request_id;
 	error_log( date( 'c' ) . ' ' . $global_log_request_id . ' ' . $p_message . "\n", 3, dirname( dirname( __FILE__ ) ) . '/logs/mantishub.log' );
@@ -383,9 +437,10 @@ function mantishub_wrap_email( $p_issue_id, $p_message ) {
 	return $t_message;
 }
 
-function mantishub_reply_to_address() {
+function mantishub_reply_to_address( $p_issue_id ) {
 	if ( plan_mail_reporting() ) {
-		return mantishub_instance_name() . '@mantishub.com';
+		$t_md5 = md5( $p_issue_id . config_get( 'crypto_master_salt' ) );
+		return mantishub_instance_name() . '+' . $p_issue_id . '-' . $t_md5 . '@mantishub.com';
 	}
 
 	return null;
