@@ -1125,7 +1125,7 @@ function email_bug_info_to_one_user( array $p_visible_bug_data, $p_message_id, $
 
 	# build headers
 	$t_bug_id = $p_visible_bug_data['email_bug'];
-	$t_message_md5 = 'mantishub-' . $t_bug_id . '+' . md5( $t_bug_id . $p_visible_bug_data['email_date_submitted'] );
+	$t_message_md5 = md5( $t_bug_id . $p_visible_bug_data['email_date_submitted'] );
 	$t_mail_headers = array(
 		'keywords' => $p_visible_bug_data['set_category'],
 	);
@@ -1135,8 +1135,7 @@ function email_bug_info_to_one_user( array $p_visible_bug_data, $p_message_id, $
 		$t_mail_headers['In-Reply-To'] = $t_message_md5;
 	}
 
-	$t_reply_to = mantishub_reply_to_address();
-
+	$t_reply_to = mantishub_reply_to_address( $t_bug_id );
 	if ( $t_reply_to !== null ) {
 		$t_mail_headers['Reply-To'] = $t_reply_to;
 	}
