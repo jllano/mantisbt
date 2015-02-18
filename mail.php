@@ -159,7 +159,7 @@ mantishub_log( 'incoming mail: user authenticated.' );
 $f_recipient = gpc_get_string( 'recipient' );
 
 $t_abort_error = '';
-$t_bug_id = mantishub_mailgun_issue_from_recipient( $f_recipient, &$t_abort_error );
+$t_bug_id = mantishub_mailgun_issue_from_recipient( $f_recipient, $t_abort_error );
 if ( $t_bug_id == 0 && !is_blank( $t_abort_error ) ) {
 	header( 'HTTP/1.0 406 ' . $t_abort_error );
 	mantishub_log( 'incoming mail: rejected. Error: ' . $t_abort_error );
