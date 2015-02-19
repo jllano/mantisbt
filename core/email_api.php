@@ -1075,7 +1075,15 @@ function email_bug_reminder( $p_recipients, $p_bug_id, $p_message ) {
 		$t_header = "\n" . lang_get( 'on_date' ) . ' ' . $t_date . ', ' . $t_sender . ' ' . $t_sender_email . lang_get( 'sent_you_this_reminder_about' ) . ': ' . "\n\n";
 		$t_contents = $t_header . string_get_bug_view_url_with_fqdn( $p_bug_id, $t_recipient ) . " \n\n" . $p_message;
 
-		$t_id = email_store( $t_email, $t_subject, $t_contents );
+		$t_mail_headers = array();
+		$t_reply_to = mantishub_reply_to_address( $p_bug_id );
+		if ( $t_reply_to !== null ) {
+			$t_mail_headers['Reply-To'] = $t_reply_to;
+		}
+
+		$t_contents = mantishub_wrap_email( $p_bug_id, $t_contents . "\n\n---\n" );
+
+		$t_id = email_store( $t_email, $t_subject, $t_contents, $t_mail_headers );
 		if( $t_id !== null ) {
 			$t_result[] = $t_recipient;
 		}
