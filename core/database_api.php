@@ -394,6 +394,12 @@ function db_query( $p_query, array $p_arr_parms = null, $p_limit = -1, $p_offset
 	}
 
 	$t_elapsed = number_format( microtime( true ) - $t_start, 4 );
+	$t_elapsed_in_milliseconds = (int)($t_elapsed * 1000);
+
+	if ( $t_elapsed_in_milliseconds > 0 ) {
+		$t_event = array( 'level' => 'info', 'comp' => 'database', 'event' => 'query', 'elapsed' => $t_elapsed_in_milliseconds, 'query' => $p_query );
+		mantishub_event( $t_event, /* can call db */ false );
+	}
 
 	if( ON == $g_db_log_queries ) {
 		$t_lastoffset = 0;
