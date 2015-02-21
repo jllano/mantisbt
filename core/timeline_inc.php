@@ -63,10 +63,8 @@ $t_block_icon = $t_collapse_block ? 'fa-chevron-down' : 'fa-chevron-up';
 $t_next_days = ( $f_days - 7 ) > 0 ? $f_days - 7 : 0;
 
 if( $t_next_days != $f_days ) {
-    $t_next_link = ' [<a class="btn btn-primary btn-xs btn-white btn-round" href="my_view_page.php?days=' .
-        $t_next_days . '">' . lang_get( 'next' ) . '</a>]';
-} else {
-	$t_next_link = '';
+    echo ' <a class="btn btn-primary btn-xs btn-white btn-round" href="my_view_page.php?days=' .
+        $t_next_days . '">' . lang_get( 'next' ) . '</a>';
 }
 
 echo '</div></div></div><div class="widget-main no-padding"><div class="profile-feed">';
