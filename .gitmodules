@@ -19,3 +19,6 @@
 [submodule "plugins/Csv_import"]
 	path = plugins/Csv_import
 	url = git@github.com:mantishub/csv-import.git
+[submodule "plugins/Slack"]
+	path = plugins/Slack
+	url = git@bitbucket.org:vboctor/slack.git

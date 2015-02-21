@@ -68,6 +68,8 @@ mantishub_log( 'incoming mail: ' . ( empty( $f_subject ) ? '<blank>' : $f_subjec
 
 if ( empty( $f_subject ) ) {
 	header( 'HTTP/1.0 406 Empty Subject' );
+	$t_event = array( 'level' => 'error', 'comp' => 'email_reporting', 'event' => 'empty_subject' );
+	mantishub_event( $t_event );
 	mantishub_log( 'incoming mail: rejected message with empty subject.' );
 	mantishub_email_error( 'Message rejected due to empty subject.' );
 	exit;
@@ -75,6 +77,8 @@ if ( empty( $f_subject ) ) {
 
 if ( config_get( 'email_incoming_enabled' ) == OFF ) {
 	header( 'HTTP/1.0 406 Email Reporting Disabled' );
+	$t_event = array( 'level' => 'error', 'comp' => 'email_reporting', 'event' => 'feature_disabled' );
+	mantishub_event( $t_event );
 	mantishub_log( 'incoming mail: rejected since email_incoming_enabled is OFF.' );
 	mantishub_email_error( 'Message rejected since incoming email reporting feature is disabled.' );
 	exit;
@@ -88,6 +92,8 @@ mantishub_log( 'incoming mail: email_incoming_enabled enabled.' );
 
 if ( !plan_mail_reporting() ) {
 	header( 'HTTP/1.0 406 Email reporting not enabled for your plan.' );
+	$t_event = array( 'level' => 'error', 'comp' => 'email_reporting', 'event' => 'upgrade_plan' );
+	mantishub_event( $t_event );
 	mantishub_log( 'incoming mail: rejected since email reporting not enabled for your plan.' );
 	mantishub_email_error( 'Message rejected since email reporting is not enabled for your plan.' );
 	exit;
@@ -109,6 +115,8 @@ $t_hash = hash_hmac ( 'sha256', $t_data, $t_key );
 
 if ( $t_hash != $f_signature ) {
 	header( 'HTTP/1.0 406 Invalid Signature' );
+	$t_event = array( 'level' => 'error', 'comp' => 'email_reporting', 'event' => 'invalid_signature' );
+	mantishub_event( $t_event );
 	mantishub_log( 'incoming mail: rejected since mailgun signature is invalid.' );
 	mantishub_email_error( "Message rejected since it didn't go through standard mail gateway." );
 	exit;
@@ -123,6 +131,8 @@ mantishub_log( 'incoming mail: correct signature.' );
 $f_spam = gpc_get_string( 'X-Mailgun-Sflag', 'No' );
 if ( $f_spam == 'Yes' ) {
 	header( 'HTTP/1.0 406 Mail Marked as Spam' );
+	$t_event = array( 'level' => 'error', 'comp' => 'email_reporting', 'event' => 'spam' );
+	mantishub_event( $t_event );
 	mantishub_log( 'incoming mail: rejected since mailgun marked email as spam.' );
 	exit;
 }
@@ -143,6 +153,8 @@ if ( $t_user_id === false ) {
 
 if ( $t_user_id === false ) {
 	header( 'HTTP/1.0 406 No Reporter Match' );
+	$t_event = array( 'level' => 'error', 'comp' => 'email_reporting', 'event' => 'reporter_not_found', 'sender' => $f_sender );
+	mantishub_event( $t_event );
 	mantishub_log( 'incoming mail: rejected since no user match or "email" account.' );
 	mantishub_email_error( 'Message rejected since there is no email account matching sender account.  There is also no fallback "email" user account.' );
 	exit;
@@ -162,6 +174,8 @@ $t_abort_error = '';
 $t_bug_id = mantishub_mailgun_issue_from_recipient( $f_recipient, $t_abort_error );
 if ( $t_bug_id == 0 && !is_blank( $t_abort_error ) ) {
 	header( 'HTTP/1.0 406 ' . $t_abort_error );
+	$t_event = array( 'level' => 'error', 'comp' => 'email_reporting', 'event' => 'issue_error', 'msg' => $t_abort_error );
+	mantishub_event( $t_event );
 	mantishub_log( 'incoming mail: rejected. Error: ' . $t_abort_error );
 	mantishub_email_error( 'Message rejected.  Error: ' . $t_abort_error );
 	exit;
@@ -180,6 +194,8 @@ if ( $t_new_issue ) {
 	if ( stripos( $f_recipient, $t_instance_name . '+' ) !== 0 &&
 		 stripos( $f_recipient, $t_instance_name . '@' ) !== 0 ) {
 		header( 'HTTP/1.0 406 Wrong Instance' );
+		$t_event = array( 'level' => 'error', 'event' => 'instance_mismatch', 'recipient' => $f_recipient );
+		mantishub_event( $t_event );
 		mantishub_log( 'incoming mail: rejected since targetted to "' . $f_recipient . '" rather than current instance "' . $t_instance_name . '".' );
 		mantishub_email_error( "Message rejected since target account doesn't match." );
 		exit;
@@ -199,6 +215,8 @@ if ( $t_new_issue ) {
 			$t_project = project_get_row( $t_default_project_id );
 		} else {
 			header( 'HTTP/1.0 406 No Default or Selected Project' );
+			$t_event = array( 'level' => 'error', 'comp' => 'email_reporting', 'event' => 'missing_project' );
+			mantishub_event( $t_event );
 			mantishub_log( 'incoming mail: rejected since no selected or default project.' );
 			mantishub_email_error( 'Message rejected since there is no selected or default project.' );
 			exit;
@@ -217,6 +235,8 @@ mantishub_log( 'incoming mail: project is ' . $t_project['id'] . ': ' . $t_proje
 
 if ( !access_has_project_level( REPORTER, (int)$t_project['id'], $t_user_id ) ) {
 	header( 'HTTP/1.0 406 Reporter unauthorized to Report Issues' );
+	$t_event = array( 'level' => 'error', 'comp' => 'email_reporting', 'event' => 'unauthorized_reporter' );
+	mantishub_event( $t_event );
 	mantishub_log( "incoming mail: user $t_user_id does not have reporting access to project " . $t_project['id'] );
 	mantishub_email_error( "Message rejected since user doesn't have access to report issues." );
 	exit;
@@ -264,6 +284,8 @@ if ( $t_new_issue ) {
 } else {
 	if ( is_blank( $f_stripped_text ) ) {
 		header( 'HTTP/1.0 406 Blank note in reply to issue notification' );
+		$t_event = array( 'level' => 'error', 'comp' => 'email_reporting', 'event' => 'empty_note' );
+		mantishub_event( $t_event );
 		mantishub_log( "incoming mail: rejected reply with empty note." );
 		mantishub_email_error( "Message rejected since it has an empty note." );
 		exit;
@@ -302,4 +324,10 @@ if ( $t_new_issue ) {
 	$t_message = str_replace( '{issue_id}', $t_bug_id, $t_message );
 
 	mantishub_email_response( $t_message, /* success */ true );
+
+	$t_event = array( 'level' => 'info', 'comp' => 'email_reporting', 'event' => 'issue_reported' );
+	mantishub_event( $t_event );
+} else {
+	$t_event = array( 'level' => 'info', 'comp' => 'email_reporting', 'event' => 'note_reported' );
+	mantishub_event( $t_event );
 }

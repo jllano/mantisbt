@@ -13,6 +13,9 @@ require_once( dirname( dirname( __FILE__ ) ) . DIRECTORY_SEPARATOR . 'core.php' 
 // for log correlation.
 $global_log_request_id = time();
 
+// the log fields that don't change over the life of the request
+$g_common_log_fields = null;
+
 // Don't re-authenticate when impersonation is ON.
 if ( mantishub_impersonation() ) {
 	$g_reauthentication = OFF;
@@ -240,6 +243,57 @@ function mantishub_mailgun_issue_from_recipient( $p_recipient, &$p_abort_error )
 	return $t_id;
 }
 
+function mantishub_event( $p_event, $p_can_call_db = true ) {
+	$t_line = '';
+
+	if ( $p_can_call_db ) {	
+		global $g_common_log_fields;
+		if ( $g_common_log_fields === null ) {
+			$g_common_log_fields = '';
+			$g_common_log_fields .= ' hub=' . mantishub_instance_name();
+
+			$g_common_log_fields .= ' user=' . current_user_get_field( 'username' );
+			$g_common_log_fields .= ' email=' . current_user_get_field( 'email' );
+		}
+
+		$t_line .= $g_common_log_fields;
+	} else {
+		$t_line .= ' hub=' . mantishub_instance_name();
+	}
+
+	foreach ( $p_event as $t_key => $t_value ) {
+		$t_field = mantishub_extra_event_key_value( $p_event, $t_key );
+		if ( !is_blank( $t_field ) ) {
+			$t_line .= ' ' . $t_field;
+		}
+	}
+
+	error_log( trim( $t_line ) );
+}
+
+function mantishub_extra_event_key_value( $p_event, $p_key, $p_default = null ) {
+	$t_result = $p_key . '=';
+
+	if ( isset( $p_event[$p_key] ) ) {
+		$t_value = $p_event[$p_key];
+	} else if ( is_null( $p_default ) ) {
+		return '';
+	} else {
+		$t_value = $p_default;
+	}
+
+	if ( strpos( $t_value, ' ' ) !== false ) {
+		if ( strpos( $t_value, '"' ) !== false ) {
+			$t_value = str_replace( '"', "'", $t_value );
+		}
+
+		$t_value = '"' . $t_value . '"';
+	}
+
+	$t_result .= $t_value;
+	return $t_result;
+}
+
 function mantishub_log( $p_message ) {
 	global $global_log_request_id;
 	error_log( date( 'c' ) . ' ' . $global_log_request_id . ' ' . $p_message . "\n", 3, dirname( dirname( __FILE__ ) ) . '/logs/mantishub.log' );
@@ -453,5 +507,12 @@ function mantishub_reply_to_address( $p_issue_id ) {
 	}
 
 	return null;
+}
+
+function mantishub_cleanup_plugin_name( $p_name ) {
+	$t_name = string_display_line( $p_name );
+	$t_name = str_replace( 'MantisBT ', '', $t_name );
+	$t_name = str_replace( 'Mantis ', '', $t_name );
+	return $t_name;
 }
 

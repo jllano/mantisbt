@@ -132,7 +132,8 @@ foreach ( $t_plugins_installed as $t_basename => $t_plugin ) {
 	$t_priority = plugin_priority( $t_basename );
 	$t_protected = plugin_protected( $t_basename );
 
-	$t_name = string_display_line( $t_plugin->name.' '.$t_plugin->version );
+	$t_name = mantishub_cleanup_plugin_name( $t_plugin->name );
+
 	if( !is_blank( $t_page ) ) {
 		$t_name = '<a href="' . string_attribute( plugin_page( $t_page, false, $t_basename ) ) . '">' . $t_name . '</a>';
 	}
@@ -267,7 +268,7 @@ if( 0 < count( $t_plugins_available ) ) {
 		$t_requires = $t_plugin->requires;
 		$t_depends = array();
 
-		$t_name = string_display_line( $t_plugin->name.' '.$t_plugin->version );
+		$t_name = mantishub_cleanup_plugin_name( $t_plugin->name );
 
 		if( !is_blank( $t_author ) ) {
 			if( is_array( $t_author ) ) {
