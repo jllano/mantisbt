@@ -506,3 +506,10 @@ function mantishub_reply_to_address( $p_issue_id ) {
 	return null;
 }
 
+function mantishub_cleanup_plugin_name( $p_name ) {
+	$t_name = string_display_line( $p_name );
+	$t_name = str_replace( 'MantisBT ', '', $t_name );
+	$t_name = str_replace( 'Mantis ', '', $t_name );
+	return $t_name;
+}
+
