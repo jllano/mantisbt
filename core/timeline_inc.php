@@ -60,20 +60,20 @@ $t_block_icon = $t_collapse_block ? 'fa-chevron-down' : 'fa-chevron-up';
                 echo ' <a class="btn btn-primary btn-xs btn-white btn-round" href="my_view_page.php?days=' .
                     ( $f_days + 7 ) . '">' . lang_get( 'prev' ) . '</a>';
 
-$t_next_days = ( $f_days - 7 ) > 0 ? $f_days - 7 : 0;
+                $t_next_days = ( $f_days - 7 ) > 0 ? $f_days - 7 : 0;
 
-if( $t_next_days != $f_days ) {
-    echo ' <a class="btn btn-primary btn-xs btn-white btn-round" href="my_view_page.php?days=' .
-        $t_next_days . '">' . lang_get( 'next' ) . '</a>';
-}
+                if( $t_next_days != $f_days ) {
+                    echo ' <a class="btn btn-primary btn-xs btn-white btn-round" href="my_view_page.php?days=' .
+                        $t_next_days . '">' . lang_get( 'next' ) . '</a>';
+                }
 
-echo '</div></div></div><div class="widget-main no-padding"><div class="profile-feed">';
+            echo '</div></div></div><div class="widget-main no-padding"><div class="profile-feed">';
 
-$t_events = timeline_sort_events( $t_events );
+            $t_events = timeline_sort_events( $t_events );
 
-$t_num_events = timeline_print_events( $t_events, ( $f_all ? 0 : MAX_EVENTS ) );
+            $t_num_events = timeline_print_events( $t_events, ( $f_all ? 0 : MAX_EVENTS ) );
 
-echo '</div></div>';
+            echo '</div></div>';
 
 # Don't display "More Events" link if there are no more entries to show
 # Note: as of 2015-01-19, this does not cover the case of entries excluded
