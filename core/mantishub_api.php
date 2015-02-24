@@ -150,6 +150,28 @@ function mantishub_mailgun_project_name_clean( $p_project_name ) {
 	return strtolower( $t_clean_project_name );
 }
 
+function mantishub_project_get_row_by_clean_name( $p_project_name ) {
+	$t_project_id = project_get_id_by_name( $p_project_name );
+
+	if ( $t_project_id == 0 ) {
+		$t_projects = project_get_all_rows();
+		$t_project_found = false;
+
+		foreach ( $t_projects as $t_project ) {
+			if ( mantishub_mailgun_project_name_clean( $t_project['name'] ) != $p_project_name ) {
+				continue;
+			}
+
+			$t_project_found = $t_project;
+			break;
+		}
+	} else {
+		$t_project_found = project_get_row( $t_project_id );
+	}
+
+	return $t_project_found;
+}
+
 /**
  * For recipient instance+proj@mantishub.net, the project is 'proj'.
  * @return false if not found, otherwise project info.
@@ -168,25 +190,7 @@ function mantishub_mailgun_project_from_recipient( $p_recipient ) {
 
 	$t_target_project_name = str_replace( $t_instance_name . '+', '', $t_target_project_name );
 
-	$t_project_id = project_get_id_by_name( $t_target_project_name );
-
-	if ( $t_project_id == 0 ) {
-		$t_projects = project_get_all_rows();
-		$t_project_found = false;
-
-		foreach ( $t_projects as $t_project ) {
-			if ( mantishub_mailgun_project_name_clean( $t_project['name'] ) != $t_target_project_name ) {
-				continue;
-			}
-
-			$t_project_found = $t_project;
-			break;
-		}
-	} else {
-		$t_project_found = project_get_row( $t_project_id );
-	}
-
-	return $t_project_found;
+	return mantishub_project_get_row_by_clean_name( $t_target_project_name );
 }
 
 function mantishub_mailgun_issue_from_recipient( $p_recipient, &$p_abort_error ) {
@@ -205,14 +209,19 @@ function mantishub_mailgun_issue_from_recipient( $p_recipient, &$p_abort_error )
 	$t_between_plus_and_at = str_replace( $t_instance_name . '+', '', $t_before_at );
 
 	# Don't match an issue if a project exists with the same name.
-	$t_project_id = project_get_id_by_name( $t_between_plus_and_at );
-	if ( $t_project_id != 0 ) {
+	$t_project_row = mantishub_project_get_row_by_clean_name( $t_between_plus_and_at );
+	if ( $t_project_row !== false ) {
 		return 0;
 	}
 
 	$t_parts = explode( '-', $t_between_plus_and_at );
 	if ( count( $t_parts ) != 2 ) {
-		$p_abort_error = "missing token from recipient address.";
+		# If numeric, then looks like the email is related to an issue but without a hash.
+		# Otherwise, then it is just a project that doesn't exist.
+		if ( is_numeric( $t_between_plus_and_at ) ) {
+			$p_abort_error = "missing token from recipient address.";
+		}
+
 		return 0;
 	}
 
