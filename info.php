@@ -30,8 +30,10 @@ $t_info['plan'] = plan_name();
 $t_issues_count = mantishub_table_row_count( 'bug' );
 
 $t_info['users_count'] = mantishub_table_row_count( 'user' );
+$t_info['team_count'] = mantishub_team_users();
 $t_info['projects_count'] = mantishub_table_row_count( 'project' );
 $t_info['issues_count'] = $t_issues_count;
+$t_info['team_packs'] = plan_user_packs_needed( $t_info['team_count'] );
 $t_info['attachments_count'] = mantishub_table_row_count( 'bug_file' );
 $t_info['server_ip'] = $_SERVER['SERVER_ADDR'];
 $t_info['logo'] = file_exists( dirname( __FILE__ ) . '/images/logo.png' );
@@ -57,6 +59,8 @@ if ( $f_json ) {
 	echo 'Issues=' . $t_info['issues_count'] . "\n";
 	echo 'Projects=' . $t_info['projects_count'] . "\n";
 	echo 'Users=' . $t_info['users_count'] . "\n";
+	echo "TeamCount=" . $t_info['team_count'] . "\n";
+	echo "TeamPacks=" . $t_info['team_packs'] . "\n";
 	echo 'Attachments=' . $t_info['attachments_count'] . "\n";
 	echo 'Server IP=' . $t_info['server_ip'] . "\n";
 	echo 'Trial='. ( $t_info['trial'] ? '1' : '0' ) . "\n";
