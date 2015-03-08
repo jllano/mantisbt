@@ -405,6 +405,45 @@ HTML;
 	}	
 }
 
+function mantishub_team_users() {
+	$t_handle_bug_threshold = config_get( 'handle_bug_threshold' );
+
+	# Count users that are enabled and can be assigned issues (based on their global access level).
+	$t_query = "SELECT id, enabled FROM {user} WHERE access_level >= $t_handle_bug_threshold";
+	$t_result = db_query( $t_query );
+	
+	$t_enabled_users = array();
+	$t_disabled_users = array();
+
+	while ( $t_row = db_fetch_array( $t_result ) ) {
+		if ( $t_row['enabled'] == 0 ) {
+			$t_disabled_users[$t_row['id']] = '';
+		} else {
+			$t_enabled_users[$t_row['id']] = '';
+		}
+	}
+
+	# Count users that are enabled and can be assigned issues based on project specific access levels.
+	$t_query2 = "SELECT user_id FROM {project_user_list} WHERE access_level >= $t_handle_bug_threshold";
+	$t_result2 = db_query( $t_query2 );
+
+	while ( $t_row = db_fetch_array( $t_result2 ) ) {
+		$t_user_id = $t_row['user_id'];
+
+		// skip disabled users
+		if ( isset( $t_disabled_users[$t_user_id] ) ) {
+			continue;
+		}
+
+		$t_enabled_usernames[$t_user_id] = '';
+	}
+
+	$t_user_ids = array_keys( $t_enabled_users );
+	$t_team_users_count = count( $t_user_ids );
+
+	return $t_team_users_count;
+}
+
 /**
  * Counts the number of rows in the specified table name.
  * The table name must be the output of calls to db_get_table().
@@ -412,9 +451,9 @@ HTML;
 function mantishub_table_row_count( $p_table ) {
 	$query = "SELECT COUNT(*) FROM {" . $p_table . "}";
 	$result = db_query( $query );
-	$t_users = db_result( $result );
+	$t_count = db_result( $result );
 
-	return $t_users;
+	return (int)$t_count;
 }
 
 /**

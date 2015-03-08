@@ -50,6 +50,30 @@ function plan_price() {
 	return $t_value;
 }
 
+function plan_user_packs_needed( $p_team_user_count ) {
+	if ( plan_gen() == 1 ) {
+		return 0;
+	}
+
+	# gen 2 and above has the user packs concept and doesn't have silver plan
+	if ( plan_is_platinum() ) {
+		$t_included_in_plan = 30;
+	} else if ( plan_is_gold() ) {
+		$t_included_in_plan = 15;
+	} else {
+		$t_included_in_plan = 5;
+	}
+
+	$t_extra_users = $p_team_user_count - $t_included_in_plan;
+	if ( $t_extra_users <= 0 ) {
+		return 0;
+	}
+
+	$t_user_packs = (int)ceil( $t_extra_users / 10 );
+
+	return $t_user_packs;
+}
+
 function plan_name() {
 	global $g_mantishub_plan;
 	return $g_mantishub_plan;
