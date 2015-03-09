@@ -13,11 +13,16 @@ header( 'Pragma: no-cache' );
 header( 'Expires: ' . gmdate( 'D, d M Y H:i:s \G\M\T', time() ) );
 header( 'Last-Modified: ' . gmdate( 'D, d M Y H:i:s \G\M\T', time() ) );
 header( 'X-Content-Type-Options: nosniff' );
-header( 'Content-Type: text' );
-
-html_robots_noindex();
 
 $f_json = gpc_get_bool( 'json', false );
+
+if ( $f_json ) {
+	header( 'Content-Type: application/json' );
+} else {
+	header( 'Content-Type: text' );
+}
+
+html_robots_noindex();
 
 $t_info = array();
 
