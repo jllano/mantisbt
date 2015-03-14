@@ -22,3 +22,6 @@
 [submodule "plugins/Slack"]
 	path = plugins/Slack
 	url = git@bitbucket.org:vboctor/slack.git
+[submodule "plugins/HipChat"]
+	path = plugins/HipChat
+	url = git@bitbucket.org:vboctor/slack.git
