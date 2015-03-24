@@ -12,7 +12,7 @@
 	url = https://github.com/mantisbt/securimage.git
 [submodule "m"]
 	path = m
-	url = git@bitbucket.org:vboctor/mantistouch.git
+	url = git@bitbucket.org:mantishub/mantistouch.git
 [submodule "plugins/MantisTouchRedirect"]
 	path = plugins/MantisTouchRedirect
 	url = git@github.com:mantishub/MantisTouchRedirect.git
@@ -21,7 +21,7 @@
 	url = git@github.com:mantishub/csv-import.git
 [submodule "plugins/Slack"]
 	path = plugins/Slack
-	url = git@bitbucket.org:vboctor/slack.git
+	url = git@bitbucket.org:mantishub/slack.git
 [submodule "plugins/HipChat"]
 	path = plugins/HipChat
-	url = git@bitbucket.org:vboctor/slack.git
+	url = git@bitbucket.org:mantishub/slack.git
