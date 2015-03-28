@@ -71,19 +71,24 @@ if( helper_get_current_project() !== $t_existing_bug->project_id ) {
 	$g_project_override = $t_existing_bug->project_id;
 }
 
-# *** THIS CHECK BREAKS REPORTER CLOSING ISSUE SCENARIO ***
-# Ensure that the user has permission to update bugs. This check also factors
-# in whether the user has permission to view private bugs. The
-# $g_limit_reporters option is also taken into consideration.
-# access_ensure_bug_level( config_get( 'update_bug_threshold' ), $f_bug_id );
+$t_reporter_closing =
+	( $f_update_type == BUG_UPDATE_TYPE_CLOSE ) &&
+	bug_is_user_reporter( $f_bug_id, auth_get_current_user_id() ) &&
+	config_get( 'allow_reporter_close' ) == ON;
 
-# *** THIS CHECK BREAKS REPORTER RE-OPENING ISSUE SCENARIO ***
-# Check if the bug is in a read-only state and whether the current user has
-# permission to update read-only bugs.
-#if( bug_is_readonly( $f_bug_id ) ) {
-#	error_parameters( $f_bug_id );
-#	trigger_error( ERROR_BUG_READ_ONLY_ACTION_DENIED, ERROR );
-#}
+if ( !$t_reporter_closing ) {
+	# Ensure that the user has permission to update bugs. This check also factors
+	# in whether the user has permission to view private bugs. The
+	# $g_limit_reporters option is also taken into consideration.
+	access_ensure_bug_level( config_get( 'update_bug_threshold' ), $f_bug_id );
+
+	# Check if the bug is in a read-only state and whether the current user has
+	# permission to update read-only bugs.
+	if( bug_is_readonly( $f_bug_id ) ) {
+		error_parameters( $f_bug_id );
+		trigger_error( ERROR_BUG_READ_ONLY_ACTION_DENIED, ERROR );
+	}
+}
 
 $t_updated_bug = clone $t_existing_bug;
 
@@ -245,7 +250,6 @@ if( $t_existing_bug->target_version !== $t_updated_bug->target_version ) {
 }
 
 # Ensure that the user has permission to change the view status of the issue.
-# NOTE: Cast $t_existing_bug->view_state since it is of type string.
 if( (int)$t_existing_bug->view_state !== $t_updated_bug->view_state ) {
 	access_ensure_bug_level( config_get( 'change_view_status_threshold' ), $f_bug_id );
 }
