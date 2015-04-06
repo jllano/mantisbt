@@ -379,9 +379,12 @@ function layout_navbar() {
 	echo '<div class="navbar-buttons navbar-header pull-right navbar-collapse collapse">';
 	echo '<ul class="nav ace-nav">';
 	if (auth_is_user_authenticated()) {
+		# projects dropdown menu
 		layout_navbar_projects_menu();
 		# user buttons such as messages, notifications and user menu
 		layout_navbar_user_menu();
+		# help menu
+		mantishub_navbar_help_menu();
 	}
 	echo '</ul>';
 	echo '</div>';
@@ -460,6 +463,7 @@ function layout_navbar_user_menu( $p_show_avatar = true ) {
 	echo '</ul>';
 	echo '</li>';
 }
+
 
 /**
  * Print navbar projects menu at the top right of the page

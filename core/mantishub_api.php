@@ -329,30 +329,65 @@ function mantishub_is_manage_section() {
 	return is_page_name( 'manage_' ) || is_page_name( 'logo_page' ) || is_page_name( 'adm_' );
 }
 
-function mantishub_support_widget() {
-	if ( config_get( 'in_app_support_enabled' ) != OFF && mantishub_is_manage_section() ) {
-		mantishub_zendesk();
+/**
+ * Check whether to show mantishub support widget
+ * @return boolean
+ */
+function mantishub_display_support_widget() {
+	if( !auth_is_user_authenticated() ) {
+		return false;
 	}
+
+	if ( !current_user_is_administrator() ) {
+		return false;
+	}
+
+	if ( config_get( 'in_app_support_enabled' ) != ON ) {
+		return false;
+	}
+
+	return true;
 }
 
-function mantishub_zendesk() {
-	if ( auth_is_user_authenticated() ) {
-		if ( current_user_is_administrator() ) {
-			$t_user_email = current_user_get_field( 'email' );
-			$t_realname = current_user_get_field( 'realname' );
+/**
+ * Print navbar help menu at the top right of the page
+ * @return null
+ */
+function mantishub_navbar_help_menu() {
+	if( !mantishub_display_support_widget() ) {
+		return;
+	}
 
-			echo <<< HTML
-					<!-- Support Widget -->
-					<script>/*<![CDATA[*/window.zEmbed||function(e,t){var n,o,d,i,s,a=[],r=document.createElement("iframe");window.zEmbed=function(){a.push(arguments)},window.zE=window.zE||window.zEmbed,r.src="javascript:false",r.title="",r.role="presentation",(r.frameElement||r).style.cssText="display: none",d=document.getElementsByTagName("script"),d=d[d.length-1],d.parentNode.insertBefore(r,d),i=r.contentWindow,s=i.document;try{o=s}catch(c){n=document.domain,r.src='javascript:var d=document.open();d.domain="'+n+'";void(0);',o=s}o.open()._l=function(){var o=this.createElement("script");n&&(this.domain=n),o.id="js-iframe-async",o.src=e,this.t=+new Date,this.zendeskHost=t,this.zEQueue=a,this.body.appendChild(o)},o.write('<body onload="document._l();">'),o.close()}("//assets.zendesk.com/embeddable_framework/main.js","mantishub.zendesk.com");/*]]>*/</script>
+	echo '<li class="grey">';
+	echo '<a id="help-widget" href="#">';
+	echo '<i class="ace-icon fa fa fa-question bigger-150"></i>';
+	echo '</a>';
+	echo '</li>';
+}
+
+function mantishub_support_widget() {
+	if( !mantishub_display_support_widget() ) {
+		return;
+	}
+
+	$t_user_email = current_user_get_field( 'email' );
+	$t_realname = current_user_get_field( 'realname' );
+
+echo <<< HTML
+<!-- Support Widget -->
+<script>/*<![CDATA[*/window.zEmbed||function(e,t){var n,o,d,i,s,a=[],r=document.createElement("iframe");window.zEmbed=function(){a.push(arguments)},window.zE=window.zE||window.zEmbed,r.src="javascript:false",r.title="",r.role="presentation",(r.frameElement||r).style.cssText="display: none",d=document.getElementsByTagName("script"),d=d[d.length-1],d.parentNode.insertBefore(r,d),i=r.contentWindow,s=i.document;try{o=s}catch(c){n=document.domain,r.src='javascript:var d=document.open();d.domain="'+n+'";void(0);',o=s}o.open()._l=function(){var o=this.createElement("script");n&&(this.domain=n),o.id="js-iframe-async",o.src=e,this.t=+new Date,this.zendeskHost=t,this.zEQueue=a,this.body.appendChild(o)},o.write('<body onload="document._l();">'),o.close()}("//assets.zendesk.com/embeddable_framework/main.js","mantishub.zendesk.com");/*]]>*/</script>
 <script>
   zE(function() {
     zE.identify( { name: '$t_realname', email: '$t_user_email' });
+    zE.hide();
+  });
+  $( "#help-widget" ).click(function() {
+  	zE.activate({hideOnClose: true});
   });
 </script>
-					<!-- End of Support Widget -->
+<!-- End of Support Widget -->
 HTML;
-		}
-	}	
+
 }
 
 /**
