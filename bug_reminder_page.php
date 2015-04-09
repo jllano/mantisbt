@@ -91,7 +91,7 @@ layout_page_begin();
 		<?php echo lang_get( 'to' ) ?>
 	</th>
 	<td>
-		<select name="to[]" multiple="multiple" size="9" class="width-100">
+		<select id="recipient" name="to[]" multiple="multiple" size="9" class="width-100">
 			<?php
 			$t_project_id = bug_get_field( $f_bug_id, 'project_id' );
 			$t_access_level = config_get( 'reminder_receive_threshold' );
@@ -143,4 +143,4 @@ $t_mantis_dir = dirname( __FILE__ ) . DIRECTORY_SEPARATOR;
 $t_file = __FILE__;
 
 define( 'BUG_VIEW_INC_ALLOW', true );
-include( dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'bug_view_inc.php' );
+include( $t_mantis_dir . 'bug_view_inc.php' );
