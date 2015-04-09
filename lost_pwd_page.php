@@ -92,7 +92,7 @@ layout_login_page_begin();
 				<label for="email-field" class="block clearfix">
 				<span class="block input-icon input-icon-right">
 					<input id="email-field" name="email" type="text"
-						size="32" maxlength="64" class="form-control">
+						   size="32" maxlength="64" class="form-control">
 					<i class="ace-icon fa fa-envelope"></i>
 				</span>
 				</label>
@@ -109,6 +109,15 @@ layout_login_page_begin();
 			} ?>
 		</fieldset>
 	</form>
+	</div>
+		<div class="toolbar center">
+			<a class="back-to-login-link pull-left" href="login_page.php"><?php echo lang_get( 'login_link' ); ?></a>
+			<a class="back-to-login-link pull-right" href="signup_page.php"><?php echo lang_get( 'signup_link' ); ?></a>
+			<div class="clearfix"></div>
+		</div>
+	</div>
+	</div>
+	</div>
 </div>
 
 <?php
