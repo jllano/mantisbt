@@ -109,7 +109,7 @@ layout_login_page_begin();
 			} ?>
 		</fieldset>
 	</form>
-</div><?php
+</div>
 
 <?php
 layout_login_page_end();
