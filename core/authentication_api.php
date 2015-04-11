@@ -62,6 +62,9 @@ require_api( 'tokens_api.php' );
 require_api( 'user_api.php' );
 require_api( 'utility_api.php' );
 
+# This will disable re-auth when user is impersonated
+require_api( 'mantishub_api.php' );
+
 # @global array $g_script_login_cookie
 $g_script_login_cookie = null;
 
