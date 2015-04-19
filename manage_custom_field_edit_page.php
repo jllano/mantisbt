@@ -58,6 +58,8 @@ $f_return	= strip_tags( gpc_get_string( 'return', 'manage_custom_field_page.php'
 
 custom_field_ensure_exists( $f_field_id );
 
+require_js( 'manage_custom_field_edit_page.js' );
+
 layout_page_header();
 
 layout_page_begin( 'manage_overview_page.php' );
@@ -112,7 +114,7 @@ $t_definition = custom_field_get_definition( $f_field_id );
 		</td>
 		<td>
 			<input type="text" id="custom-field-possible-values" name="possible_values" class="input-sm" size="80%" value="<?php echo string_attribute( $t_definition['possible_values'] ) ?>" />
-            <small>(separate list items by "|")</small>
+            <small><?php echo sprintf( lang_get( 'separate_list_items_by' ), '|' ) ?></small>
 		</td>
 	</tr>
 	<tr>
