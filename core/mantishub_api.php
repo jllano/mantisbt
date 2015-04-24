@@ -407,6 +407,17 @@ HTML;
 
 function mantishub_team_users() {
 	$t_handle_bug_threshold = config_get( 'handle_bug_threshold' );
+	if( is_array( $t_handle_bug_threshold ) ) {
+		$t_min = ADMINISTRATOR;
+
+		foreach( $t_handle_bug_threshold as $t_access_level ) {
+			if( $t_access_level < $t_min ) {
+				$t_min = $t_access_level;
+			}
+		}
+
+		$t_handle_bug_threshold = $t_min;
+	}
 
 	# Count users that are enabled and can be assigned issues (based on their global access level).
 	$t_query = "SELECT id, enabled FROM {user} WHERE access_level >= $t_handle_bug_threshold";
