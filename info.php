@@ -40,6 +40,7 @@ $t_info['projects_count'] = mantishub_table_row_count( 'project' );
 $t_info['issues_count'] = $t_issues_count;
 $t_info['team_packs'] = plan_user_packs_needed( $t_info['team_count'] );
 $t_info['attachments_count'] = mantishub_table_row_count( 'bug_file' );
+$t_info['email_queue_count'] = mantishub_table_row_count( 'email' );
 $t_info['server_ip'] = $_SERVER['SERVER_ADDR'];
 $t_info['logo'] = file_exists( dirname( __FILE__ ) . '/images/logo.png' );
 $t_info['creation_timestamp'] = strftime( '%m/%d/%Y %H:%M:%S', $g_mantishub_info_creation_date );
@@ -67,6 +68,7 @@ if ( $f_json ) {
 	echo "TeamCount=" . $t_info['team_count'] . "\n";
 	echo "TeamPacks=" . $t_info['team_packs'] . "\n";
 	echo 'Attachments=' . $t_info['attachments_count'] . "\n";
+	echo 'EmailQueue=' . $t_info['email_queue_count'] . "\n";
 	echo 'Server IP=' . $t_info['server_ip'] . "\n";
 	echo 'Trial='. ( $t_info['trial'] ? '1' : '0' ) . "\n";
 	echo 'Custom_Logo=' . ( $t_info['logo'] ? '1' : '0' ) . "\n";
