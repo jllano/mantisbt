@@ -1152,8 +1152,10 @@ function print_manage_config_menu( $p_page = '' ) {
 		                                                           'label' => 'manage_workflow_graph' );
 	}
 
-	$t_pages['manage_config_email_page.php'] = array( 'url'   => 'manage_config_email_page.php',
-	                                                  'label' => 'manage_email_config' );
+	if( config_get( 'enable_email_notification' ) == ON ) {
+		$t_pages['manage_config_email_page.php'] = array( 'url'   => 'manage_config_email_page.php',
+		                                                  'label' => 'manage_email_config' );
+	}
 
 	$t_pages['manage_config_columns_page.php'] = array( 'url'   => 'manage_config_columns_page.php',
 	                                                    'label' => 'manage_columns_config' );
@@ -1569,6 +1571,7 @@ function html_button_bug_change_status( BugData $p_bug ) {
 
 		$t_bug_id = string_attribute( $p_bug->id );
 		echo '<input type="hidden" name="id" value="' . $t_bug_id . '" />' . "\n";
+		echo '<input type="hidden" name="change_type" value="' . BUG_UPDATE_TYPE_CHANGE_STATUS . '" />' . "\n";
 
 		echo '</form>' . "\n";
 	}
@@ -1703,7 +1706,7 @@ function html_button_bug_reopen( BugData $p_bug ) {
 		html_button(
 			'bug_change_status_page.php',
 			lang_get( 'reopen_bug_button' ),
-			array( 'id' => $p_bug->id, 'new_status' => $t_reopen_status, 'reopen_flag' => ON ) );
+			array( 'id' => $p_bug->id, 'new_status' => $t_reopen_status, 'change_type' => BUG_UPDATE_TYPE_REOPEN ) );
 	}
 }
 
@@ -1721,7 +1724,7 @@ function html_button_bug_close( BugData $p_bug ) {
 		html_button(
 			'bug_change_status_page.php',
 			lang_get( 'close_bug_button' ),
-			array( 'id' => $p_bug->id, 'new_status' => $t_closed_status ) );
+			array( 'id' => $p_bug->id, 'new_status' => $t_closed_status, 'change_type' => BUG_UPDATE_TYPE_CLOSE ) );
 	}
 }
 
