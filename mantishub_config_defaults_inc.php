@@ -77,7 +77,7 @@
 
     /**
      * Path to mantishub folder. The default is usually OK
-     * @global string $g_core_path
+     * @global string $g_mantishub_path
      */
     $g_mantishub_path = $g_absolute_path . 'mantishub' . DIRECTORY_SEPARATOR;
 
@@ -87,4 +87,10 @@
 
 	$g_in_app_support_enabled = ON;
 	$g_mantishub_info_impersonation_email = 'management@mantishub.net';
+
+	/**
+	 * Name of mantishub hub announcements file. The default is usually OK
+	 * @global string $g_mantishub_announcements_file
+	 */
+	$g_mantishub_announcements_file = 'announcements.json';
 

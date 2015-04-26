@@ -32,7 +32,18 @@ function mantishub_impersonation() {
 	return $t_impersonation == 1;
 }
 
-function mantishub_top_message() {
+/**
+ * Display instance-wide messages just under the navbar
+ * @returns null
+ */
+function mantishub_show_messages() {
+
+	mantishub_announcements();
+
+	mantishub_trial_message();
+}
+
+function mantishub_trial_message() {
 	global $g_mantishub_info_trial;
 
 	if ( $g_mantishub_info_trial && current_user_is_administrator() ) {
@@ -40,11 +51,38 @@ function mantishub_top_message() {
 
 		$t_trial_conversion_url = config_get( 'mantishub_info_trial_conversion_url', '' );
 		if ( $t_issues_count >= 5 && !is_blank( $t_trial_conversion_url ) ) {
-            echo '<div class="alert alert-warning padding-8">';
-			echo '<strong><i class="ace-icon fa fa-flag"></i> Trial Version: </strong>';
+            echo '<div class="alert alert-warning padding-8 no-margin">';
+			echo '<strong><i class="ace-icon fa fa-flag-checkered fa-lg"></i> Trial Version: </strong>';
             echo 'Click <a href="' . $t_trial_conversion_url . '" target="_blank">here</a> to convert to paid and enable daily backups.';
 			echo '</div>';
 		}
+	}
+}
+
+function mantishub_announcements() {
+	global $g_mantishub_announcements_file, $g_mantishub_path;
+
+	try {
+		$t_messages_file_path = $g_mantishub_path . $g_mantishub_announcements_file;
+		if( file_exists( $t_messages_file_path ) ) {
+			$str = file_get_contents( $t_messages_file_path );
+			$json = json_decode($str, true);
+
+			foreach ($json['announcements'] as  $message ) {
+				$t_show = !is_collapsed( $message['id'] );
+				if( $t_show && ( strtotime( $message['valid_until'] ) > time() ) ) {
+					echo '<div id="' . $message['id'] . '" class="alert alert-warning padding-8 no-margin">';
+					echo '<a data-dismiss="alert" class="close" type="button" href="#">';
+					echo '<i class="ace-icon fa fa-times bigger-125"></i> ';
+					echo '</a>';
+					echo '<i class="ace-icon fa fa-lg ' . $message['icon'] . '"></i> ' . $message['text'];
+					echo '</div>';
+				}
+			}
+		}
+	}
+	catch ( Exception $e ) {
+		log_event( LOG_ALL, "Processing announcements file failed " . $e->ErrorInfo );
 	}
 }
 

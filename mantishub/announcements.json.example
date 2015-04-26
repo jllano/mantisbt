@@ -1,0 +1,10 @@
+{
+    "announcements": {
+        "entry": {
+            "id": "mh_downtime_1",  # use for the div
+            "icon": "fa-bullhorn", # leading icon
+            "text": "The server will be down for maintenance on Friday 10th from 1:00 to 3:00 am",
+            "valid_until": "2015-06-23" # format: yyyy-mm-dd
+        }
+    }
+}
