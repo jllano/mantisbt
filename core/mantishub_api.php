@@ -51,30 +51,36 @@ function mantishub_trial_message() {
 
 		$t_trial_conversion_url = config_get( 'mantishub_info_trial_conversion_url', '' );
 		if ( $t_issues_count >= 5 && !is_blank( $t_trial_conversion_url ) ) {
-            echo '<div class="alert alert-warning padding-8 no-margin">';
+			echo '<div class="alert alert-warning padding-8 no-margin">';
 			echo '<strong><i class="ace-icon fa fa-flag-checkered fa-lg"></i> Trial Version: </strong>';
-            echo 'Click <a href="' . $t_trial_conversion_url . '" target="_blank">here</a> to convert to paid and enable daily backups.';
+			echo 'Click <a href="' . $t_trial_conversion_url . '" target="_blank">here</a> to convert to paid and enable daily backups.';
 			echo '</div>';
 		}
 	}
 }
 
 function mantishub_announcements() {
-	global $g_mantishub_announcements_file, $g_mantishub_path;
+	global $g_config_path;
 
 	try {
-		$t_messages_file_path = $g_mantishub_path . $g_mantishub_announcements_file;
+		$t_messages_file_path = $g_config_path . 'mantishub_config.json';
 		if( file_exists( $t_messages_file_path ) ) {
 			$str = file_get_contents( $t_messages_file_path );
 			$json = json_decode($str, true);
 
-			foreach ($json['announcements'] as  $message ) {
+			foreach ( $json['announcements'] as  $message ) {
 				$t_show = !is_collapsed( $message['id'] );
-				if( $t_show && ( strtotime( $message['valid_until'] ) > time() ) ) {
+				$t_now = time();
+				if( $t_show
+					&& ( $t_now >= strtotime( $message['valid_from'] ) )
+					&& ( $t_now <= strtotime( $message['valid_until'] ) ) ) {
+
 					echo '<div id="' . $message['id'] . '" class="alert alert-warning padding-8 no-margin">';
-					echo '<a data-dismiss="alert" class="close" type="button" href="#">';
-					echo '<i class="ace-icon fa fa-times bigger-125"></i> ';
-					echo '</a>';
+					if ( isset( $message['dismissable'] ) && $message['dismissable'] === true  ) {
+						echo '<a data-dismiss="alert" class="close" type="button" href="#">';
+						echo '<i class="ace-icon fa fa-times bigger-125"></i> ';
+						echo '</a>';
+					}
 					echo '<i class="ace-icon fa fa-lg ' . $message['icon'] . '"></i> ' . $message['text'];
 					echo '</div>';
 				}

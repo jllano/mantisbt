@@ -88,9 +88,4 @@
 	$g_in_app_support_enabled = ON;
 	$g_mantishub_info_impersonation_email = 'management@mantishub.net';
 
-	/**
-	 * Name of mantishub hub announcements file. The default is usually OK
-	 * @global string $g_mantishub_announcements_file
-	 */
-	$g_mantishub_announcements_file = 'announcements.json';
 
