@@ -65,18 +65,25 @@ function mantishub_announcements() {
 	try {
 		$t_messages_file_path = $g_config_path . 'mantishub_config.json';
 		if( file_exists( $t_messages_file_path ) ) {
+			# warm up the cache if needed
+			mantishub_cache_dismissed_blocks();
+
 			$str = file_get_contents( $t_messages_file_path );
 			$json = json_decode($str, true);
 
 			foreach ( $json['announcements'] as  $message ) {
-				$t_show = !is_collapsed( $message['id'] );
+				if ( isset( $message['access_level'] ) && $message['access_level'] > current_user_get_access_level() ) {
+					continue;
+				}
+
+				$t_show = !mantishub_is_dismissed_block( $message['id'] );
 				$t_now = time();
 				if( $t_show
 					&& ( $t_now >= strtotime( $message['valid_from'] ) )
 					&& ( $t_now <= strtotime( $message['valid_until'] ) ) ) {
 
 					echo '<div id="' . $message['id'] . '" class="alert alert-warning padding-8 no-margin">';
-					if ( isset( $message['dismissable'] ) && $message['dismissable'] === true  ) {
+					if ( isset( $message['dismissable'] ) && $message['dismissable'] === true ) {
 						echo '<a data-dismiss="alert" class="close" type="button" href="#">';
 						echo '<i class="ace-icon fa fa-times bigger-125"></i> ';
 						echo '</a>';
@@ -85,6 +92,9 @@ function mantishub_announcements() {
 					echo '</div>';
 				}
 			}
+		} else {
+			# clear dismissed blocks cache
+			mantishub_clear_dismissed_blocks_cache();
 		}
 	}
 	catch ( Exception $e ) {
@@ -654,3 +664,61 @@ function mantishub_cleanup_plugin_name( $p_name ) {
 	return $t_name;
 }
 
+/**
+ * Determine if a block should not be rendered into the page since
+ * it has been dismissed by the user
+ * @param string $p_block_id block element id.
+ * @return boolean
+ */
+function mantishub_is_dismissed_block( $p_block_id ) {
+	global $g_dismissed_blocks_cache;
+
+	if( !isset( $g_dismissed_blocks_cache[$p_block_id] ) ) {
+		return false;
+	}
+
+	return( true == $g_dismissed_blocks_cache[$p_block_id] );
+}
+
+/**
+ * Read dismiss cookie and cache it in global variable
+ * @return void
+ */
+function mantishub_cache_dismissed_blocks() {
+	global $g_dismissed_blocks_cache;
+
+	if( !auth_is_user_authenticated() || current_user_is_anonymous() ) {
+		$g_dismissed_blocks_cache = array();
+		return;
+	}
+
+	if( isset( $g_dismissed_blocks_cache ) ) {
+		return;
+	}
+
+	$t_data = array();
+	$t_data['filter'] = false;
+	$g_dismissed_blocks_cache = $t_data;
+
+	$t_cookie = gpc_get_cookie( 'MANTIS_HUB_dismissed_blocks', '' );
+
+	if( false !== $t_cookie && !is_blank( $t_cookie ) ) {
+		$t_data = explode( '|', $t_cookie );
+
+		foreach( $t_data as $t_pair ) {
+			$t_pair = explode( ',', $t_pair );
+
+			if( false !== $t_pair && count( $t_pair ) == 2 ) {
+				$g_dismissed_blocks_cache[$t_pair[0]] = ( true == $t_pair[1] );
+			}
+		}
+	}
+}
+
+/**
+ * Clear cookie of dismissed bloc cache
+ * @return void
+ */
+function mantishub_clear_dismissed_blocks_cache() {
+	gpc_clear_cookie('MANTIS_collapse_settings');
+}

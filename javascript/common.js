@@ -92,14 +92,14 @@ $(document).ready( function() {
 	$("a.close[data-dismiss='alert']").on('click', function (event) {
 		var t_id = $(this).parent().attr('id');
 		if (t_id.length) {
-			var t_cookie = GetCookie("collapse_settings");
+			var t_cookie = GetCookie("HUB_dismissed_blocks");
 			if (1 == g_collapse_clear) {
 				t_cookie = "";
 				g_collapse_clear = 0;
 			}
 			t_cookie = t_cookie.replace("|" + t_id + ",1", '');
 			t_cookie = t_cookie + "|" + t_id + ",1";
-			SetCookie("collapse_settings", t_cookie);
+			SetCookie("HUB_dismissed_blocks", t_cookie);
 		}
 	});
 
