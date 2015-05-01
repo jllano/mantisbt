@@ -291,6 +291,15 @@ if ( $t_new_issue ) {
 		exit;
 	}
 
+	if( bug_is_readonly( $t_bug_id ) ) {
+		header( 'HTTP/1.0 406 Reply to read-only issue rejected' );
+		$t_event = array( 'level' => 'error', 'comp' => 'email_reporting', 'event' => 'readonly_issue' );
+		mantishub_event( $t_event );
+		mantishub_log( "incoming mail: rejected reply to read-only issue." );
+		mantishub_email_error( "Reply to read-only issue rejected." );
+		exit;
+	}
+
 	$t_note_text = $f_stripped_text;
 
 	if ( $t_generic_user ) {
