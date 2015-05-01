@@ -194,10 +194,10 @@ if ( $t_new_issue ) {
 	if ( stripos( $f_recipient, $t_instance_name . '+' ) !== 0 &&
 		 stripos( $f_recipient, $t_instance_name . '@' ) !== 0 ) {
 		header( 'HTTP/1.0 406 Wrong Instance' );
-		$t_event = array( 'level' => 'error', 'event' => 'instance_mismatch', 'recipient' => $f_recipient );
+		$t_event = array( 'level' => 'error', 'event' => 'no_route', 'recipient' => $f_recipient );
 		mantishub_event( $t_event );
-		mantishub_log( 'incoming mail: rejected since targetted to "' . $f_recipient . '" rather than current instance "' . $t_instance_name . '".' );
-		mantishub_email_error( "Message rejected since target account doesn't match." );
+		mantishub_log( 'incoming mail: no MantisHub matching recipient "' . $f_recipient . '.' );
+		mantishub_email_error( "Message rejected since there is no matching MantisHub." );
 		exit;
 	}
 
