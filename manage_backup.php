@@ -62,17 +62,17 @@ exec( $t_cmd );
 $t_cmd = "mkdir $t_backup_data_folder";
 exec( $t_cmd );
 
-copy( $t_instance_root . 'images/logo.png', $t_backup_data_folder . 'logo.png' );
-copy( $t_config_folder . 'custom_config_inc.php', $t_backup_data_folder . 'custom_config_inc.php' );
-copy( $t_config_folder . 'custom_constant_inc.php', $t_backup_data_folder . 'custom_constant_inc.php' );
-copy( $t_config_folder . 'custom_constants_inc.php', $t_backup_data_folder . 'custom_constants_inc.php' );
-copy( $t_config_folder . 'custom_strings_inc.php', $t_backup_data_folder . 'custom_strings_inc.php' );
-copy( $t_config_folder . 'custom_relationships_inc.php', $t_backup_data_folder . 'custom_relationships_inc.php' );
+mantishub_copy_file( $t_instance_root . 'images/logo.png', $t_backup_data_folder . 'logo.png' );
+mantishub_copy_file( $t_config_folder . 'custom_config_inc.php', $t_backup_data_folder . 'custom_config_inc.php' );
+mantishub_copy_file( $t_config_folder . 'custom_constant_inc.php', $t_backup_data_folder . 'custom_constant_inc.php' );
+mantishub_copy_file( $t_config_folder . 'custom_constants_inc.php', $t_backup_data_folder . 'custom_constants_inc.php' );
+mantishub_copy_file( $t_config_folder . 'custom_strings_inc.php', $t_backup_data_folder . 'custom_strings_inc.php' );
+mantishub_copy_file( $t_config_folder . 'custom_relationships_inc.php', $t_backup_data_folder . 'custom_relationships_inc.php' );
 
 $t_cmd = "mysqldump -h $t_db_hostname -u $t_db_username -p$t_db_password $t_db_name > " . $t_backup_data_folder . "db.sql";
 exec( $t_cmd );
 
-unlink( mantishub_backup_data_file() );
+mantishub_delete_file( mantishub_backup_data_file() );
 chdir( dirname( $t_backup_data_folder ) );
 $t_cmd = 'zip ' . mantishub_backup_data_file() . ' -r -9 data';
 exec( $t_cmd );
@@ -82,12 +82,12 @@ exec( $t_cmd );
 
 $t_attach_folder = dirname( __FILE__ ) . '/attach';
 
-unlink( mantishub_backup_attach_file() );
+mantishub_delete_file( mantishub_backup_attach_file() );
 chdir( dirname( $t_attach_folder ) );
 $t_cmd = 'zip ' . mantishub_backup_attach_file() . ' -r -9 attach';
 exec( $t_cmd );
 
-unlink( mantishub_in_progress_file() );
+mantishub_delete_file( mantishub_in_progress_file() );
 
 if ( !is_blank( $t_user_email ) ) {
 	$t_cmd = 'echo "Go to Manage > Backups and download it from there." | mail -r "' . $t_from . '" -s "Your backup is ready" ' . $t_user_email;
@@ -97,4 +97,31 @@ if ( !is_blank( $t_user_email ) ) {
 chdir( $t_original_current_directory );
 
 print_successful_redirect( 'manage_backup_page.php' );
+
+/**
+ * Copy file from source to destination.  If file doesn't exists, skip without errors.
+ * @param  string $p_source_path The source file path.
+ * @param  string $p_dest_path   The destination file path.
+ * @return bool true if copied successfully or not found, otherwise false.
+ */
+function mantishub_copy_file( $p_source_path, $p_dest_path ) {
+	if( !file_exists( $p_source_path ) ) {
+		return true;
+	}
+
+	return copy( $p_source_path, $p_dest_path );
+}
+
+/**
+ * Deletes a file from the specified path.  If file doesn't exist skip without errors.
+ * @param  string $p_file_path The file path.
+ * @return bool true: file didn't exist or was deleted, false otherwise.
+ */
+function mantishub_delete_file( $p_file_path ) {
+	if ( !file_exists( $p_file_path ) ) {
+		return true;
+	}
+
+	return unlink( $p_file_path );
+}
 
