@@ -2,6 +2,9 @@
 $g_bypass_headers = true; # suppress headers as we will send our own later
 define( 'COMPRESSION_DISABLED', true );
 
+# ignore mantis_offline.php
+$_GET['mbadmin'] = true;
+
 require_once( dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'core.php' );
 require_once( dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'database_api.php' );
 require_once( dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'mantishub_api.php' );
