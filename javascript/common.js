@@ -73,22 +73,35 @@ $(document).ready( function() {
     });
 
     $('#sidebar.sidebar-toggle').on('click', function (event) {
-        var t_id = $(this).attr('id');
-        var t_cookie = GetCookie("collapse_settings");
-        if (1 == g_collapse_clear) {
-            t_cookie = "";
-            g_collapse_clear = 0;
-        }
-        if( $(this).parent().hasClass( "menu-min" ) ) {
-            t_cookie = t_cookie.replace("|" + t_id + ",1", '');
-            t_cookie = t_cookie + "|" + t_id + ",0";
-        } else {
-            t_cookie = t_cookie.replace("|" + t_id + ",0", '');
-            t_cookie = t_cookie + "|" + t_id + ",1";
-        }
-        SetCookie("collapse_settings", t_cookie);
-    });
+		var t_id = $(this).attr('id');
+		var t_cookie = GetCookie("collapse_settings");
+		if (1 == g_collapse_clear) {
+			t_cookie = "";
+			g_collapse_clear = 0;
+		}
+		if( $(this).parent().hasClass( "menu-min" ) ) {
+			t_cookie = t_cookie.replace("|" + t_id + ",1", '');
+			t_cookie = t_cookie + "|" + t_id + ",0";
+		} else {
+			t_cookie = t_cookie.replace("|" + t_id + ",0", '');
+			t_cookie = t_cookie + "|" + t_id + ",1";
+		}
+		SetCookie("collapse_settings", t_cookie);
+	});
 
+	$("a.close[data-dismiss='alert']").on('click', function (event) {
+		var t_id = $(this).parent().attr('id');
+		if (t_id.length) {
+			var t_cookie = GetCookie("HUB_dismissed_blocks");
+			if (1 == g_collapse_clear) {
+				t_cookie = "";
+				g_collapse_clear = 0;
+			}
+			t_cookie = t_cookie.replace("|" + t_id + ",1", '');
+			t_cookie = t_cookie + "|" + t_id + ",1";
+			SetCookie("HUB_dismissed_blocks", t_cookie);
+		}
+	});
 
     $('input[type=text].autocomplete').autocomplete({
 		source: function(request, callback) {

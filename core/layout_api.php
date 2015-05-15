@@ -134,6 +134,8 @@ function layout_page_begin( $p_active_sidebar_page = null ) {
 
 	layout_main_content_begin();
 
+	mantishub_show_messages();
+
 	layout_breadcrumbs();
 
 	layout_page_content_begin();
