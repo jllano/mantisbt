@@ -309,14 +309,20 @@ function mantishub_mailgun_issue_from_recipient( $p_recipient, &$p_abort_error )
 function mantishub_event( $p_event, $p_can_call_db = true ) {
 	$t_line = '';
 
+	if ( !isset( $p_event['level'] ) ) {
+		$p_event['level'] = 'info';
+	}
+
 	if ( $p_can_call_db ) {	
 		global $g_common_log_fields;
 		if ( $g_common_log_fields === null ) {
 			$g_common_log_fields = '';
 			$g_common_log_fields .= ' hub=' . mantishub_instance_name();
 
-			$g_common_log_fields .= ' user=' . current_user_get_field( 'username' );
-			$g_common_log_fields .= ' email=' . current_user_get_field( 'email' );
+			if ( auth_is_user_authenticated() ) {
+				$g_common_log_fields .= ' user=' . current_user_get_field( 'username' );
+				$g_common_log_fields .= ' email=' . current_user_get_field( 'email' );
+			}
 		}
 
 		$t_line .= $g_common_log_fields;
@@ -331,7 +337,7 @@ function mantishub_event( $p_event, $p_can_call_db = true ) {
 		}
 	}
 
-	error_log( trim( $t_line ) );
+	mantishub_log( $t_line );
 }
 
 function mantishub_extra_event_key_value( $p_event, $p_key, $p_default = null ) {
