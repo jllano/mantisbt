@@ -308,9 +308,6 @@ for ( $i = 1; $i <= (int)$f_attachment_count; ++$i ) {
 if ( $t_new_issue ) {
 	helper_call_custom_function( 'issue_create_notify', array( $t_bug_id ) );
 
-	# Allow plugins to post-process bug data with the new bug ID
-	event_signal( 'EVENT_REPORT_BUG', array( $t_bug_data, $t_bug_id ) );
-
 	email_generic( $t_bug_id, 'new', 'email_notification_title_for_action_bug_submitted' );
 
 	$t_message = config_get( 'email_incoming_issue_reported_message' );
@@ -320,6 +317,10 @@ if ( $t_new_issue ) {
 
 	$t_event = array( 'comp' => 'email_reporting', 'event' => 'issue_reported' );
 	mantishub_event( $t_event );
+
+	# Allow plugins to post-process bug data with the new bug ID
+	# Call this after all native work just in case plugins cause a failure.
+	event_signal( 'EVENT_REPORT_BUG', array( $t_bug_data, $t_bug_id ) );
 } else {
 	$t_event = array( 'comp' => 'email_reporting', 'event' => 'note_reported' );
 	mantishub_event( $t_event );
