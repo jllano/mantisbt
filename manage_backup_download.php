@@ -83,7 +83,6 @@
 	}
 
 	header( 'Expires: ' . gmdate( 'D, d M Y H:i:s \G\M\T', time() ) );
-	header( 'Last-Modified: ' . gmdate( 'D, d M Y H:i:s \G\M\T', $v_date_added ) );
 	header( 'X-Content-Type-Options: nosniff' );
 
 	http_content_disposition_header( $t_filename, /* show_inline */ false );
