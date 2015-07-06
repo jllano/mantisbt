@@ -69,7 +69,7 @@ function plan_user_packs_needed( $p_team_user_count ) {
 		return 0;
 	}
 
-	$t_user_packs = (int)ceil( $t_extra_users / 10 );
+	$t_user_packs = (int)ceil( $t_extra_users / 5 );
 
 	return $t_user_packs;
 }
