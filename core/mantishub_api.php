@@ -518,33 +518,23 @@ function mantishub_team_users() {
 	}
 
 	# Count users that are enabled and can be assigned issues (based on their global access level).
-	$t_query = "SELECT id, enabled FROM {user} WHERE access_level >= $t_handle_bug_threshold";
+	$t_query = "SELECT id FROM {user} WHERE access_level >= $t_handle_bug_threshold AND enabled=1";
 	$t_result = db_query( $t_query );
 	
 	$t_enabled_users = array();
-	$t_disabled_users = array();
 
 	while ( $t_row = db_fetch_array( $t_result ) ) {
-		if ( $t_row['enabled'] == 0 ) {
-			$t_disabled_users[$t_row['id']] = '';
-		} else {
-			$t_enabled_users[$t_row['id']] = '';
-		}
+		$t_user_id = (int)$t_row['id'];
+		$t_enabled_users[$t_user_id] = '';
 	}
 
 	# Count users that are enabled and can be assigned issues based on project specific access levels.
-	$t_query2 = "SELECT user_id FROM {project_user_list} WHERE access_level >= $t_handle_bug_threshold";
+	$t_query2 = "SELECT DISTINCT(p.user_id) user_id, p.project_id project_id FROM {project_user_list} p, {user} u WHERE p.user_id = u.id AND p.access_level >= $t_handle_bug_threshold AND u.enabled = 1";
 	$t_result2 = db_query( $t_query2 );
 
 	while ( $t_row = db_fetch_array( $t_result2 ) ) {
-		$t_user_id = $t_row['user_id'];
-
-		// skip disabled users
-		if ( isset( $t_disabled_users[$t_user_id] ) ) {
-			continue;
-		}
-
-		$t_enabled_usernames[$t_user_id] = '';
+		$t_user_id = (int)$t_row['user_id'];
+		$t_enabled_users[$t_user_id] = '';
 	}
 
 	$t_user_ids = array_keys( $t_enabled_users );
