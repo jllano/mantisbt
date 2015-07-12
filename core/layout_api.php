@@ -960,6 +960,15 @@ function layout_breadcrumbs() {
 }
 
 /**
+ * Checks if the current page load was triggered by auto-refresh or real activity
+ * @return bool true: auto-refresh, false: triggered by user.
+ */
+function layout_is_auto_refresh() {
+	return gpc_get_bool( 'refresh' );
+}
+
+
+/**
  * Print the page footer information
  * @return void
  */
@@ -972,7 +981,12 @@ function layout_footer() {
 	#  2) we don't invalidate the user cache immediately after fetching it
 	#  3) don't do this on the password verification or update page, as it causes the
 	#    verification comparison to fail
-	if( auth_is_user_authenticated() && !current_user_is_anonymous() && !( is_page_name( 'verify.php' ) || is_page_name( 'account_update.php' ) ) ) {
+	#  4) don't do that on pages that auto-refresh (View Issues page).
+	if( auth_is_user_authenticated() &&
+		!current_user_is_anonymous() &&
+		!mantishub_impersonation() && # For MantisHub, skip last_visit update during impersonation
+		!( is_page_name( 'verify.php' ) || is_page_name( 'account_update.php' ) ) &&
+		!layout_is_auto_refresh() ) {
 		$t_user_id = auth_get_current_user_id();
 		user_update_last_visit( $t_user_id );
 	}
