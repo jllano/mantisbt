@@ -19,7 +19,7 @@
  *
  * **********************************************************************
  * ** This file contains translations stored in translatewiki.net.     **
- * ** See http://translatewiki.net/wiki/Project:About for information  **
+ * ** See https://translatewiki.net/wiki/Project:About for information **
  * ** on copyright/license for translatewiki.net translations.         **
  * **********************************************************************
  * **                                                                  **
@@ -46,6 +46,7 @@
  * @author Diebuche
  * @author Erdemaslancan
  * @author Exit91
+ * @author Geitost
  * @author Imre
  * @author KarlReichert
  * @author Kghbln
@@ -220,7 +221,7 @@ $s_reproducibility_enum_string = '10:immer,30:manchmal,50:zufällig,70:nicht get
 $s_status_enum_string = '10:neu,20:Rückmeldung,30:anerkannt,40:bestätigt,50:zugewiesen,80:erledigt,90:geschlossen';
 $s_resolution_enum_string = '10:offen,20:erledigt,30:wiedereröffnet,40:nicht reproduzierbar,50:unlösbar,60:doppelt,70:keine Änderung notwendig,80:aufgeschoben,90:wird nicht behoben';
 $s_projection_enum_string = '10:keine,30:Kleinigkeit,50:kleinere Änderung,70:größere Änderung,90:Neuentwicklung';
-$s_eta_enum_string = '10:keine,20:< 1 Tag,30:2-3 Tage,40:< 1 Woche,50:< 1 Monat,60:> 1 Monat';
+$s_eta_enum_string = '10:keine,20:< 1 Tag,30:2–3 Tage,40:< 1 Woche,50:< 1 Monat,60:> 1 Monat';
 $s_sponsorship_enum_string = '0:unbezahlt,1:gefordert,2:bezahlt';
 $s_new_account_subject = 'Konto Registrierung';
 $s_new_account_greeting = 'Danke für Ihre Registrierung. Ihr Konto hat den Benutzernamen „%1$s“. Um die Registrierung abzuschließen, besuchen Sie die folgende URL (stellen Sie sicher, dass sie in einer einzigen Zeile eingegeben wurde) und setzen Sie ihr eigenes Zugangskennwort:';
@@ -413,8 +414,8 @@ $s_reminder_sent_none = 'Es konnten keine Erinnerungen gesendet werden';
 $s_reminder_list_truncated = 'Die Liste der Empfänger wurde gekürzt.';
 $s_bug_send_button = 'Absenden';
 $s_reminder = 'Erinnerung';
-$s_reminder_explain = 'Diese Notiz wird an die aufgeführten Empfänger gesandt, um eine Rückmeldung zu diesem Eintrag anzufordern.';
-$s_reminder_monitor = 'Diese Empfänger beginnen auch, den Eintrag zu beobachten. Sie können sich abmelden mit Klick auf den „Beobachtung beenden“-Knopf.';
+$s_reminder_explain = 'Diese Notiz wird an die ausgewählten Empfänger gesandt, um eine Rückmeldung zu diesem Eintrag anzufordern.';
+$s_reminder_monitor = 'Diese Empfänger beginnen auch, den Eintrag zu beobachten; sie können sich abmelden mit Klick auf den Knopf „Beobachtung beenden“.';
 $s_reminder_store = 'Diese Notiz wird mit dem Eintrag abgespeichert.';
 $s_confirm_sponsorship = 'Bitte bestätigen Sie, dass Sie den Eintrag %1$d mit %2$s sponsern möchten.';
 $s_stick_bug_button = 'Fixierung setzen';
@@ -841,10 +842,10 @@ $s_selected_project = 'Gewähltes Projekt';
 $s_valid_project_msg = 'Es muss ein Projekt ausgewählt werden';
 $s_signup_done_title = 'Konto-Registrierung ausgeführt';
 $s_password_emailed_msg = 'Gratulation. Sie haben sich erfolgreich registriert. Ihnen wird jetzt eine Bestätigungs-E-Mail geschickt um Ihre E-Mail-Adresse zu überprüfen. Nachdem Sie den Link in der E-Mail besucht haben, ist Ihr Konto freigeschaltet.';
-$s_no_reponse_msg = 'Sie haben sieben Tage um die Kontobestätigung auszuführen. Wenn sie die Kontobestätigung nicht innerhalb von sieben Tagen ausführen, wird das neu registrierte Konto entfernt.';
+$s_no_reponse_msg = 'Sie haben sieben Tage, um die Kontobestätigung abzuschließen. Falls Sie diese innerhalb dieser Periode nicht ausführen, wird das neu registrierte Konto gelöscht.';
 $s_signup_captcha_request_label = 'Geben Sie den Code ein, den Sie im Rahmen auf der rechten Seite sehen:';
 $s_signup_captcha_refresh = 'Einen neuen Code erzeugen';
-$s_signup_info = 'Nach dem Abschicken dieses Formulars und der Überprüfung Ihrer Antworten wird Ihnen einen Bestätigungs-E-Mail an die angegebene Adresse geschickt.<br />Benutzen Sie diese E-Mail, um Ihr Konto zu aktivieren. Wenn Sie Ihr Konto nicht innerhalb von sieben Tagen freischalten, wird das Konto entfernt.<br />Sie müssen eine gültige E-Mail-Adresse angeben, um die Bestätigungs-E-Mail zu erhalten.';
+$s_signup_info = 'Nach dem Abschicken dieses Formulars und der Überprüfung Ihrer Antworten wird Ihnen eine Bestätigungsnachricht an die angegebene Adresse geschickt.<br />Benutzen Sie den Link, der in der E-Mail angegeben ist, um Ihr Konto zu aktivieren. Falls Sie dies nicht innerhalb von sieben Tagen ausführen, kann das Konto gelöscht werden.<br />Sie müssen eine gültige E-Mail-Adresse angeben, um die Bestätigungs-E-Mail zu erhalten.';
 $s_signup_title = 'Anmeldung';
 $s_signup_button = 'Anmelden';
 $s_no_password_request = 'Ihr Passwort wird von einem anderen System verwaltet. Nehmen Sie Kontakt mit Ihrem Administrator auf.';
@@ -1272,6 +1273,7 @@ $MANTIS_ERROR[ERROR_FILE_DUPLICATE] = 'Dies ist eine doppelte Datei. Löschen Si
 $MANTIS_ERROR[ERROR_FILE_INVALID_UPLOAD_PATH] = 'Ungültiger Pfad, die Dateiübertragung war nicht erfolgreich. Das Verzeichnis existiert nicht oder konnte nicht beschrieben werden.';
 $MANTIS_ERROR[ERROR_FILE_NO_UPLOAD_FAILURE] = 'Keine Datei übertragen. Gehen Sie zurück und wählen Sie eine Datei aus, bevor Sie auf Datei übertragen drücken';
 $MANTIS_ERROR[ERROR_FILE_MOVE_FAILED] = 'Übertragene Datei konnte nicht in das Speicherverzeichnis verschoben werden. Verzeichnis nicht vorhanden oder vom Webserver nicht beschreibbar.';
+$MANTIS_ERROR[ERROR_FILE_NOT_FOUND] = 'Anhang mit der Kennung „%1$d“ nicht gefunden.';
 $MANTIS_ERROR[ERROR_BUG_DUPLICATE_SELF] = 'Sie können keinen Eintrag als Duplikat von sich selbst anlegen.';
 $MANTIS_ERROR[ERROR_BUG_REVISION_NOT_FOUND] = 'Überarbeitung des Eintrags nicht gefunden';
 $MANTIS_ERROR[ERROR_CUSTOM_FIELD_NOT_FOUND] = 'Benutzerdefiniertes Feld nicht gefunden.';
@@ -1358,3 +1360,4 @@ $MANTIS_ERROR[ERROR_DEPRECATED_SUPERSEDED] = 'Veraltete Funktionalität „%1$s�
 $MANTIS_ERROR[ERROR_DISPLAY_USER_ERROR_INLINE] = 'Warnung: Das System ist so konfiguriert, dass es MantisBT-Fehler (E_USER_ERROR) „inline“ anzeigt. Das Programm wird weiterhin ausgeführt; dies kann zu System-/Daten-Integritätsproblemen führen.';
 $MANTIS_ERROR[ERROR_TYPE_MISMATCH] = 'Datentyp stimmt nicht überein. Aktivieren Sie detaillierte Fehlermeldungen für weitere Informationen.';
 $MANTIS_ERROR[ERROR_BUG_CONFLICTING_EDIT] = 'Dieses Problem wurde von einem anderen Benutzer aktualisiert. Bitte zum Eintrag zurückkehren und die Änderungen erneut übermitteln.';
+$MANTIS_ERROR[ERROR_SPAM_SUSPECTED] = 'Sie haben die erlaubte Aktivitätsgrenze von %d Ereignissen innerhalb der letzten %d Sekunden erreicht; Ihre Aktion wurde blockiert, um Spam zu verhindern, bitte versuchen Sie es später.';
