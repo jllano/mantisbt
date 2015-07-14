@@ -366,7 +366,8 @@ function require_css( $p_stylesheet_path ) {
 function html_css() {
 	global $g_stylesheets_included;
 	html_css_link( config_get( 'css_include_file' ) );
-	html_css_link( 'jquery-ui-1.11.4.min.css' );
+	# html_css_link( 'jquery-ui-1.11.4.min.css' );
+	echo '<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">' . "\n";
 	html_css_link( 'common_config.php' );
 	# Add right-to-left css if needed
 	if( lang_get( 'directionality' ) == 'rtl' ) {
@@ -440,8 +441,10 @@ function html_head_javascript() {
 
 	echo "\t" . '<script type="text/javascript" src="' . helper_mantis_url( 'javascript_config.php' ) . '"></script>' . "\n";
 	echo "\t" . '<script type="text/javascript" src="' . helper_mantis_url( 'javascript_translations.php' ) . '"></script>' . "\n";
-	html_javascript_link( 'jquery-1.11.3.min.js' );
-	html_javascript_link( 'jquery-ui-1.11.4.min.js' );
+	#html_javascript_link( 'jquery-1.11.3.min.js' );
+	echo "\t" . '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>' . "\n";
+	#html_javascript_link( 'jquery-ui-1.11.4.min.js' );
+	echo "\t" . '<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>' . "\n";
 	html_javascript_link( 'common.js' );
 	foreach ( $g_scripts_included as $t_script_path ) {
 		html_javascript_link( $t_script_path );
