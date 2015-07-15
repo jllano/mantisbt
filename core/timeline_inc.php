@@ -70,22 +70,17 @@ $t_block_icon = $t_collapse_block ? 'fa-chevron-down' : 'fa-chevron-up';
 
             echo '</div></div></div><div class="widget-main no-padding"><div class="profile-feed">';
 
-            $t_events = timeline_sort_events( $t_events );
+	echo '</div></div>';
 
-            $t_num_events = timeline_print_events( $t_events, ( $f_all ? 0 : MAX_EVENTS ) );
-
-            echo '</div></div>';
-
-if( !$f_all && count( $t_events ) > MAX_EVENTS ) {
-	$t_events = array_slice( $t_events, 0, MAX_EVENTS );
-	timeline_print_events( $t_events );
-	echo '<p>' . $t_prev_link = ' [ <a href="my_view_page.php?days=' . $f_days . '&amp;all=1">' . lang_get( 'timeline_more' ) . '</a> ]</p>';
-    echo '<div class="widget-toolbox">';
-    echo '<div class="btn-toolbar">';
-    echo '<a class="btn btn-primary btn-sm btn-white btn-round" href="my_view_page.php?days=' . $f_days . '&amp;all=1">' . lang_get( 'timeline_more' ) . '</a>';
-    echo '</div>';
-    echo '</div>';
-} else {
-	timeline_print_events( $t_events );
-}
+	if( !$f_all && count( $t_events ) > MAX_EVENTS ) {
+		$t_events = array_slice( $t_events, 0, MAX_EVENTS );
+		timeline_print_events( $t_events );
+		echo '<div class="widget-toolbox">';
+		echo '<div class="btn-toolbar">';
+		echo '<a class="btn btn-primary btn-sm btn-white btn-round" href="my_view_page.php?days=' . $f_days . '&amp;all=1">' . lang_get( 'timeline_more' ) . '</a>';
+		echo '</div>';
+		echo '</div>';
+	} else {
+		timeline_print_events( $t_events );
+			}
 echo '</div></div>';
