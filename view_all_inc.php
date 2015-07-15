@@ -75,6 +75,8 @@ if( helper_get_current_project() > 0 ) {
 }
 $g_columns = helper_get_columns_to_view( COLUMNS_TARGET_VIEW_PAGE );
 
+$t_col_count = count( $g_columns );
+
 $t_filter_position = config_get( 'filter_position' );
 
 # -- ====================== FILTER FORM ========================= --
@@ -86,6 +88,11 @@ if( ( $t_filter_position & FILTER_POSITION_TOP ) == FILTER_POSITION_TOP ) {
 
 # -- ====================== BUG LIST ============================ --
 
+$t_status_legend_position = config_get( 'status_legend_position' );
+
+if( $t_status_legend_position == STATUS_LEGEND_POSITION_TOP || $t_status_legend_position == STATUS_LEGEND_POSITION_BOTH ) {
+	html_status_legend();
+}
 ?>
 <div class="col-md-12 col-xs-12">
 <div class="space-10"></div>
@@ -169,7 +176,7 @@ if( ( $t_filter_position & FILTER_POSITION_TOP ) == FILTER_POSITION_TOP ) {
  * @param array $p_rows An array of bug objects.
  * @return void
  */
-function write_bug_rows ( $p_rows ) {
+function write_bug_rows( array $p_rows ) {
 	global $g_columns, $g_filter;
 
 	$t_in_stickies = ( $g_filter && ( 'on' == $g_filter[FILTER_PROPERTY_STICKY] ) );
@@ -197,10 +204,13 @@ function write_bug_rows ( $p_rows ) {
 
 		echo '<tr>';
 
+		echo '<tr class="' . $t_status_label . '">';
+
 		$t_column_value_function = 'print_column_value';
 		foreach( $g_columns as $t_column ) {
 			helper_call_custom_function( $t_column_value_function, array( $t_column, $t_row ) );
 		}
+
 		echo '</tr>';
 	}
 }

@@ -19,7 +19,7 @@
  *
  * **********************************************************************
  * ** This file contains translations stored in translatewiki.net.     **
- * ** See http://translatewiki.net/wiki/Project:About for information  **
+ * ** See https://translatewiki.net/wiki/Project:About for information **
  * ** on copyright/license for translatewiki.net translations.         **
  * **********************************************************************
  * **                                                                  **
@@ -316,7 +316,7 @@ $s_email_on_bugnote_added = '新增說明時以 E-Mail 通知';
 $s_email_on_status_change = '狀態更動時以 E-Mail 通知';
 $s_email_on_priority_change = '優先權更動時以 E-Mail 通知';
 $s_email_bugnote_limit = '說明超過數量限制時以 E-Mail 通知';
-$s_language = '語系';
+$s_language = '語言';
 $s_update_prefs_button = '更新偏好設定';
 $s_reset_prefs_button = '重設偏好設定';
 $s_timezone = '時區';
@@ -1174,7 +1174,7 @@ $s_excel_columns_title = 'Excel 欄位';
 $s_update_columns_as_global_default = '更新所有專案的欄位成為全域預設值';
 $s_update_columns_for_current_project = '更新目前專案的欄位';
 $s_update_columns_as_my_default = '更新所有專案的欄位成為預設值';
-$s_reset_columns_configuration = '重設欄位設定置';
+$s_reset_columns_configuration = '重設欄位設定';
 $s_copy_columns_from = '複製欄位從';
 $s_copy_columns_to = '複製欄位至';
 $s_due_date = '到期日';
