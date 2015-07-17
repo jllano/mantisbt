@@ -171,7 +171,7 @@ function print_successful_redirect( $p_redirect_to ) {
         layout_page_begin();
 		echo '<br /><div class="center">';
 		echo lang_get( 'operation_successful' ) . '<br />';
-		print_bracket_link( $p_redirect_to, lang_get( 'proceed' ) );
+		print_small_button( $p_redirect_to, lang_get( 'proceed' ) );
 		echo '</div>';
         layout_page_end();
 	} else {
@@ -1406,35 +1406,6 @@ function print_form_button( $p_action_page, $p_label, $p_args_to_post = null, $p
 }
 
 /**
- * print brackets around a pre-prepared link (i.e. '<a href' html tag).
- * @param string $p_link The URL to link to.
- * @return void
- */
-function print_bracket_link_prepared( $p_link ) {
-	echo '<span class="bracket-link">[&#160;' . $p_link . '&#160;]</span> ';
-}
-
-/**
- * print the bracketed links used near the top
- * if the $p_link is blank then the text is printed but no link is created
- * if $p_new_window is true, link will open in a new window, default false.
- * @param string  $p_link       The URL to link to.
- * @param string  $p_url_text   The text to display.
- * @param boolean $p_new_window Whether to open in a new window.
- * @param string  $p_class      CSS class to use with the link.
- * @return void
- */
-function print_bracket_link( $p_link, $p_url_text, $p_new_window = false, $p_class = '' ) {
-	echo '<span class="bracket-link';
-	if( $p_class !== '' ) {
-		echo ' bracket-link-',$p_class; # prefix on a container allows styling of whole link, including brackets
-	}
-	echo '">[&#160;';
-	print_link( $p_link, $p_url_text, $p_new_window, $p_class );
-	echo '&#160;]</span> ';
-}
-
-/**
  * print a HTML link
  * @param string  $p_link       The page URL.
  * @param string  $p_url_text   The displayed text for the link.
@@ -1723,7 +1694,7 @@ function print_signup_link() {
 		 ( LDAP != config_get_global( 'login_method' ) ) &&
 		 ( ON == config_get( 'enable_email_notification' ) )
 	   ) {
-		print_bracket_link( 'signup_page.php', lang_get( 'signup_link' ) );
+		print_small_button( 'signup_page.php', lang_get( 'signup_link' ) );
 	}
 }
 
@@ -1732,7 +1703,7 @@ function print_signup_link() {
  * @return void
  */
 function print_login_link() {
-	print_bracket_link( 'login_page.php', lang_get( 'login_title' ) );
+	print_small_button( 'login_page.php', lang_get( 'login_title' ) );
 }
 
 /**
@@ -1745,7 +1716,7 @@ function print_lost_password_link() {
 		 ( ON == config_get( 'lost_password_feature' ) ) &&
 		 ( ON == config_get( 'send_reset_password' ) ) &&
 		 ( ON == config_get( 'enable_email_notification' ) ) ) {
-		print_bracket_link( 'lost_pwd_page.php', lang_get( 'lost_password_link' ) );
+		print_small_button( 'lost_pwd_page.php', lang_get( 'lost_password_link' ) );
 	}
 }
 
