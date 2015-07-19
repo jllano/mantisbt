@@ -350,9 +350,14 @@ function html_operation_successful( $p_redirect_url, $p_message = '' ) {
  * @return void
  */
 function html_body_end() {
-    event_signal( 'EVENT_LAYOUT_BODY_END' );
-    mantishub_google_analytics();
-    mantishub_support_widget();
+	event_signal( 'EVENT_LAYOUT_BODY_END' );
+
+	echo '</div>', "\n";
+
+	mantishub_google_analytics();
+	mantishub_bingads_analytics();
+	mantishub_support_widget();
+
 	echo '</body>', "\n";
 }
 
