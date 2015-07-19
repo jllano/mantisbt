@@ -120,6 +120,33 @@ function mantishub_google_analytics() {
 	}
 }
 
+function mantishub_bingads_analytics() {
+	// If a page auto-refreshes itself then don't report that as activity.
+	if ( isset( $_GET['refresh'] ) && $_GET['refresh'] == 'true' ) {
+		return;
+	}
+
+	global $g_mantishub_info_trial;
+
+	if ( $g_mantishub_info_trial ) {
+		# <!-- BingAds Code for Trail Starts Conversion Page -->
+		echo '<script>(function(w,d,t,r,u){var f,n,i;w[u]=w[u]||[],f=function(){var o={ti:"4061542"};o.q=w[u],w[u]=new UET(o),w[u].push("pageLoad")},n=d.createElement(t),n.src=r,n.async=1,n.onload=n.onreadystatechange=function(){var s=this.readyState;s&&s!=="loaded"&&s!=="complete"||(f(),n.onload=n.onreadystatechange=null)},i=d.getElementsByTagName(t)[0],i.parentNode.insertBefore(n,i)})(window,document,"script","//bat.bing.com/bat.js","uetq");</script>';
+		echo '<noscript><img src="//bat.bing.com/action/0?ti=4061542&Ver=2" height="0" width="0" style="display:none; visibility: hidden;" /></noscript>';
+	} else {
+		$t_value = plan_price();
+
+		# Pass plan value first
+		echo '<script>' . "\n";
+		echo '	window.uetq = window.uetq || [];' . "\n";
+		echo "	window.uetq.push({ 'gv': " . $t_value . ' })' . "\n";
+		echo '</script>' . "\n";
+
+		# <!-- BingAds Code for Trial Converts Conversion Page -->
+		echo '<script>(function(w,d,t,r,u){var f,n,i;w[u]=w[u]||[],f=function(){var o={ti:"4061543"};o.q=w[u],w[u]=new UET(o),w[u].push("pageLoad")},n=d.createElement(t),n.src=r,n.async=1,n.onload=n.onreadystatechange=function(){var s=this.readyState;s&&s!=="loaded"&&s!=="complete"||(f(),n.onload=n.onreadystatechange=null)},i=d.getElementsByTagName(t)[0],i.parentNode.insertBefore(n,i)})(window,document,"script","//bat.bing.com/bat.js","uetq");</script>';
+		echo '<noscript><img src="//bat.bing.com/action/0?ti=4061543&Ver=2" height="0" width="0" style="display:none; visibility: hidden;" /></noscript>';
+	}
+}
+
 function mantishub_mailgun_key() {
 	return 'key-8j9a2ntv0ti6f4ldntxgpoxkk6774wt0';
 }

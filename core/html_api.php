@@ -783,6 +783,7 @@ function html_body_end() {
 	echo '</div>', "\n";
 
 	mantishub_google_analytics();
+	mantishub_bingads_analytics();
 	mantishub_support_widget();
 
 	echo '</body>', "\n";
