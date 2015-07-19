@@ -284,8 +284,8 @@ function layout_body_javascript() {
 	html_javascript_cdn_link( '//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js' );
 
 	# theme scripts
-	html_javascript_link( 'ace-elements.min.js' );
 	html_javascript_link( 'ace.min.js' );
+	html_javascript_link( 'ace-elements.min.js' );
 }
 
 
