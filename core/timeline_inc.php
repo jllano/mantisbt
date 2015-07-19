@@ -82,5 +82,5 @@ $t_block_icon = $t_collapse_block ? 'fa-chevron-down' : 'fa-chevron-up';
 		echo '</div>';
 	} else {
 		timeline_print_events( $t_events );
-			}
+    }
 echo '</div></div>';

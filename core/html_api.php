@@ -133,7 +133,7 @@ function html_javascript_link( $p_filename ) {
 
 /**
  * Prints a <script> tag to include a JavaScript file.
- * @param string $p_furl fully qualified domain name for the cdn js file
+ * @param string $p_url fully qualified domain name for the cdn js file
  * @return void
  */
 function html_javascript_cdn_link( $p_url ) {
@@ -225,7 +225,7 @@ function html_css_link( $p_filename ) {
 
 /**
  * Prints a CSS link for CDN
- * @param string $p_url fully qualified domain name
+ * @param string $p_url fully qualified domain name to the js file name
  * @return void
  */
 function html_css_cdn_link( $p_url ) {
@@ -284,12 +284,8 @@ function html_head_javascript() {
 	global $g_scripts_included;
 	echo "\t" . '<script type="text/javascript" src="' . helper_mantis_url( 'javascript_config.php' ) . '"></script>' . "\n";
 	echo "\t" . '<script type="text/javascript" src="' . helper_mantis_url( 'javascript_translations.php' ) . '"></script>' . "\n";
-	#html_javascript_link( 'jquery-1.11.3.min.js' );
 	html_javascript_cdn_link( '//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js' );
-
-	#html_javascript_link( 'jquery-ui-1.11.4.min.js' );
 	html_javascript_cdn_link( '//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js' );
-
 	html_javascript_link( 'common.js' );
 	foreach ( $g_scripts_included as $t_script_path ) {
 		html_javascript_link( $t_script_path );
@@ -790,6 +786,96 @@ function print_summary_menu( $p_page = '' ) {
 	}
 
 	echo '</ul>' . "\n";
+}
+
+/**
+ * Print the color legend for the status colors at the requested position
+ * @param int  $p_display_position   STATUS_LEGEND_POSITION_TOP or STATUS_LEGEND_POSITION_BOTTOM
+ * @param bool $p_restrict_by_filter If true, only display status visible in current filter
+ * @return void
+ */
+function html_status_legend( $p_display_position, $p_restrict_by_filter = false ) {
+
+	if( $p_restrict_by_filter ) {
+		# Don't show the legend if only one status is selected by the current filter
+		$t_current_filter = current_user_get_bug_filter();
+		if( $t_current_filter === false ) {
+			$t_current_filter = filter_get_default();
+		}
+		$t_simple_filter = $t_current_filter['_view_type'] == 'simple';
+		if( $t_simple_filter ) {
+			if( !filter_field_is_any( $t_current_filter[FILTER_PROPERTY_STATUS][0] ) ) {
+				return;
+			}
+		}
+	}
+
+	$t_status_array = MantisEnum::getAssocArrayIndexedByValues( config_get( 'status_enum_string' ) );
+	$t_status_names = MantisEnum::getAssocArrayIndexedByValues( lang_get( 'status_enum_string' ) );
+
+	# read through the list and eliminate unused ones for the selected project
+	# assumes that all status are are in the enum array
+	$t_workflow = config_get( 'status_enum_workflow' );
+	if( !empty( $t_workflow ) ) {
+		foreach( $t_status_array as $t_status => $t_name ) {
+			if( !isset( $t_workflow[$t_status] ) ) {
+
+				# drop elements that are not in the workflow
+				unset( $t_status_array[$t_status] );
+			}
+		}
+	}
+
+	if( $p_restrict_by_filter ) {
+		# Remove status values that won't appear as a result of the current filter
+		foreach( $t_status_array as $t_status => $t_name ) {
+			if( $t_simple_filter ) {
+				if( !filter_field_is_none( $t_current_filter[FILTER_PROPERTY_HIDE_STATUS][0] ) &&
+					$t_status >= $t_current_filter[FILTER_PROPERTY_HIDE_STATUS][0] ) {
+					unset( $t_status_array[$t_status] );
+				}
+			} else {
+				if( !in_array( META_FILTER_ANY, $t_current_filter[FILTER_PROPERTY_STATUS] ) &&
+					!in_array( $t_status, $t_current_filter[FILTER_PROPERTY_STATUS] ) ) {
+					unset( $t_status_array[$t_status] );
+				}
+			}
+		}
+
+		# If there aren't at least two statuses showable by the current filter,
+		# don't draw the status bar
+		if( count( $t_status_array ) <= 1 ) {
+			return;
+		}
+	}
+
+	# Display the legend
+	$t_legend_position = config_get( 'status_legend_position' ) & $p_display_position;
+
+	if( STATUS_LEGEND_POSITION_NONE != $t_legend_position ) {
+		echo '<br />';
+		echo '<table class="status-legend width100" cellspacing="1">';
+		echo '<tr>';
+
+		# draw the status bar
+		$t_status_enum_string = config_get( 'status_enum_string' );
+		foreach( $t_status_array as $t_status => $t_name ) {
+			$t_val = isset( $t_status_names[$t_status] ) ? $t_status_names[$t_status] : $t_status_array[$t_status];
+			$t_status_label = MantisEnum::getLabel( $t_status_enum_string, $t_status );
+
+			echo '<td class="small-caption ' . $t_status_label . '-color">' . $t_val . '</td>';
+		}
+
+		echo '</tr>';
+		echo '</table>';
+		if( ON == config_get( 'status_percentage_legend' ) ) {
+			html_status_percentage_legend();
+		}
+	}
+	if( STATUS_LEGEND_POSITION_TOP == $t_legend_position ) {
+		echo '<br />';
+	}
+>>>>>>> Temporary merge branch 2
 }
 
 /**
