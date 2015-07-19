@@ -263,9 +263,6 @@ function layout_head_css() {
  * @return null
  */
 function layout_head_javascript() {
-	# theme settings handler
-	html_javascript_link( 'ace-extra.min.js' );
-
 	# HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries
 	echo '<!--[if lte IE 8]>';
 	html_javascript_link( 'html5shiv.min.js' );
@@ -284,8 +281,9 @@ function layout_body_javascript() {
 	html_javascript_cdn_link( '//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js' );
 
 	# theme scripts
-	html_javascript_link( 'ace.min.js' );
+	html_javascript_link( 'ace-extra.min.js' );
 	html_javascript_link( 'ace-elements.min.js' );
+	html_javascript_link( 'ace.min.js' );
 }
 
 
