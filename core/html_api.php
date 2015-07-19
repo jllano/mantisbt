@@ -875,7 +875,6 @@ function html_status_legend( $p_display_position, $p_restrict_by_filter = false 
 	if( STATUS_LEGEND_POSITION_TOP == $t_legend_position ) {
 		echo '<br />';
 	}
->>>>>>> Temporary merge branch 2
 }
 
 /**
