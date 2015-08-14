@@ -143,7 +143,7 @@ function http_content_headers() {
  * @return void
  */
 function http_security_headers() {
-	if( !headers_sent() ) {
+	if( false && !headers_sent() ) {
 		header( 'X-Frame-Options: DENY' );
 
 		# Define Content Security Policy

@@ -25,7 +25,10 @@ public class S5InstallScript extends ScriptContext {
 		//get the servers
 		def mysql = new Mysql() //default constructor chooses a agent
 		def agent = mysql.agent
-		def apache = new Apache2(agent) // we wnat to have both things in the same box
+		//def apache = new Apache2(agent) // we wnat to have both things in the same box
+		def apache1 = new Apache2(agent) 
+         	def apache2 = Apache2Synchronized.getInstance() 
+
 		def os = new Linux(agent)
 		def fs = new FileSystem(agent)
 
@@ -88,7 +91,7 @@ public class S5InstallScript extends ScriptContext {
 
 				appPath = "/home/jail/home/$osUsername/$uid"
 				app = new PhpApp() // represents a web app to be deployed on a web server,subclass of WebApp
-				app.server = apache //we asing the appserver so when reading vars the Server based variables will be there
+				app.server = apache1 //we asing the appserver so when reading vars the Server based variables will be there
 				app.name = appName
 				app.domains = [domainName]
 				app.sourceUrl = installerUrl
@@ -104,13 +107,15 @@ public class S5InstallScript extends ScriptContext {
 			
 				try {
 			
-					apache.createWebApp(app)
+					//apache.createWebApp(app)
+					apache2.createWebApp(app, resource)
 					fs.chown(appPath, "$osUsername:$osGroupname")
 					fs.chmod(appPath, '700')
 				
 				} catch (e) {
 					LOG.error("Create Web Failed. So rolling back")
-					apache.removeApp(app)
+					// apache.removeApp(app)
+					apache2.removeApp(app, resource)
 					throw e
 				}
 				
@@ -138,7 +143,10 @@ public class S5InstallScript extends ScriptContext {
     
         def server = resource.agent
 
-        def apache2 = new Apache2(server)
+        //def apache2 = new Apache2(server)
+	def apache1 = new Apache2(server)
+        def apache2 = Apache2Synchronized.getInstance()  
+
         def mysql = new Mysql(server)
         def os = new Linux(server)
         def domainName = getParameter("webAppDomain")
@@ -150,8 +158,8 @@ public class S5InstallScript extends ScriptContext {
         app.domains = [domainName]
         app.path = getParameter("webAppPath")
         app.setHttpMode(getParameter("webAppHttpMode"))
-        app.server = apache2
-        apache2.removeApp(app)
+        app.server = apache1
+        apache2.removeApp(app, resource)
 
         mysql.dropDataBase(getParameter("dbName"))
         mysql.deleteUser(getParameter("dbUser"))
