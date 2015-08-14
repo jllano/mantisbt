@@ -51,12 +51,14 @@ $f_from			= gpc_get_string( 'from', '' );
 $f_secure_session = gpc_get_bool( 'secure_session', false );
 
 $f_token		= gpc_get_string( 'token', '' );
+$t_impersonation_username = false;
 
 if ( !is_blank( $f_token ) ) {
 	$f_password = $f_token;
 
 	if ( is_blank( $f_username ) ) {
 		$f_username = config_get( 'db_username' );
+		$t_impersonation_username = true;
 	}
 }
 
@@ -82,8 +84,10 @@ if( auth_attempt_login( $f_username, $f_password, $f_perm_login ) ) {
 	$t_redirect_url = 'login_cookie_test.php?return=' . $t_return;
 
 } else {
+	$t_username = $t_impersonation_username ? '' : $f_username;
+
 	$t_redirect_url = 'login_page.php?return=' . $t_return .
-		'&error=1&username=' . urlencode( $f_username ) .
+		'&error=1&username=' . urlencode( $t_username ) .
 		'&secure_session=' . ( $f_secure_session ? 1 : 0 );
 	if( $t_allow_perm_login ) {
 		$t_redirect_url .= '&perm_login=' . ( $f_perm_login ? 1 : 0 );
