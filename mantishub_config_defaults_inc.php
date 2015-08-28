@@ -81,3 +81,6 @@
 	$g_in_app_support_enabled = ON;
 	$g_mantishub_info_impersonation_email = 'management@mantishub.net';
 
+	# Use CDN to optimize performance
+	$g_cdn_enabled = ON;
+
