@@ -31,7 +31,6 @@
  *     html_title
  *     html_css
  *     html_rss_link
- *     html_head_javascript
  *   (html_meta_redirect)
  *   html_page_top2
  *     html_page_top2a
@@ -208,8 +207,6 @@ function html_page_top1( $p_page_title = null ) {
 	# Advertise the availability of the browser search plug-ins.
 	echo "\t", '<link rel="search" type="application/opensearchdescription+xml" title="MantisBT: Text Search" href="' . string_sanitize_url( 'browser_search_plugin.php?type=text', true ) . '" />' . "\n";
 	echo "\t", '<link rel="search" type="application/opensearchdescription+xml" title="MantisBT: Issue Id" href="' . string_sanitize_url( 'browser_search_plugin.php?type=id', true ) . '" />' . "\n";
-
-	html_head_javascript();
 }
 
 /**
@@ -304,7 +301,7 @@ function html_page_bottom1a( $p_file = null ) {
 }
 
 /**
- * (1) Print the document type and the opening <html> tag
+ * Print the document type and the opening <html> tag
  * @return void
  */
 function html_begin() {
@@ -313,7 +310,7 @@ function html_begin() {
 }
 
 /**
- * (2) Begin the <head> section
+ * Begin the <head> section
  * @return void
  */
 function html_head_begin() {
@@ -321,7 +318,7 @@ function html_head_begin() {
 }
 
 /**
- * (3) Print the content-type
+ * Print the content-type
  * @return void
  */
 function html_content_type() {
@@ -329,7 +326,7 @@ function html_content_type() {
 }
 
 /**
- * (4) Print the window title
+ * Print the window title
  * @param string $p_page_title Window title.
  * @return void
  */
@@ -360,14 +357,19 @@ function require_css( $p_stylesheet_path ) {
 }
 
 /**
- * (5) Print the link to include the CSS file
+ * Print the link to include the CSS file
  * @return void
  */
 function html_css() {
 	global $g_stylesheets_included;
 	html_css_link( config_get( 'css_include_file' ) );
-	# html_css_link( 'jquery-ui-1.11.4.min.css' );
-	echo '<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">' . "\n";
+
+	if ( config_get_global( 'cdn_enabled' ) == ON ) {
+		echo '<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/' . JQUERY_UI_VERSION . '/themes/smoothness/jquery-ui.css">' . "\n";
+	} else {
+		html_css_link( 'jquery-ui-' . JQUERY_UI_VERSION . '.min.css' );
+	}
+
 	html_css_link( 'common_config.php' );
 	# Add right-to-left css if needed
 	if( lang_get( 'directionality' ) == 'rtl' ) {
@@ -389,7 +391,7 @@ function html_css_link( $p_filename ) {
 
 
 /**
- * (6) Print an HTML meta tag to redirect to another page
+ * Print an HTML meta tag to redirect to another page
  * This function is optional and may be called by pages that need a redirect.
  * $p_time is the number of seconds to wait before redirecting.
  * If we have handled any errors on this page return false and don't redirect.
@@ -433,26 +435,7 @@ function require_js( $p_script_path ) {
 }
 
 /**
- * (6a) Javascript...
- * @return void
- */
-function html_head_javascript() {
-	global $g_scripts_included;
-
-	echo "\t" . '<script type="text/javascript" src="' . helper_mantis_url( 'javascript_config.php' ) . '"></script>' . "\n";
-	echo "\t" . '<script type="text/javascript" src="' . helper_mantis_url( 'javascript_translations.php' ) . '"></script>' . "\n";
-	#html_javascript_link( 'jquery-1.11.3.min.js' );
-	echo "\t" . '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>' . "\n";
-	#html_javascript_link( 'jquery-ui-1.11.4.min.js' );
-	echo "\t" . '<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>' . "\n";
-	html_javascript_link( 'common.js' );
-	foreach ( $g_scripts_included as $t_script_path ) {
-		html_javascript_link( $t_script_path );
-	}
-}
-
-/**
- * (7) End the <head> section
+ * End the <head> section
  * @return void
  */
 function html_head_end() {
@@ -462,7 +445,7 @@ function html_head_end() {
 }
 
 /**
- * (8) Begin the <body> section
+ * Begin the <body> section
  * @return void
  */
 function html_body_begin() {
@@ -480,7 +463,7 @@ function html_body_begin() {
 }
 
 /**
- * (9) Print a user-defined banner at the top of the page if there is one.
+ * Print a user-defined banner at the top of the page if there is one.
  * @return void
  */
 function html_top_banner() {
@@ -518,7 +501,7 @@ function html_top_banner() {
 }
 
 /**
- * (10) Print the user's account information
+ * Print the user's account information
  * Also print the select box where users can switch projects
  * @return void
  */
@@ -618,7 +601,7 @@ function html_login_info() {
 }
 
 /**
- * (11) Print a user-defined banner at the bottom of the page if there is one.
+ * Print a user-defined banner at the bottom of the page if there is one.
  * @return void
  */
 function html_bottom_banner() {
@@ -656,7 +639,7 @@ function html_is_auto_refresh() {
 }
 
 /**
- * (13) Print the page footer information
+ * Print the page footer information
  * @return void
  */
 function html_footer() {
@@ -774,11 +757,29 @@ function html_footer() {
 }
 
 /**
- * (14) End the <body> section
+ * End the <body> section
  * @return void
  */
 function html_body_end() {
+	global $g_scripts_included;
+
 	event_signal( 'EVENT_LAYOUT_BODY_END' );
+
+	echo "\t" . '<script type="text/javascript" src="' . helper_mantis_url( 'javascript_config.php' ) . '"></script>' . "\n";
+	echo "\t" . '<script type="text/javascript" src="' . helper_mantis_url( 'javascript_translations.php' ) . '"></script>' . "\n";
+
+	if ( config_get_global( 'cdn_enabled' ) == ON ) {
+		echo "\t" . '<script src="https://ajax.googleapis.com/ajax/libs/jquery/' . JQUERY_VERSION . '/jquery.min.js"></script>' . "\n";
+		echo "\t" . '<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/' . JQUERY_UI_VERSION . '/jquery-ui.min.js"></script>' . "\n";
+	} else {
+		html_javascript_link( 'jquery-' . JQUERY_VERSION . '.min.js' );
+		html_javascript_link( 'jquery-ui-' . JQUERY_UI_VERSION . '.min.js' );
+	}
+
+	html_javascript_link( 'common.js' );
+	foreach ( $g_scripts_included as $t_script_path ) {
+		html_javascript_link( $t_script_path );
+	}
 
 	echo '</div>', "\n";
 
@@ -790,7 +791,7 @@ function html_body_end() {
 }
 
 /**
- * (15) Print the closing <html> tag
+ * Print the closing <html> tag
  * @return void
  */
 function html_end() {
@@ -1075,11 +1076,10 @@ function print_manage_menu( $p_page = '' ) {
 	}
 
 	if( access_has_project_level( config_get( 'manage_configuration_threshold' ) ) ) {
-		if( access_has_global_level( config_get( 'view_configuration_threshold' ) ) ) {
-			$t_pages['adm_config_report.php'] = array( 'url'   => 'adm_config_report.php', 'label' => 'manage_config_link' );
-		} else {
-			$t_pages['adm_permissions_report.php'] = array( 'url'   => 'adm_permissions_report.php', 'label' => 'manage_config_link' );
-		}
+		$t_pages['adm_permissions_report.php'] = array(
+			'url'   => 'adm_permissions_report.php',
+			'label' => 'manage_config_link'
+		);
 	}
 
 	if ( access_has_global_level( ADMINISTRATOR ) ) {
@@ -1137,13 +1137,13 @@ function print_manage_config_menu( $p_page = '' ) {
 
 	$t_pages = array();
 
+	$t_pages['adm_permissions_report.php'] = array( 'url'   => 'adm_permissions_report.php',
+	                                                'label' => 'permissions_summary_report' );
+
 	if( access_has_global_level( config_get( 'view_configuration_threshold' ) ) ) {
 		$t_pages['adm_config_report.php'] = array( 'url'   => 'adm_config_report.php',
 		                                           'label' => 'configuration_report' );
 	}
-
-	$t_pages['adm_permissions_report.php'] = array( 'url'   => 'adm_permissions_report.php',
-	                                                'label' => 'permissions_summary_report' );
 
 	$t_pages['manage_config_work_threshold_page.php'] = array( 'url'   => 'manage_config_work_threshold_page.php',
 	                                                           'label' => 'manage_threshold_config' );
