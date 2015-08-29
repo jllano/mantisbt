@@ -35,10 +35,52 @@ require_api( 'helper_api.php' );
 require_api( 'project_api.php' );
 
 $f_subject = trim( gpc_get_string( 'subject', '' ) );
-$f_sender = gpc_get_string( 'sender' );
+$f_from_name_email = gpc_get_string( 'from' );
+$f_from_email = mantishub_get_email_from_name_email( $f_from_name_email );
+
+$f_message_headers = gpc_get_string( 'message-headers' );
+$t_headers = json_decode( $f_message_headers );
+
+$t_message_id = mantishub_get_header( $t_headers, 'Message-Id' );
+$g_auto_response_suppress = mantishub_get_header( $t_headers, 'X-Auto-Response-Suppress' );
+
+# Check for loopback
+if ( stristr( $t_message_id, 'mantishub.com' ) !== false ) {
+	header( 'HTTP/1.0 406 Loop detected' );
+	$t_event = array( 'level' => 'error', 'comp' => 'email_reporting', 'event' => 'loop' );
+	mantishub_event( $t_event );
+	exit;
+}
+
+function mantishub_get_email_from_name_email( $p_name_email ) {
+	$t_start_pos = stripos( $p_name_email, '<' );
+	$t_end_pos = stripos( $p_name_email, '>' );
+
+	if ( $t_start_pos === false || $t_end_pos === false || $t_start_pos >= $t_end_pos ) {
+		return $p_name_email;
+	}
+
+	return substr( $p_name_email, $t_start_pos + 1, $t_end_pos - $t_start_pos - 1 );
+}
+
+function mantishub_get_header( $p_headers, $p_header_name ) {
+	foreach( $p_headers as $t_header ) {
+		if ( strcasecmp( $t_header[0], $p_header_name ) === 0 ) {
+			return $t_header[1];
+		}
+	}
+
+	return null;
+}
 
 function mantishub_email_response( $p_message, $p_success = false ) {
-    global $f_sender, $f_subject;
+    global $f_from_email, $f_subject, $g_auto_response_suppress;
+
+	# Don't respond if message supresses auto-response to avoid loopback.
+	if ( $g_auto_response_suppress == 'All' )
+	{
+		return;
+	}
 
     $t_message = $p_message . "\n";
 
@@ -47,8 +89,8 @@ function mantishub_email_response( $p_message, $p_success = false ) {
         $t_message .= "http://www.mantishub.com/docs/reporting_issues_via_email.html\n";
     }
 
-    email_store( $f_sender, 'RE: ' . $f_subject, $t_message );
-    log_event( LOG_EMAIL, sprintf( 'Incoming Mail API response to = \'%s\'', $f_sender ) );
+    email_store( $f_from_email, 'RE: ' . $f_subject, $t_message );
+    log_event( LOG_EMAIL, sprintf( 'Incoming Mail API response to = \'%s\'', $f_from_email ) );
 
     if( OFF == config_get( 'email_send_using_cronjob' ) ) {
         email_send_all();
@@ -129,7 +171,7 @@ if ( $f_spam == 'Yes' ) {
 # Retrieve sender (reporter) information.
 #
 
-$t_user_id = user_get_id_by_email( $f_sender );
+$t_user_id = user_get_id_by_email( $f_from_email );
 if ( $t_user_id === false ) {
 	$t_user_id = user_get_id_by_name( 'email' );
 	$t_generic_user = true;
@@ -139,7 +181,7 @@ if ( $t_user_id === false ) {
 
 if ( $t_user_id === false ) {
 	header( 'HTTP/1.0 406 No Reporter Match' );
-	$t_event = array( 'level' => 'error', 'comp' => 'email_reporting', 'event' => 'reporter_not_found', 'sender' => $f_sender );
+	$t_event = array( 'level' => 'error', 'comp' => 'email_reporting', 'event' => 'reporter_not_found', 'sender' => $f_from_email );
 	mantishub_event( $t_event );
 	mantishub_email_error( 'Message rejected since there is no email account matching sender account.  There is also no fallback "email" user account.' );
 	exit;
@@ -231,7 +273,6 @@ if ( !access_has_project_level( REPORTER, (int)$t_project['id'], $t_user_id ) ) 
 # Create an issue based on email information
 #
 
-$f_from = gpc_get_string( 'from' );
 $f_attachment_count = gpc_get_int( 'attachment-count', 0 );
 $f_stripped_text = trim( gpc_get_string( 'stripped-text', '' ) );
 
@@ -258,7 +299,7 @@ if ( $t_new_issue ) {
 	$t_bug->reporter_id = $t_user_id;
 
 	if ( $t_generic_user ) {
-		$t_bug->additional_information = 'MantisHub Email Delivery From: ' . $f_from;
+		$t_bug->additional_information = 'MantisHub Email Delivery From: ' . $f_from_name_email;
 	}
 
 	$t_bug_id = $t_bug->create();
@@ -285,7 +326,7 @@ if ( $t_new_issue ) {
 	$t_note_text = $f_stripped_text;
 
 	if ( $t_generic_user ) {
-		$t_note_text .= "\n\n---\n" . $f_from;
+		$t_note_text .= "\n\n---\n" . $f_from_name_email;
 	}
 
 	$t_event = array( 'comp' => 'email_reporting', 'event' => 'adding_note', 'issue_id' => $t_bug_id );
