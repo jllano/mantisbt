@@ -32,6 +32,10 @@
     font-size: x-small;
 }
 
+.navbar-fixed-top + .main-container {
+    padding-top: 25px;
+}
+
 .uppercase {
     text-transform: uppercase;
 }
