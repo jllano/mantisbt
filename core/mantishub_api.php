@@ -44,9 +44,9 @@ function mantishub_show_messages() {
 }
 
 function mantishub_trial_message() {
-	global $g_mantishub_info_trial;
+	global $g_mantishub_info_trial, $g_mantishub_info_payment_on_file;
 
-	if ( $g_mantishub_info_trial && current_user_is_administrator() ) {
+	if ( $g_mantishub_info_trial && !$g_mantishub_info_payment_on_file && current_user_is_administrator() ) {
 		$t_issues_count = mantishub_table_row_count( 'bug' );
 
 		$t_trial_conversion_url = config_get( 'mantishub_info_trial_conversion_url', '' );
