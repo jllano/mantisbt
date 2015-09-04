@@ -275,10 +275,11 @@ $t_related_custom_field_ids = custom_field_get_linked_ids( $t_existing_bug->proj
 $t_custom_fields_to_set = array();
 foreach ( $t_related_custom_field_ids as $t_cf_id ) {
 	$t_cf_def = custom_field_get_definition( $t_cf_id );
+	$t_custom_field_present = custom_field_is_present( $t_cf_id );
 
 	# if this is not a full update action and custom field is not on the form, then don't
 	# continue with code that checks access level and validates the field.
-	if ( $f_update_type != BUG_UPDATE_TYPE_NORMAL && !custom_field_is_present( $t_cf_id ) ) {
+	if ( $f_update_type != BUG_UPDATE_TYPE_NORMAL && !$t_custom_field_present ) {
 		continue;
 	}
 
@@ -293,7 +294,7 @@ foreach ( $t_related_custom_field_ids as $t_cf_id ) {
 		}
 	}
 
-	if( !custom_field_has_write_access( $t_cf_id, $f_bug_id ) ) {
+	if( $t_custom_field_present && !custom_field_has_write_access( $t_cf_id, $f_bug_id ) ) {
 		trigger_error( ERROR_ACCESS_DENIED, ERROR );
 	}
 
