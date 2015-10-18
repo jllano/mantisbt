@@ -45,7 +45,8 @@ if( auth_is_user_authenticated() ) {
 	# Use lack of projects as a hint for such scenario.
 	if( is_blank( $f_return ) || $f_return == 'index.php' ) {
 		if( current_user_is_administrator() && project_table_empty() ) {
-			$c_return = 'manage_proj_create_page.php';
+			# $c_return = 'manage_proj_create_page.php';
+			project_create( /* name */ 'MyProject', /* desc */ '', /* status: stable */ 50 );
 		}
 	}
 
