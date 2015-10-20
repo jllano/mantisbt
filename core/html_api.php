@@ -283,19 +283,34 @@ function require_js( $p_script_path ) {
 }
 
 /**
+ * Javascript...
+ * @return void
+ */
+function html_head_javascript() {
+	global $g_scripts_included;
+	echo "\t" . '<script type="text/javascript" src="' . helper_mantis_url( 'javascript_config.php' ) . '"></script>' . "\n";
+	echo "\t" . '<script type="text/javascript" src="' . helper_mantis_url( 'javascript_translations.php' ) . '"></script>' . "\n";
+
+	if ( config_get_global( 'cdn_enabled' ) == ON ) {
+		echo "\t" . '<script src="https://ajax.googleapis.com/ajax/libs/jquery/' . JQUERY_VERSION . '/jquery.min.js"></script>' . "\n";
+		echo "\t" . '<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/' . JQUERY_UI_VERSION . '/jquery-ui.min.js"></script>' . "\n";
+	} else {
+		html_javascript_link( 'jquery-' . JQUERY_VERSION . '.min.js' );
+		html_javascript_link( 'jquery-ui-' . JQUERY_UI_VERSION . '.min.js' );
+	}
+
+	html_javascript_link( 'common.js' );
+	foreach ( $g_scripts_included as $t_script_path ) {
+		html_javascript_link( $t_script_path );
+	}
+}
+
+/**
  * End the <head> section
  * @return void
  */
 function html_head_end() {
-	event_signal( 'EVENT_LAYOUT_RESOURCES' );
-
-	if ( config_get_global( 'cdn_enabled' ) == ON ) {
-		html_javascript_cdn_link( 'https://ajax.googleapis.com/ajax/libs/jquery/' . JQUERY_VERSION . '/jquery.min.js' );
-	} else {
-		html_javascript_link( 'jquery-' . JQUERY_VERSION . '.min.js' );
-	}
-
-	echo '</head>', "\n";
+	event_signal('EVENT_LAYOUT_RESOURCES');
 }
 
 /**
@@ -357,33 +372,16 @@ function html_operation_successful( $p_redirect_url, $p_message = '' ) {
 }
 
 /**
- * Base javascript includes base files
- * @return void
- */
-function html_base_javascripts() {
-	global $g_scripts_included;
-
-	if ( config_get_global( 'cdn_enabled' ) == ON ) {
-		html_javascript_cdn_link( 'https://ajax.googleapis.com/ajax/libs/jqueryui/' . JQUERY_UI_VERSION . '/jquery-ui.min.js' );
-	} else {
-		html_javascript_link( 'jquery-ui-' . JQUERY_UI_VERSION . '.min.js' );
-	}
-
-	echo "\t" . '<script type="text/javascript" src="' . helper_mantis_url( 'javascript_config.php' ) . '"></script>' . "\n";
-	echo "\t" . '<script type="text/javascript" src="' . helper_mantis_url( 'javascript_translations.php' ) . '"></script>' . "\n";
-
-	html_javascript_link( 'common.js' );
-	foreach ( $g_scripts_included as $t_script_path ) {
-		html_javascript_link( $t_script_path );
-	}
-}
-
-/**
  * End the <body> section
  * @return void
  */
 function html_body_end() {
+	# Should code need to be added to this function in the future, it should be
+	# placed *above* this event, which needs to be the last thing to occur
+	# before the actual body ends (see #20084)
 	event_signal( 'EVENT_LAYOUT_BODY_END' );
+
+	echo '</div>', "\n";
 
 	mantishub_google_analytics();
 	mantishub_bingads_analytics();
