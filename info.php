@@ -93,4 +93,5 @@ $t_info['hostname'] = str_replace( '.mantishub.com', '', $t_output[0] );
 $t_json_filename = $g_config_path . 'info.json';
 
 # In dev machine, this access may not be granted
+$t_json = json_encode( $t_info );
 @file_put_contents( $t_json_filename, $t_json );
