@@ -38,13 +38,13 @@ function plan_ensure_allowed() {
 
 function plan_price() {
 	if ( plan_is_platinum() ) {
-		$t_value = '49.95';
+		$t_value = '50';
 	} else if ( plan_is_gold() ) {
-		$t_value = '24.95';
+		$t_value = '25';
 	} else if ( plan_is_silver() ) {
-		$t_value = '19.95';
+		$t_value = '20';
 	} else {
-		$t_value = '14.95';
+		$t_value = '15';
 	}
 
 	return $t_value;
