@@ -54,10 +54,6 @@ if ( $t_issues_count > 0 ) {
 }
 
 $t_json = json_encode( $t_info );
-$t_json_filename = $g_config_path . 'info.json';
-
-# In dev machine, this access may not be granted
-@file_put_contents( $t_json_filename, $t_json );
 
 if ( $f_json ) {
 	echo $t_json;
@@ -80,3 +76,21 @@ if ( $f_json ) {
 	echo 'Generation=' . $t_info['generation'] . "\n";
 }
 
+# Add fields that we don't want to disclose on the web, but just internally on the server
+# for cronjobs to use.
+$t_info['administrator_email'] = config_get_global( 'mantishub_info_administrator_email' );
+$t_info['administrator_firstname'] = config_get_global( 'mantishub_info_administrator_firstname' );
+$t_info['administrator_lastname'] = config_get_global( 'mantishub_info_administrator_lastname' );
+
+$t_info['company'] = config_get_global( 'mantishub_info_company' );
+
+$t_info['value'] = plan_price() + $t_info['team_packs'] * 10;
+
+$t_output = array();
+exec( 'hostname', $t_output );
+$t_info['hostname'] = str_replace( '.mantishub.com', '', $t_output[0] );
+
+$t_json_filename = $g_config_path . 'info.json';
+
+# In dev machine, this access may not be granted
+@file_put_contents( $t_json_filename, $t_json );
