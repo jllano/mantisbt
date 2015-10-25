@@ -31,6 +31,10 @@
 	// MantisHub Info Data
 	$g_mantishub_info_trial = true;
 	$g_mantishub_info_payment_on_file = false;
+	$g_mantishub_info_administrator_email = $g_webmaster_email;
+	$g_mantishub_info_administrator_firstname = '';
+	$g_mantishub_info_administrator_lastname = '';
+	$g_mantishub_info_company = '';
 
 	$t_config_inc = dirname( __FILE__ ) . '/config_inc.php';
 	if ( file_exists( $t_config_inc ) ) {
