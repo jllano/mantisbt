@@ -168,8 +168,6 @@ function layout_page_end( $p_file = null ) {
 	layout_scroll_up_button();
 
 	layout_main_container_end();
-
-	html_base_javascripts();
 	layout_body_javascript();
 
 	html_body_end();
@@ -195,8 +193,6 @@ function layout_admin_page_end() {
 	layout_scroll_up_button();
 
 	layout_main_container_end();
-
-	html_base_javascripts();
 	layout_body_javascript();
 
 	html_body_end();
@@ -346,7 +342,6 @@ function layout_login_page_end() {
 	echo '</div>';
 	layout_main_content_end();
 	layout_main_container_end();
-	html_base_javascripts();
 	layout_body_javascript();
     mantishub_google_analytics();
 	echo '</body>', "\n";
