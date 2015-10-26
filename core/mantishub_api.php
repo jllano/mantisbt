@@ -399,6 +399,7 @@ function mantishub_instance_name() {
 	$t_path = config_get( 'path' );
 	$t_path = str_ireplace( 'https://', '', $t_path );
 	$t_path = str_ireplace( 'http://', '', $t_path );
+	$t_path = trim( $t_path, '/' );
 
 	$t_company_name = $t_path;
 
