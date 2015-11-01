@@ -298,6 +298,25 @@ if ( $t_new_issue ) {
 	$t_bug->project_id = (int)$t_project['id'];
 	$t_bug->reporter_id = $t_user_id;
 
+	# Make sure that we have a valid category otherwise the bug->create will fail silently with
+	# success http status.  Will use default category (if exists), otherwise, default mover category
+	# otherwise no category if allowed.  If all fails, fail with a proper error code.
+	if ( !category_exists( $t_bug->category_id ) ) {
+		$t_bug->category_id = config_get( 'default_category_for_moves' );
+
+		if ( !category_exists( $t_bug->category_id ) ) {
+			if ( config_get( 'allow_no_category' ) == ON ) {
+				$t_bug->category_id = 0;
+			} else {
+				header( 'HTTP/1.0 406 Default category not found' );
+				$t_event = array( 'level' => 'error', 'comp' => 'email_reporting', 'event' => 'default_category_not_found' );
+				mantishub_event( $t_event );
+				mantishub_email_error( "Message rejected since default category wasn't found." );
+				exit;
+			}
+		}
+	}
+
 	if ( $t_generic_user ) {
 		$t_bug->additional_information = 'MantisHub Email Delivery From: ' . $f_from_name_email;
 	}
