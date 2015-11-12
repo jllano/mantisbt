@@ -274,27 +274,17 @@ if ( !access_has_project_level( REPORTER, (int)$t_project['id'], $t_user_id ) ) 
 #
 
 $f_attachment_count = gpc_get_int( 'attachment-count', 0 );
-$f_stripped_text = trim( gpc_get_string( 'stripped-text', '' ) );
-
-if ( empty( $f_stripped_text ) ) {
-	$f_stripped_text = trim( gpc_get_string( 'body-plain', '' ) );
-} else {
-	# mailgun returns stripped text terminated with >
-	$f_stripped_text = trim( $f_stripped_text );
-	if ( substr( $f_stripped_text, -1, 1 ) == '>' ) {
-		$f_stripped_text = substr( $f_stripped_text, 0, strlen( $f_stripped_text ) - 1 );
-		$f_stripped_text = trim( $f_stripped_text );
-	}
-}
 
 if ( $t_new_issue ) {
-	if ( empty( $f_stripped_text ) ) {
-		$f_stripped_text = $f_subject;
+	$f_body_plain = trim( gpc_get_string( 'body-plain', '' ) );
+
+	if ( empty( $f_body_plain ) ) {
+		$f_body_plain = $f_subject;
 	}
 
 	$t_bug = new BugData;
 	$t_bug->summary = $f_subject;
-	$t_bug->description = $f_stripped_text;
+	$t_bug->description = $f_body_plain;
 	$t_bug->project_id = (int)$t_project['id'];
 	$t_bug->reporter_id = $t_user_id;
 
@@ -326,6 +316,14 @@ if ( $t_new_issue ) {
 	$t_event = array( 'comp' => 'email_reporting', 'event' => 'creating_issue', 'issue_id' => $t_bug_id, 'file_count' => $f_attachment_count );
 	mantishub_event( $t_event );
 } else {
+	$f_stripped_text = trim( gpc_get_string( 'stripped-text', '' ) );
+
+	# mailgun returns stripped text terminated with >
+	if ( substr( $f_stripped_text, -1, 1 ) == '>' ) {
+		$f_stripped_text = substr( $f_stripped_text, 0, strlen( $f_stripped_text ) - 1 );
+		$f_stripped_text = trim( $f_stripped_text );
+	}
+
 	if ( is_blank( $f_stripped_text ) ) {
 		header( 'HTTP/1.0 406 Blank note in reply to issue notification' );
 		$t_event = array( 'level' => 'error', 'comp' => 'email_reporting', 'event' => 'empty_note' );
