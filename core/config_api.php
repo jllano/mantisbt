@@ -696,7 +696,12 @@ function config_is_private( $p_config_var ) {
 		case 'database_name':
 		case 'db_schema':
 		case 'db_type':
-		case 'master_crypto_salt':
+		case 'db_table_prefix':
+		case 'db_table_plugin_prefix':
+		case 'db_table_suffix':
+		case 'use_persistent_connections':
+		case 'dsn':
+		case 'crypto_master_salt':
 		case 'smtp_host':
 		case 'smtp_username':
 		case 'smtp_password':
@@ -708,9 +713,11 @@ function config_is_private( $p_config_var ) {
 		case 'class_path':
 		case 'library_path':
 		case 'language_path':
+		case 'config_path':
 		case 'session_save_path':
 		case 'session_handler':
 		case 'session_validation':
+		case 'form_security_validation':
 		case 'global_settings':
 		case 'system_font_folder':
 		case 'phpMailer_method':
@@ -722,9 +729,12 @@ function config_is_private( $p_config_var ) {
 		case 'ldap_root_dn':
 		case 'ldap_organization':
 		case 'ldap_uid_field':
+		case 'ldap_realname_field':
 		case 'ldap_bind_dn':
 		case 'ldap_bind_passwd':
 		case 'use_ldap_email':
+		case 'use_ldap_realname':
+		case 'ldap_simulation_file_path':
 		case 'ldap_protocol_version':
 		case 'login_method':
 		case 'cookie_path':
@@ -738,6 +748,7 @@ function config_is_private( $p_config_var ) {
 		case 'log_destination':
 		case 'dot_tool':
 		case 'neato_tool':
+		case 'debug_email':
 			return true;
 
 		# Marked obsolete in 1.3.0dev - keep here to make sure they are not disclosed by soap api.
