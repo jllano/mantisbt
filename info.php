@@ -29,20 +29,20 @@ html_robots_noindex();
 
 $t_info = array();
 
-$t_info['generation'] = config_get_global( 'mantishub_gen' );
+$t_info['generation'] = plan_gen();
 $t_info['package_type'] = trim( @file_get_contents( dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'package_type.txt' ) );
 $t_info['package_timestamp'] = trim( @file_get_contents( dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'package_timestamp.txt' ) );
 $t_info['trial'] = $g_mantishub_info_trial;
 $t_info['plan'] = plan_name();
 
-$t_issues_count = mantishub_table_row_count( 'bug' );
+$t_issues_count = plan_issues_count();
 
-$t_info['users_count'] = mantishub_table_row_count( 'user' );
-$t_info['team_count'] = mantishub_team_users();
-$t_info['projects_count'] = mantishub_table_row_count( 'project' );
+$t_info['users_count'] = plan_users_count();
+$t_info['team_count'] = plan_team_count();
+$t_info['projects_count'] = plan_projects_count();
 $t_info['issues_count'] = $t_issues_count;
 $t_info['team_packs'] = plan_user_packs_needed( $t_info['team_count'] );
-$t_info['attachments_count'] = mantishub_table_row_count( 'bug_file' );
+$t_info['attachments_count'] = plan_attachments_count();
 $t_info['email_queue_count'] = mantishub_table_row_count( 'email' );
 $t_info['server_ip'] = $_SERVER['SERVER_ADDR'];
 $t_info['logo'] = file_exists( dirname( __FILE__ ) . '/images/logo.png' );

@@ -74,6 +74,8 @@ function lang_load( $p_lang, $p_dir = null ) {
 		}
 	}
 
+	include( config_get( 'language_path' ) . 'strings_mantishub.txt' );
+
 	# Allow overriding strings declared in the language file.
 	# custom_strings_inc.php can use $g_active_language.
 	# Include file multiple times to allow for overrides per language.
