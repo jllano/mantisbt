@@ -21,7 +21,7 @@ $s_mantishub_backup_recent = 'You have created a backup in the last minute.';
 $s_mantishub_backup_request_button = 'Request Backup';
 $s_mantishub_backup_started_on = 'Backup started on %s and is still in progress.';
 $s_mantishub_backup_download_db = 'Download database and configuration (%1d KB created on %2s)';
-$s_mantishub_backup_download_attach = 'Download attachments (%1d KB created on %2s)';
+$s_mantishub_backup_download_attach = 'Download attachments (%1s KB created on %2s)';
 
 # Branding page
 $s_mantishub_branding_menu_option = 'Logo';
