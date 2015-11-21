@@ -63,11 +63,11 @@ if ( file_exists( $t_package_type_file_path ) ) {
 if ( $t_package_type == 'mantishub-1.2.x' || $t_package_type == 'mantishub-1.3.x' || $t_package_type == 'mantishub-1.3.x-m' ) {
 
 	if ( $t_package_type == 'mantishub-1.3.x-m' ) {
-		$t_title = 'Switch to Classic UI';
+		$t_title = lang_get( 'mantishub_switch_to_classic_ui' );
 		$t_image_prefix = 'classic';
 		$t_target_package_type = 'mantishub-1.3.x';
 	} else {
-		$t_title = 'Switch to Modern UI';
+		$t_title = lang_get( 'mantishub_switch_to_modern_ui' );
 		$t_image_prefix = 'modern';
 		$t_target_package_type = 'mantishub-1.3.x-m';
 	}
@@ -82,7 +82,7 @@ if ( $t_package_type == 'mantishub-1.2.x' || $t_package_type == 'mantishub-1.3.x
 <form method="post" action="package_type.php">
 	<?php echo form_security_field( 'package_type' ); ?>
 	<input type="hidden" name="package_type" value="<?php echo $t_target_package_type; ?>" />
-	<input type="submit" value="Switch Now" />
+	<input type="submit" value="<?php echo lang_get( 'mantishub_switch_now' ) ?>" />
 </form>
 
 <br />
