@@ -27,7 +27,7 @@ require_once( 'core.php' );
 
 auth_reauthenticate();
 
-html_page_top( 'Logo' );
+html_page_top( lang_get( 'mantishub_branding_menu_option' ) );
 
 print_manage_menu( 'adm_permissions_report.php' );
 print_manage_config_menu( 'logo_page.php' );
@@ -38,18 +38,18 @@ print_manage_config_menu( 'logo_page.php' );
 		<?php echo form_security_field( 'logo' ); ?>
 
 		<fieldset>
-			<legend><span>Update Branding</span></legend>
+			<legend><span><?php echo lang_get( 'mantishub_branding_update' ) ?></span></legend>
 			<div class="field-container">
-				<label for="name"><span>Company Name</span></label>
+				<label for="name"><span><?php echo lang_get( 'mantishub_branding_company_name' ) ?></span></label>
 				<input <?php echo helper_get_tab_index() ?> id="name" name="name" type="text" size="50" value="<?php echo config_get( 'window_title' ); ?>" />
 				<span class="label-style"></span>
 			</div>
 			<div class="field-container">
-				<label for="logo_file"><span>Logo file (smaller than 50K)</span></label>
+				<label for="logo_file"><span><?php echo lang_get( 'mantishub_branding_logo_file' ) ?></span></label>
 				<input <?php echo helper_get_tab_index() ?> id="logo_file" name="logo_file" type="file" size="50" />
 				<span class="label-style"></span>
 			</div>
-			<span class="submit-button"><input <?php echo helper_get_tab_index() ?> type="submit" class="button" value="Update" /></span>
+			<span class="submit-button"><input <?php echo helper_get_tab_index() ?> type="submit" class="button" value="<?php echo lang_get( 'mantishub_branding_submit_button' ) ?>" /></span>
 		</fieldset>
 	</form>
 </div>

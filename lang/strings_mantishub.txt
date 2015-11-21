@@ -23,3 +23,10 @@ $s_mantishub_backup_started_on = 'Backup started on %s and is still in progress.
 $s_mantishub_backup_download_db = 'Download database and configuration (%1d KB created on %2s)';
 $s_mantishub_backup_download_attach = 'Download attachments (%1d KB created on %2s)';
 
+# Branding page
+$s_mantishub_branding_menu_option = 'Logo';
+$s_mantishub_branding_update = 'Update Branding';
+$s_mantishub_branding_company_name = 'Company Name';
+$s_mantishub_branding_logo_file = 'Logo file (smaller than 50K)';
+$s_mantishub_branding_submit_button = 'Update';
+

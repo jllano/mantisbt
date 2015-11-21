@@ -1178,7 +1178,7 @@ function print_manage_config_menu( $p_page = '' ) {
 	                                                    'label' => 'manage_columns_config' );
 
 	$t_pages['logo_page.php'] = array( 'url'   => 'logo_page.php',
-	                                   'label' => 'Logo' );
+	                                   'label' => lang_get( 'mantishub_branding_menu_option' ) );
 
 	# Remove the link from the current page
 	if( isset( $t_pages[$p_page] ) ) {
