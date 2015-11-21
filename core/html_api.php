@@ -544,7 +544,7 @@ function print_manage_menu( $p_page = '' ) {
 
     if ( access_has_global_level( ADMINISTRATOR ) ) {
 		$t_pages['plan_page.php'] = array( 'url' => 'plan_page.php', 'label' => lang_get( 'mantishub_plan_menu_option' ) );
-        $t_pages['manage_backup_page.php'] = array( 'url' => 'manage_backup_page.php', 'label' => 'Backup' );
+        $t_pages['manage_backup_page.php'] = array( 'url' => 'manage_backup_page.php', 'label' => lang_get( 'mantishub_backup_menu_option' ) );
     }
 
 	# Plugin / Event added options
@@ -622,7 +622,7 @@ function print_manage_config_menu( $p_page = '' ) {
 	                                                    'label' => 'manage_columns_config' );
 
     $t_pages['logo_page.php'] = array( 'url'   => 'logo_page.php',
-                                       'label' => 'Logo' );
+                                       'label' => lang_get( 'mantishub_branding_menu_option' ) );
 
     # Plugin / Event added options
 	$t_event_menu_options = event_signal( 'EVENT_MENU_MANAGE_CONFIG' );

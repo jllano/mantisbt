@@ -27,7 +27,7 @@ require_once( 'core.php' );
 
 auth_reauthenticate();
 
-layout_page_header( 'Backup'  );
+layout_page_header( lang_get( 'mantishub_backup_menu_option' ) );
 
 layout_page_begin( 'manage_overview_page.php' );
 
@@ -50,7 +50,7 @@ access_ensure_global_level( ADMINISTRATOR );
     <div class="widget-main">
 <?php
 if ( mantishub_backup_in_progress() ) {
-	echo '<p>Backup started on ' . file_get_contents( mantishub_in_progress_file() ) . ' and is still in progress.</p>';
+	echo '<p>' . sprintf( lang_get( 'mantishub_backup_started_on' ), file_get_contents( mantishub_in_progress_file() ) ) . '</p>';
 } else {
 	$t_backup_timestamp = 0;
 
@@ -59,7 +59,7 @@ if ( mantishub_backup_in_progress() ) {
 		$t_file_size = number_format( filesize( $t_backup_data_file ) / 1024 );
 		$t_backup_timestamp = filemtime( $t_backup_data_file );
 		$t_file_timestamp = date( config_get( 'normal_date_format' ), $t_backup_timestamp );
-		echo '<p>Download <a href="manage_backup_download.php?type=data">database and configuration</a> (' . $t_file_size . 'KB created on ' . $t_file_timestamp . ').</p>';
+		echo '<p>' . sprintf( lang_get( 'mantishub_backup_download_db' ), $t_file_size, $t_file_timestamp ) . '</p>';
 	}
 
 	$t_backup_attach_file = mantishub_backup_attach_file();
@@ -67,7 +67,7 @@ if ( mantishub_backup_in_progress() ) {
 		$t_file_size = number_format( filesize( $t_backup_attach_file ) / 1024 );
 		$t_backup_timestamp = filemtime( $t_backup_attach_file );
 		$t_file_timestamp = date( config_get( 'normal_date_format' ), $t_backup_timestamp );
-		echo '<p>Download <a href="manage_backup_download.php?type=attach">attachments</a> (' . $t_file_size . 'KB created on ' . $t_file_timestamp . ').</p>';
+		echo '<p>' . sprintf( lang_get( 'mantishub_backup_download_attach' ), $t_file_size, $t_file_timestamp ) . '</p>';
 	}
 
 	if ( $t_backup_timestamp == 0 || ( time() - $t_backup_timestamp ) > 60 ) {
@@ -75,11 +75,11 @@ if ( mantishub_backup_in_progress() ) {
     <p class="lead">Start a new backup. It may take a couple of minutes.</p>
     <form name="manage_backup_form" method="post" enctype="multipart/form-data" action="manage_backup.php">
     <?php echo form_security_field( 'manage_backup' ); ?>
-        <input <?php echo helper_get_tab_index() ?> type="submit" class="btn btn-primary btn-white btn-round" value="Request Backup" />
+        <input <?php echo helper_get_tab_index() ?> type="submit" class="btn btn-primary btn-white btn-round" value="<?php echo lang_get( 'mantishub_backup_request_button' ) ?>" />
     </form>
 <?php
 	} else {
-		echo '<p class="lead">You have created a backup in the last minute.</p>';
+		echo '<p class="lead">' . lang_get( 'mantishub_backup_recent' ) . '</p>';
 	}
 }
 ?>

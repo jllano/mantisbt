@@ -1,5 +1,5 @@
 <?php
-# MantisHub Strings
+# Plan page
 $s_mantishub_plan_menu_option = 'Plan';
 $s_mantishub_plan_information = 'Plan Information';
 $s_mantishub_plan_level = 'Level';
@@ -8,9 +8,33 @@ $s_mantishub_plan_users_count = 'Users';
 $s_mantishub_plan_projects_count = 'Projects';
 $s_mantishub_plan_attachments_count = 'Attachments';
 $s_mantishub_plan_unlimited = 'unlimited';
-$s_mantishub_plan_value_of_limit = '%d of %s';
+$s_mantishub_plan_value_of_limit = '%1d of %2s';
 $s_mantishub_plan_trial = 'trial';
 $s_mantishub_plan_team_members = 'Team Members';
 $s_mantishub_plan_assign_access_level = '(access level for team members is "%s")';
 $s_mantishub_plan_team_packs = '%d team packs';
+
+# Backup page
+$s_mantishub_backup_menu_option = 'Backup';
+$s_mantishub_backup_start_message = 'Start a new backup.  It may take a couple of minutes.';
+$s_mantishub_backup_recent = 'You have created a backup in the last minute.';
+$s_mantishub_backup_request_button = 'Request Backup';
+$s_mantishub_backup_started_on = 'Backup started on %s and is still in progress.';
+$s_mantishub_backup_download_db = 'Download database and configuration (%1d KB created on %2s)';
+$s_mantishub_backup_download_attach = 'Download attachments (%1d KB created on %2s)';
+
+# Branding page
+$s_mantishub_branding_menu_option = 'Logo';
+$s_mantishub_branding_update = 'Update Branding';
+$s_mantishub_branding_company_name = 'Company Name';
+$s_mantishub_branding_logo_file = 'Logo file (smaller than 50K)';
+$s_mantishub_branding_submit_button = 'Update';
+
+# Switch Page
+$s_mantishub_switch_to_modern_ui = 'Switch to Modern UI';
+$s_mantishub_switch_to_classic_ui = 'Switch to Classic UI';
+$s_mantishub_switch_now = 'Switch Now';
+
+# Email Notifications
+$s_mantishub_email_footer = 'This email is a service from MantisHub.  Reply to add a comment to issue.  To learn more about using MantisHub, see our support portal at %s';
 

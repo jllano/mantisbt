@@ -27,7 +27,7 @@ require_once( 'core.php' );
 
 auth_reauthenticate();
 
-layout_page_header( 'Logo'  );
+layout_page_header( lang_get( 'mantishub_branding_menu_option' ) );
 
 layout_page_begin( 'manage_overview_page.php' );
 print_manage_menu( 'adm_config_report.php' );
@@ -39,7 +39,7 @@ print_manage_config_menu( 'logo_page.php' );
     <div class="widget-header widget-header-small">
         <h4 class="widget-title lighter">
             <i class="ace-icon fa fa-upload"></i>
-            <?php echo 'Update Branding' ?>
+            <?php echo lang_get( 'mantishub_branding_update' ) ?>
         </h4>
     </div>
     <form id="manage-logo-form" name="manage-logo-form" method="post" enctype="multipart/form-data" action="logo_set.php">
@@ -49,7 +49,7 @@ print_manage_config_menu( 'logo_page.php' );
         <table class="table table-bordered table-condensed">
             <tr class="field-container">
                 <th class="category" width="30%">
-                    <label for="name"><span>Company Name</span></label>
+                    <label for="name"><span><?php echo lang_get( 'mantishub_branding_company_name' ) ?></span></label>
                 </th>
                 <td>
                     <input <?php echo helper_get_tab_index() ?> id="name" name="name" type="text" size="50" value="<?php echo config_get( 'window_title' ); ?>" />
@@ -57,7 +57,7 @@ print_manage_config_menu( 'logo_page.php' );
             </tr>
             <tr>
                 <th class="category">
-                    <label for="logo_file"><span>Logo file (smaller than 50K)</span></label>
+                    <label for="logo_file"><span><?php echo lang_get( 'mantishub_branding_logo_file' ) ?></span></label>
                 </th>
                 <td width="70%">
                     <?php echo form_security_field( 'logo' ); ?>
@@ -69,7 +69,7 @@ print_manage_config_menu( 'logo_page.php' );
         </div>
     </div>
     <div class="widget-toolbox padding-8 clearfix">
-        <input <?php echo helper_get_tab_index() ?> type="submit" class="btn btn-primary btn-white btn-round" value="Update" />
+        <input <?php echo helper_get_tab_index() ?> type="submit" class="btn btn-primary btn-white btn-round" value="<?php echo lang_get( 'mantishub_branding_submit_button' ) ?>" />
     </div>
     </form>
     </div>
