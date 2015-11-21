@@ -8,15 +8,18 @@ auth_reauthenticate();
 
 access_ensure_global_level( ADMINISTRATOR );
 
-layout_page_header( 'Plan' );
+layout_page_header( lang_get( 'mantishub_plan_menu_option' ) );
 layout_page_begin();
+print_manage_menu( 'plan_page.php' );
 
 function print_plan_form_header( $p_title ) {
+	echo '<div class="col-md-12 col-xs-12">';
+	echo '<div class="space-10"></div>';
 	echo '<div class="form-container">';
 	echo '<div class="widget-box widget-color-blue2">';
 	echo '<div class="widget-header widget-header-small">';
 	echo '<h4 class="widget-title lighter">';
-	echo '<i class="ace-icon fa fa-user"></i>';
+	echo '<i class="ace-icon fa fa-shopping-cart"></i>';
 	echo $p_title;
 	echo '</h4>';
 	echo '</div>';
@@ -30,7 +33,7 @@ function print_plan_form_header( $p_title ) {
 function print_plan_form_footer() {
 	echo '</fieldset>';
 	echo '</table>';
-	echo '</div>';
+	echo '</div></div></div>';
 	layout_page_end();
 }
 
