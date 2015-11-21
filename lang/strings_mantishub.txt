@@ -35,3 +35,6 @@ $s_mantishub_switch_to_modern_ui = 'Switch to Modern UI';
 $s_mantishub_switch_to_classic_ui = 'Switch to Classic UI';
 $s_mantishub_switch_now = 'Switch Now';
 
+# Email Notifications
+$s_mantishub_email_footer = 'This email is a service from MantisHub.  Reply to add a comment to issue.  To learn more about using MantisHub, see our support portal at %s';
+

@@ -595,7 +595,7 @@ function mantishub_impersonation_email() {
 
 function mantishub_wrap_email( $p_issue_id, $p_message ) {
 	$t_message = $p_message;
-	$t_message .= "This email is a service from MantisHub.  Reply to add a comment to issue.  To learn more about using MantisHub, see our support portal at http://support.mantishub.com\n";
+	$t_message .= sprintf( lang_get( 'mantishub_email_footer' ), 'http://support.mantishub.com' ) . "\n";
 	return $t_message;
 }
 
