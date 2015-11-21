@@ -59,7 +59,7 @@ if ( mantishub_backup_in_progress() ) {
 		$t_file_size = number_format( filesize( $t_backup_data_file ) / 1024 );
 		$t_backup_timestamp = filemtime( $t_backup_data_file );
 		$t_file_timestamp = date( config_get( 'normal_date_format' ), $t_backup_timestamp );
-		echo '<p>' . sprintf( lang_get( 'mantishub_backup_download_db' ), $t_file_size, $t_file_timestamp ) . '</p>';
+		echo '<p><a href="manage_backup_download.php?type=data">' . sprintf( lang_get( 'mantishub_backup_download_db' ), $t_file_size, $t_file_timestamp ) . '</a></p>';
 	}
 
 	$t_backup_attach_file = mantishub_backup_attach_file();
@@ -67,7 +67,7 @@ if ( mantishub_backup_in_progress() ) {
 		$t_file_size = number_format( filesize( $t_backup_attach_file ) / 1024 );
 		$t_backup_timestamp = filemtime( $t_backup_attach_file );
 		$t_file_timestamp = date( config_get( 'normal_date_format' ), $t_backup_timestamp );
-		echo '<p>' . sprintf( lang_get( 'mantishub_backup_download_attach' ), $t_file_size, $t_file_timestamp ) . '</p>';
+		echo '<p><a href="manage_backup_download.php?type=attach">' . sprintf( lang_get( 'mantishub_backup_download_attach' ), $t_file_size, $t_file_timestamp ) . '</a></p>';
 	}
 
 	if ( $t_backup_timestamp == 0 || ( time() - $t_backup_timestamp ) > 60 ) {
