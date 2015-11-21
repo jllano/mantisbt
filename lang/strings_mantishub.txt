@@ -1,0 +1,14 @@
+<?php
+# MantisHub Strings
+$s_mantishub_plan_menu_option = 'Plan';
+$s_mantishub_plan_information = 'Plan Information';
+$s_mantishub_plan_level = 'Level';
+$s_mantishub_plan_issues_count = 'Issues';
+$s_mantishub_plan_users_count = 'Users';
+$s_mantishub_plan_projects_count = 'Projects';
+$s_mantishub_plan_attachments_count = 'Attachments';
+$s_mantishub_plan_unlimited = 'unlimited';
+$s_mantishub_plan_value_of_limit = '%d of %s';
+$s_mantishub_plan_trial = 'trial';
+$s_mantishub_plan_team_members = 'Team Members';
+

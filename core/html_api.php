@@ -543,6 +543,7 @@ function print_manage_menu( $p_page = '' ) {
 	}
 
     if ( access_has_global_level( ADMINISTRATOR ) ) {
+		$t_pages['plan_page.php'] = array( 'url' => 'plan_page.php', 'label' => lang_get( 'mantishub_plan_menu_option' ) );
         $t_pages['manage_backup_page.php'] = array( 'url' => 'manage_backup_page.php', 'label' => 'Backup' );
     }
 

@@ -531,7 +531,9 @@ HTML;
 	}	
 }
 
-function mantishub_team_users() {
+function mantishub_team_users_list_info() {
+	$t_info = array();
+
 	$t_handle_bug_threshold = config_get( 'handle_bug_threshold' );
 	if( is_array( $t_handle_bug_threshold ) ) {
 		$t_min = ADMINISTRATOR;
@@ -545,30 +547,47 @@ function mantishub_team_users() {
 		$t_handle_bug_threshold = $t_min;
 	}
 
+	$t_info['count'] = 0;
+	$t_info['access_level'] = $t_handle_bug_threshold;
+
 	# Count users that are enabled and can be assigned issues (based on their global access level).
-	$t_query = "SELECT id FROM {user} WHERE access_level >= $t_handle_bug_threshold AND enabled=1";
+	$t_query = "SELECT id, username FROM {user} WHERE access_level >= $t_handle_bug_threshold AND enabled=1";
 	$t_result = db_query( $t_query );
-	
-	$t_enabled_users = array();
+
+	$t_info['global_users'] = array();
+	$t_info['project_users'] = array();
 
 	while ( $t_row = db_fetch_array( $t_result ) ) {
 		$t_user_id = (int)$t_row['id'];
-		$t_enabled_users[$t_user_id] = '';
+		$t_username = $t_row['username'];
+
+		$t_info['global_users'][$t_user_id] = array( 'id' => $t_user_id, 'username' => $t_username );
 	}
 
 	# Count users that are enabled and can be assigned issues based on project specific access levels.
-	$t_query2 = "SELECT DISTINCT(p.user_id) user_id, p.project_id project_id FROM {project_user_list} p, {user} u WHERE p.user_id = u.id AND p.access_level >= $t_handle_bug_threshold AND u.enabled = 1";
+	$t_query2 = "SELECT DISTINCT(p.user_id) user_id, p.project_id project_id, u.username username FROM {project_user_list} p, {user} u WHERE p.user_id = u.id AND p.access_level >= $t_handle_bug_threshold AND u.enabled = 1";
 	$t_result2 = db_query( $t_query2 );
 
 	while ( $t_row = db_fetch_array( $t_result2 ) ) {
 		$t_user_id = (int)$t_row['user_id'];
-		$t_enabled_users[$t_user_id] = '';
+		$t_username = $t_row['username'];
+
+		if ( !isset( $t_info['global_users'][$t_user_id] ) &&
+				!isset( $t_info['project_users'][$t_user_id] ) ) {
+			$t_project_id = $t_row['project_id'];
+			$t_project_name = project_get_name( $t_project_id );
+			$t_info['project_users'][$t_user_id] = array( 'id' => $t_user_id, 'username' => $t_username, 'project' => $t_project_name );
+		}
 	}
 
-	$t_user_ids = array_keys( $t_enabled_users );
-	$t_team_users_count = count( $t_user_ids );
+	$t_info['count'] = count( $t_info['global_users'] ) + count( $t_info['project_users'] );
 
-	return $t_team_users_count;
+	return $t_info;
+}
+
+function plan_team_count() {
+	$t_result = mantishub_team_users_list_info();
+	return $t_result['count'];
 }
 
 /**
