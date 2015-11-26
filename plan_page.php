@@ -84,6 +84,7 @@ print_field( lang_get( 'mantishub_plan_projects_count' ), sprintf( $t_value_of_l
 print_field( lang_get( 'mantishub_plan_issues_count' ), sprintf( $t_value_of_limit, plan_issues_count(), plan_max_issues_string() ) );
 print_field( lang_get( 'mantishub_plan_users_count' ), sprintf( $t_value_of_limit, plan_users_count(), plan_max_users_string() ) );
 print_field( lang_get( 'mantishub_plan_attachments_count' ), sprintf( $t_value_of_limit, plan_attachments_count(), plan_max_attachments_string() ) );
+print_field( lang_get( 'mantishub_plan_disk_usage' ), sprintf( $t_value_of_limit, plan_get_disk_usage(), plan_get_disk_space_limit() ) );
 $t_team_members_value = sprintf( $t_value_of_limit, $t_result['count'], plan_max_team_members_string() );
 $t_team_members_value .= ' ' . sprintf( lang_get( 'mantishub_plan_assign_access_level' ), MantisEnum::getLabel( lang_get( 'access_levels_enum_string' ), $t_result['access_level'] ) );
 
