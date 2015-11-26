@@ -50,6 +50,40 @@ function plan_price() {
 	return $t_value;
 }
 
+function plan_get_disk_usage() {
+	$t_output = array();
+	$t_result = 0;
+
+	$t_root_path = dirname( dirname( __FILE__ ) );
+	if ( !file_exists( $t_root_path . '/core.php' ) ) {
+		return 'error';
+	}
+
+	# Possible exclusions, but won't be consistent with Stratus.
+	# --exclude="backup/*" --exclude="log*/*"
+	exec( 'du -c -b -h -s ' . $t_root_path, $t_output, $t_result );
+
+	$t_output = $t_output[0];
+	$t_line = str_replace( "\t", " ", $t_output );
+	$t_index = strpos( $t_line, ' ' );
+
+	return substr( $t_line, 0, $t_index );
+}
+
+function plan_get_disk_space_limit() {
+	if ( plan_is_platinum() ) {
+		$t_value = '10GB';
+	} else if ( plan_is_gold() ) {
+		$t_value = '4GB';
+	} else if ( plan_is_silver() ) {
+		$t_value = '2GB';
+	} else {
+		$t_value = '200MB';
+	}
+
+	return $t_value;
+}
+
 function plan_users_count() {
 	return mantishub_table_row_count( 'user' );
 }
