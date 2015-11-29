@@ -64,10 +64,16 @@ function plan_get_disk_usage() {
 	exec( 'du -c -b -h -s ' . $t_root_path, $t_output, $t_result );
 
 	$t_output = $t_output[0];
-	$t_line = str_replace( "\t", " ", $t_output );
+	$t_line = str_replace( "\t", ' ', $t_output );
 	$t_index = strpos( $t_line, ' ' );
+	$t_value = substr( $t_line, 0, $t_index );
 
-	return substr( $t_line, 0, $t_index );
+	# Add the B to the disk space multiplier
+	$t_value = str_replace( 'K', 'KB', $t_value );
+	$t_value = str_replace( 'M', 'MB', $t_value );
+	$t_value = str_replace( 'G', 'GB', $t_value );
+
+	return $t_value;
 }
 
 function plan_get_disk_space_limit() {
