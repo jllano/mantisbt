@@ -291,6 +291,7 @@ $s_email_notification_title_for_status_bug_resolved = 'The following issue has b
 $s_email_notification_title_for_status_bug_closed = 'The following issue has been CLOSED';
 $s_email_notification_title_for_action_bug_submitted = 'The following issue has been SUBMITTED.';
 $s_email_notification_title_for_action_bug_assigned = 'The following issue has been ASSIGNED.';
+$s_email_notification_title_for_action_bug_unassigned = 'The following issue has been UNASSIGNED.';
 $s_email_notification_title_for_action_bug_reopened = 'The following issue has been REOPENED.';
 $s_email_notification_title_for_action_bug_deleted = 'The following issue has been DELETED.';
 $s_email_notification_title_for_action_bug_updated = 'The following issue has been UPDATED.';
@@ -1438,6 +1439,7 @@ $s_status_changed_to = 'Status changes to';
 $s_email_on_deleted = 'E-mail on Deleted';
 $s_email_on_sponsorship_changed = 'E-mail on Sponsorship changed';
 $s_email_on_relationship_changed = 'E-mail on Relationship changed';
+$s_email_on_updated = 'Email on Updated';
 
 # Dynamic filters (load filter controls via AJAX upon request)
 $s_loading = 'Loading...';
