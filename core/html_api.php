@@ -310,7 +310,7 @@ function html_head_javascript() {
  * @return void
  */
 function html_head_end() {
-	event_signal('EVENT_LAYOUT_RESOURCES');
+	echo '</head>', "\n";
 }
 
 /**
@@ -676,6 +676,13 @@ function print_account_menu( $p_page = '' ) {
 
 	if( config_get( 'enable_sponsorship' ) == ON && access_has_project_level( config_get( 'view_sponsorship_total_threshold' ) ) && !current_user_is_anonymous() ) {
 		$t_pages['account_sponsor_page.php'] = array( 'url'=>'account_sponsor_page.php', 'label'=>'my_sponsorship' );
+	}
+
+	$t_pages['api_tokens_page.php'] = array( 'url' => 'api_tokens_page.php', 'label' => 'api_tokens_link' );
+
+	# Remove the link from the current page
+	if( isset( $t_pages[$p_page] ) ) {
+		$t_pages[$p_page]['url'] = '';
 	}
 
 	# Plugin / Event added options
@@ -1274,5 +1281,10 @@ function html_buttons_view_bug_page( $p_bug_id ) {
  * Build CSS including project or even user-specific colors ?
  */
 function html_get_status_css_class( $p_status, $p_user = null, $p_project = null ) {
-	return string_attribute( MantisEnum::getLabel( config_get( 'status_enum_string', null, $p_user, $p_project ), $p_status ) . '-color' );
+	$t_status_enum = config_get( 'status_enum_string', null, $p_user, $p_project );
+	if( MantisEnum::hasValue( $t_status_enum, $p_status ) ) {
+		return 'status-' . $p_status . '-color';
+	} else {
+		return '';
+	}
 }
