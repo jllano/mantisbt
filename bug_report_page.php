@@ -620,13 +620,14 @@ if( $t_show_attachments ) {
 				echo '<br />';
 			}
 		}
-	}
 ?>
 			</div>
 		</td>
 	</tr>
 
 <?php
+	}
+
 	if( $t_show_view_state ) {
 ?>
 	<tr>

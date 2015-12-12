@@ -91,7 +91,10 @@ function access_denied() {
 				echo '<p class="center">' . error_string( ERROR_ACCESS_DENIED ) . '</p><p class="center">';
 				print_small_button( helper_mantis_url( 'login_page.php' ) . '?return=' . $t_return_page, lang_get( 'click_to_login' ) );
 				echo '</p><p class="center">';
-				print_small_button( helper_mantis_url( 'main_page.php' ), lang_get( 'proceed' ) );
+				print_small_button(
+						helper_mantis_url( config_get( 'default_home_page' ) ),
+						lang_get( 'proceed' )
+				);
 				echo '</p>';
 			}
 		} else {
@@ -102,7 +105,10 @@ function access_denied() {
 			echo '<div class="alert alert-danger">';
 			echo '<div class="center bigger-130">' . error_string( ERROR_ACCESS_DENIED ) . '</p>';
 			echo '<p class="center">';
-			print_button( helper_mantis_url( 'main_page.php' ), lang_get( 'proceed' ) );
+			print_button(
+					helper_mantis_url( config_get( 'default_home_page' ) ),
+					lang_get( 'proceed' )
+			);
 			echo '</p>';
 			echo '</div></div>';
 			layout_admin_page_end();

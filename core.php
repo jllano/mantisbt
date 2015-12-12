@@ -78,19 +78,6 @@ if( file_exists( $g_config_path . 'custom_constants_inc.php' ) ) {
 	require_once( $g_config_path . 'custom_constants_inc.php' );
 }
 
-$t_plan_include_file = 'mantishub_plan_inc.php';
-if ( !file_exists( dirname( __FILE__ ).DIRECTORY_SEPARATOR . $t_plan_include_file ) ) {
-	echo "MantisHub plan file '$t_plan_include_file' is missing.";
-	exit;
-}
-
-require_once( dirname( __FILE__ ) . DIRECTORY_SEPARATOR . $t_plan_include_file );
-
-# Include MantisHub defaults after plan
-require_once( dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'mantishub_config_defaults_inc.php' );
-
-require_api( 'plan_api.php' );
-
 # config_inc may not be present if this is a new install
 $t_config_inc_found = false;
 
@@ -103,6 +90,20 @@ if( file_exists( $g_config_path . 'custom_config_inc.php' ) ) {
 	require_once( $g_config_path . 'custom_config_inc.php' );
 	$t_config_inc_found = true;
 }
+
+$t_plan_include_file = 'mantishub_plan_inc.php';
+if ( !file_exists( dirname( __FILE__ ).DIRECTORY_SEPARATOR . $t_plan_include_file ) ) {
+	echo "MantisHub plan file '$t_plan_include_file' is missing.";
+	exit;
+}
+
+require_once( dirname( __FILE__ ) . DIRECTORY_SEPARATOR . $t_plan_include_file );
+
+# Include MantisHub defaults after plan and config_inc.php so we can set defaults based on
+# plan (from plan file) and generation (form config_inc.php).
+require_once( dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'mantishub_config_defaults_inc.php' );
+
+require_api( 'plan_api.php' );
 
 require_once( dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'mantishub_config_inc.php' );
 
