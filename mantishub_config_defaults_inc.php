@@ -89,3 +89,8 @@
 	# Use CDN to optimize performance
 	$g_cdn_enabled = ON;
 
+	# In generation 3 and above, disable sub-projects by default.
+	if ( $g_mantishub_gen >= 3 ) {
+		$g_subprojects_enabled = OFF;
+	}
+
