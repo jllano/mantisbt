@@ -356,18 +356,11 @@ $g_signup_use_captcha	= ON;
 
 /**
  * absolute path (with trailing slash!) to folder which contains your
- * TrueType-Font files used to create the captcha image and since 0.19.3 for
- * the Relationship Graphs
+ * TrueType-Font files used for the Relationship Graphs,
+ * the Workflow Graphs and the MantisGraph plugin
  * @global string $g_system_font_folder
  */
 $g_system_font_folder	= '';
-
-/**
- * font name used to create the captcha image. i.e. arial.ttf
- * (the font file has to exist in the system_font_folder)
- * @global string $g_font_per_captcha
- */
-$g_font_per_captcha	= 'arial.ttf';
 
 /**
  * Setting to disable the 'lost your password' feature.
@@ -4080,6 +4073,13 @@ $g_due_date_view_threshold = NOBODY;
 ################
 # Sub-projects #
 ################
+
+/**
+ * Whether sub-projects feature should be enabled.  Before turning this flag OFF,
+ * make sure all sub-projects are moved to top level projects, otherwise
+ * they won't be accessible.
+ */
+$g_subprojects_enabled = ON;
 
 /**
  * Sub-projects should inherit categories from parent projects.

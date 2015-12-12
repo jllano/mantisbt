@@ -215,22 +215,34 @@ function email_ensure_not_disposable( $p_email ) {
 }
 
 /**
- * email_notify_flag
  * Get the value associated with the specific action and flag.
  * For example, you can get the value associated with notifying "admin"
  * on action "new", i.e. notify administrators on new bugs which can be
  * ON or OFF.
  * @param string $p_action Action.
  * @param string $p_flag   Flag.
- * @return integer
+ * @return integer 1 - enabled, 0 - disabled.
  */
 function email_notify_flag( $p_action, $p_flag ) {
+	# If flag is specified for the specific event, use that.
 	$t_notify_flags = config_get( 'notify_flags' );
-	$t_default_notify_flags = config_get( 'default_notify_flags' );
 	if( isset( $t_notify_flags[$p_action][$p_flag] ) ) {
 		return $t_notify_flags[$p_action][$p_flag];
-	} else if( isset( $t_default_notify_flags[$p_flag] ) ) {
+	}
+
+	# If not, then use the default if specified in database or global.
+	# Note that web UI may not support or specify all flags (e.g. explicit),
+	# hence, if config is retrieved from database it may not have the flag.
+	$t_default_notify_flags = config_get( 'default_notify_flags' );
+	if( isset( $t_default_notify_flags[$p_flag] ) ) {
 		return $t_default_notify_flags[$p_flag];
+	}
+
+	# If the flag is not specified so far, then force using global config which
+	# should have all flags specified.
+	$t_global_default_notify_flags = config_get_global( 'default_notify_flags' );
+	if( isset( $t_global_default_notify_flags[$p_flag] ) ) {
+		return $t_global_default_notify_flags[$p_flag];
 	}
 
 	return OFF;
@@ -455,12 +467,11 @@ function email_collect_recipients( $p_bug_id, $p_notify_type, array $p_extra_use
 /**
  * Send password to user
  * @param integer $p_user_id      A valid user identifier.
- * @param string  $p_password     A valid password.
  * @param string  $p_confirm_hash Confirmation hash.
  * @param string  $p_admin_name   Administrator name.
  * @return void
  */
-function email_signup( $p_user_id, $p_password, $p_confirm_hash, $p_admin_name = '' ) {
+function email_signup( $p_user_id, $p_confirm_hash, $p_admin_name = '' ) {
 	if( ( OFF == config_get( 'send_reset_password' ) ) || ( OFF == config_get( 'enable_email_notification' ) ) ) {
 		return;
 	}
@@ -569,7 +580,7 @@ function email_generic( $p_bug_id, $p_notify_type, $p_message_id = null, array $
 	# @todo yarick123: email_collect_recipients(...) will be completely rewritten to provide additional information such as language, user access,..
 	# @todo yarick123:sort recipients list by language to reduce switches between different languages
 	$t_recipients = email_collect_recipients( $p_bug_id, $p_notify_type, $p_extra_user_ids_to_email );
-	email_generic_to_recipients( $p_bug_id, $p_notify_type, $t_recipients, $p_message_id, $p_header_optional_params, $p_extra_user_ids_to_email );
+	email_generic_to_recipients( $p_bug_id, $p_notify_type, $t_recipients, $p_message_id, $p_header_optional_params );
 }
 
 /**
@@ -602,7 +613,7 @@ function email_generic_to_recipients( $p_bug_id, $p_notify_type, array $p_recipi
 			lang_push( user_pref_get_language( $t_user_id, $t_project_id ) );
 
 			$t_visible_bug_data = email_build_visible_bug_data( $t_user_id, $p_bug_id, $p_message_id );
-			email_bug_info_to_one_user( $t_visible_bug_data, $p_message_id, $t_project_id, $t_user_id, $p_header_optional_params );
+			email_bug_info_to_one_user( $t_visible_bug_data, $p_message_id, $t_user_id, $p_header_optional_params );
 
 			lang_pop();
 		}
@@ -1217,7 +1228,7 @@ function email_bug_reminder( $p_recipients, $p_bug_id, $p_message ) {
 			$t_sender_email = '';
 		}
 		$t_header = "\n" . lang_get( 'on_date' ) . ' ' . $t_date . ', ' . $t_sender . ' ' . $t_sender_email . lang_get( 'sent_you_this_reminder_about' ) . ': ' . "\n\n";
-		$t_contents = $t_header . string_get_bug_view_url_with_fqdn( $p_bug_id, $t_recipient ) . " \n\n" . $p_message;
+		$t_contents = $t_header . string_get_bug_view_url_with_fqdn( $p_bug_id ) . " \n\n" . $p_message;
 
 		$t_mail_headers = array();
 		$t_reply_to = mantishub_reply_to_address( $p_bug_id );
@@ -1244,12 +1255,11 @@ function email_bug_reminder( $p_recipients, $p_bug_id, $p_message ) {
  * return true on success
  * @param array   $p_visible_bug_data       Array of bug data information.
  * @param string  $p_message_id             A message identifier.
- * @param integer $p_project_id             A project identifier.
  * @param integer $p_user_id                A valid user identifier.
  * @param array   $p_header_optional_params Array of additional email headers.
  * @return void
  */
-function email_bug_info_to_one_user( array $p_visible_bug_data, $p_message_id, $p_project_id, $p_user_id, array $p_header_optional_params = null ) {
+function email_bug_info_to_one_user( array $p_visible_bug_data, $p_message_id, $p_user_id, array $p_header_optional_params = null ) {
 	$t_user_email = user_get_email( $p_user_id );
 
 	# check whether email should be sent
@@ -1262,7 +1272,6 @@ function email_bug_info_to_one_user( array $p_visible_bug_data, $p_message_id, $
 	$t_subject = email_build_subject( $p_visible_bug_data['email_bug'] );
 
 	# build message
-
 	$t_message = lang_get_defaulted( $p_message_id, null );
 
 	if( is_array( $p_header_optional_params ) ) {
