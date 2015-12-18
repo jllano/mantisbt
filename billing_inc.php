@@ -173,6 +173,24 @@ $t_block_icon = $t_collapse_block ? 'fa-chevron-down' : 'fa-chevron-up';
 		}
 
 		$t_prev_id = -1;
+
+		echo '<br />';
+
+		$t_exports = array(
+			'csv_export' => 'billing_export_to_csv.php',
+			'excel_export' => 'billing_export_to_excel.php',
+		);
+
+		foreach( $t_exports as $t_export_label => $t_export_page ) {
+			echo '[ <a href="' . $t_export_page . '?';
+			echo 'from=' . $t_from . '&amp;to=' . $t_to;
+			echo '&amp;cost=' . $f_bugnote_cost;
+			echo '&amp;project_id=' . $f_project_id;
+			echo '">' . lang_get( $t_export_label ) . '</a> ] ';
+		}
+
+		echo '<br />';
+
 ?>
 <div class="space-10"></div>
 <div class="table-responsive">
