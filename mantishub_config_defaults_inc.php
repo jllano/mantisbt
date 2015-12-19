@@ -94,3 +94,6 @@
 		$g_subprojects_enabled = OFF;
 	}
 
+	$g_log_level = LOG_EMAIL | LOG_EMAIL_RECIPIENT;
+	$g_log_destination = 'none';
+
