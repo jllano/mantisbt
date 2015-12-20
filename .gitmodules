@@ -37,3 +37,6 @@
 [submodule "plugins/HipChat"]
 	path = plugins/HipChat
 	url = git@bitbucket.org:mantishub/slack.git
+[submodule "plugins/EventLog"]
+	path = plugins/EventLog
+	url = https://github.com/mantisbt-plugins/EventLog
