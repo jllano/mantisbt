@@ -103,6 +103,17 @@ if( file_exists( $g_config_path . 'custom_config_inc.php' ) ) {
 	$t_config_inc_found = true;
 }
 
+# Add this for compatibility with mantisbt standard of having config/config_inc.php
+# instead of MantisHub where /config_inc.php is used for environment (e.g. db) and
+# /config/custom_config_inc.php for customer customizations (e.g. statuses,
+# anonymous access).
+if ( !$t_config_inc_found ) {
+	if( file_exists( $g_config_path . 'config_inc.php' ) ) {
+		require_once( $g_config_path . 'config_inc.php' );
+		$t_config_inc_found = true;
+	}
+}
+
 require_api( 'plan_api.php' );
 
 require_once( dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'mantishub_config_inc.php' );
