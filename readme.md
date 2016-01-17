@@ -14,6 +14,22 @@ Requirements
  * PHP 5.3.2+
  * a webserver (e.g. Apache or IIS)
 
+Setting up [Cloud 9 IDE](http://c9.io)
+--------------------------------------
+
+Create a private workspace with php template and providing the git clone url
+
+Download submodules
+
+    git submodule update --init
+
+Create plan information file
+
+    cp mantishub_plan_inc.gold.php mantishub_plan_inc.php
+
+Run the project, which will redirect you to the installation page.
+Use database username root and empty password.
+
 Installation
 ------------
 
