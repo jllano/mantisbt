@@ -36,20 +36,19 @@ if ( $g_mantishub_info_trial && current_user_is_administrator() ) {
                         <a class="accordion-toggle <?php echo $t_active_step == 1 ? '' : 'collapsed' ?>" data-toggle="collapse" data-parent="#step-list-1" href="#step-1-1">
                             <i data-icon-show="ace-icon fa fa-chevron-left" data-icon-hide="ace-icon fa fa-chevron-down" class="pull-right ace-icon fa <?php echo $t_active_step == 1 ? 'fa-chevron-down' : 'fa-chevron-left' ?>"></i>
                             <i class="ace-icon fa fa-plus bigger-130"></i>
-                            &nbsp; Create your first project
+                            &nbsp; Create your projects
                         </a>
                     </div>
                     <div id="step-1-1" class="panel-collapse collapse <?php echo $t_active_step == 1 ? 'in' : ''  ?>" style="height: auto;">
                         <div class="panel-body">
-                            Issues belong to projects. So before doing anything else, let's first create the first
-                            project:
+                            We have already pre-created your first project. However, if you would like to create more projects,
+                            you can create them as follows:
                             <div class="space-4"></div>
                             <ul>
                                 <li>Click on 'Manage' on the sidebar menu</li>
                                 <li>Click on 'Manage Projects' at the top menu bar</li>
-                                <li>Click on 'Create New Project' and enter 'Demo' as the project name</li>
+                                <li>Click on 'Create New Project' and enter the project name</li>
                             </ul>
-                            That's it. You now have a project.
                         </div>
                     </div>
                 </div>
