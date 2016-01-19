@@ -225,7 +225,8 @@ $t_block_icon = $t_collapse_block ? 'fa-chevron-down' : 'fa-chevron-up';
 
 			$t_item['sum_time_tracking'] = db_minutes_to_hhmm( $t_item['sum_time_tracking'] );
 			if( $t_item['bug_id'] != $t_prev_id ) {
-				$t_link = sprintf( lang_get( 'label' ), string_get_bug_view_link( $t_item['bug_id'] ) ) . lang_get( 'word_separator' ) . string_display( $t_item['summary'] );
+				$t_project_info = ( !isset( $f_bug_id ) && $f_project_id == ALL_PROJECTS ) ? '[' . project_get_name( $t_item['project_id'] ) . ']' . lang_get( 'word_separator' ) : '';
+				$t_link = sprintf( lang_get( 'label' ), string_get_bug_view_link( $t_item['bug_id'] ) ) . lang_get( 'word_separator' ) . $t_project_info . string_display( $t_item['summary'] );
 				echo '<tr><td colspan="4">' . $t_link . '</td></tr>';
 				$t_prev_id = $t_item['bug_id'];
 			}
