@@ -61,3 +61,5 @@ attach/
 config/
 backup/
 log/
+
+/vendor/

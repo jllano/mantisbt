@@ -1,0 +1,13 @@
+{
+    "name": "mantisbt/mantisbt",
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "Victor Boctor",
+            "email": "vboctor@mantisbt.org"
+        }
+    ],
+    "require": {
+        "auth0/auth0-php": "~3.0"
+    }
+}

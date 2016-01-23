@@ -40,3 +40,6 @@
 [submodule "plugins/EventLog"]
 	path = plugins/EventLog
 	url = https://github.com/mantisbt-plugins/EventLog
+[submodule "plugins/Auth0"]
+	path = plugins/Auth0
+	url = git@bitbucket.org:mantishub/auth0.git
