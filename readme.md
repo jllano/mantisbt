@@ -30,6 +30,17 @@ Create plan information file
 Run the project, which will redirect you to the installation page.
 Use database username root and empty password.
 
+Enable strict error checking for development
+
+    $g_display_errors = array(
+        E_USER_ERROR        => DISPLAY_ERROR_HALT,
+        E_RECOVERABLE_ERROR => DISPLAY_ERROR_HALT,
+        E_WARNING           => DISPLAY_ERROR_HALT,
+        E_ALL               => DISPLAY_ERROR_HALT,
+    );
+
+    $g_show_detailed_errors = ON;
+
 Installation
 ------------
 
