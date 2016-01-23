@@ -41,7 +41,8 @@ if ( $g_mantishub_info_trial && current_user_is_administrator() ) {
                     </div>
                     <div id="step-1-1" class="panel-collapse collapse <?php echo $t_active_step == 1 ? 'in' : ''  ?>" style="height: auto;">
                         <div class="panel-body">
-                            We have already pre-created your first project. However, if you would like to create more projects,
+                            We have already pre-created your first project and called it 'MyProject'.
+                            However, if you would like to create more projects,
                             you can create them as follows:
                             <div class="space-4"></div>
                             <ul>
@@ -65,12 +66,13 @@ if ( $g_mantishub_info_trial && current_user_is_administrator() ) {
                         <div class="panel-body">
                             Projects grow big. Sooner or later you will need to get a bit organized by classifying
                             issues into different categories. This will help your team filter to only issues in their area
-                            of interest. For 'Demo' project, let's create three categories: 'Website', 'Backend', 'Mobile'
+                            of interest. For the 'MyProject' project, let's create three categories:
+                            'Website', 'Backend', 'Mobile'
                             <div class="space-4"></div>
                             <ul>
                                 <li>Click on 'Manage' on the sidebar menu</li>
                                 <li>Click on 'Manage Projects' at the top menu bar</li>
-                                <li>Click on the 'Demo' project name</li>
+                                <li>Click on the 'MyProject' project name</li>
                                 <li>Scroll down to 'Categories' section</li>
                                 <li>Enter 'Website' in the edit box and click on 'Add Category'</li>
                                 <li>Repeat for 'Backend' &amp; 'Mobile' categories</li>
@@ -89,7 +91,7 @@ if ( $g_mantishub_info_trial && current_user_is_administrator() ) {
                     </div>
                     <div id="step-1-3" class="panel-collapse collapse <?php echo $t_active_step == 3 ? 'in' : ''  ?>">
                         <div class="panel-body">
-                            You should be all set to create an issue or bug report against the 'Demo' project you created
+                            You should be all set to create an issue or bug report against the 'MyProject' project you created
                             earlier:
                             <div class="space-4"></div>
                             <ul>
