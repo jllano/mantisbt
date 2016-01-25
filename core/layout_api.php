@@ -314,6 +314,7 @@ function layout_login_page_begin() {
 	layout_head_meta();
 	html_css();
 	layout_head_css();
+	html_head_javascript();
 	html_rss_link();
 
 	$t_favicon_image = config_get( 'favicon_image' );
@@ -340,11 +341,19 @@ function layout_login_page_begin() {
  */
 function layout_login_page_end() {
 	echo '</div>';
+
+	# Should code need to be added to this function in the future, it should be 
+	# placed *above* this event, which needs to be the last thing to occur 
+	# before the actual body ends (see #20084) 
+	event_signal( 'EVENT_LAYOUT_BODY_END' );
+
 	layout_main_content_end();
 	layout_main_container_end();
 	layout_body_javascript();
     mantishub_google_analytics();
 	echo '</body>', "\n";
+	html_end();
+
 }
 
 /**
