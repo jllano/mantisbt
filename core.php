@@ -98,6 +98,11 @@ require_once( dirname( __FILE__ ) . DIRECTORY_SEPARATOR . $t_plan_include_file )
 # plan (from plan file) and generation (form config_inc.php).
 require_once( dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'mantishub_config_defaults_inc.php' );
 
+$t_config_global_inc_file = dirname( __FILE__ ) . '/config/config_global_inc.php';
+if( file_exists( $t_config_global_inc_file ) ) {
+	require_once( $t_config_global_inc_file );
+}
+
 if( file_exists( $g_config_path . 'custom_config_inc.php' ) ) {
 	require_once( $g_config_path . 'custom_config_inc.php' );
 	$t_config_inc_found = true;
