@@ -348,6 +348,7 @@ function layout_login_page_end() {
 	event_signal( 'EVENT_LAYOUT_BODY_END' );
 
 	layout_main_content_end();
+	layout_footer();
 	layout_main_container_end();
 	layout_body_javascript();
     mantishub_google_analytics();
