@@ -154,3 +154,6 @@
 			$g_bug_change_status_page_fields,
 			$t_columns_to_remove );
 	}
+
+	$g_global_settings[] = 'allow_per_project_upload_path';
+
