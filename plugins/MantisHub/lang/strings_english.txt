@@ -1,0 +1,9 @@
+<?php
+/**************************************************************************
+ MantisHub Plugin
+ Copyright (c) MantisHub - Victor Boctor
+ All rights reserved.
+ **************************************************************************/
+
+$s_plugin_MantisHub_title = 'MantisHub';
+$s_plugin_MantisHub_description = 'A plugin that provides miscellaneous MantisHub add-on features.';
