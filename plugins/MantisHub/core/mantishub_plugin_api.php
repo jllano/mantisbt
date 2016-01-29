@@ -11,7 +11,7 @@ require_api( 'user_api.php' );
 /**
  * A method that logins in the user using the 'administrator' account that is
  * created as part of installation.  This method will only enable login if the
- * administrator hasn't logged in before (i.e. login_count = 0).
+ * instances is verified to not have been used yet.
  *
  * For authentication, it expects a token that is calculated based on the
  * following formula:
@@ -31,8 +31,8 @@ function mantishub_login_to_new_instance( $p_token ) {
         return false;
     }
 
-    $t_login_count = user_get_field( $t_user_id, 'login_count'  );
-    if( $t_login_count != 0 ) {
+    if ( mantishub_table_row_count( 'bug' ) != 0 ||
+         mantishub_table_row_count( 'user' ) != 1 ) {
         return false;
     }
 
