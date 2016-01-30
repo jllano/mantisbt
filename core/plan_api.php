@@ -193,3 +193,114 @@ function plan_is_bronze() {
 	return plan_name() == 'Bronze';
 }
 
+function plan_info_file_path() {
+	global $g_config_path;
+	$t_json_filename = $g_config_path . 'info.json';
+	return $t_json_filename;
+}
+
+function plan_update_info( $p_force_refresh = false ) {
+	global $g_mantishub_info_trial, $g_mantishub_info_creation_date;
+	$t_json_filename = plan_info_file_path();
+
+	# If force refresh, json file doesn't exist, or older than 30-60 mins, then update it.
+	# The reason for the randomness is to distribute the time where instances update so it
+	# is not synchronized and hence reducing load.
+	if( $p_force_refresh ||
+	    !file_exists( $t_json_filename ) ||
+	    ( time() - filemtime( $t_json_filename ) ) > rand( 1800, 3600 ) ) {
+		$t_root_path = dirname( dirname( __FILE__ ) ) . '/';
+		$t_info = array();
+		$t_info['generation'] = plan_gen();
+		$t_info['package_type'] = trim( @file_get_contents( $t_root_path . 'package_type.txt' ) );
+		$t_info['package_timestamp'] = trim( @file_get_contents( $t_root_path . 'package_timestamp.txt' ) );
+		$t_info['trial'] = $g_mantishub_info_trial;
+		$t_info['plan'] = plan_name();
+
+		$t_issues_count = plan_issues_count();
+
+		$t_info['users_count'] = plan_users_count();
+		$t_info['team_count'] = plan_team_count();
+		$t_info['projects_count'] = plan_projects_count();
+		$t_info['issues_count'] = $t_issues_count;
+		$t_info['team_packs'] = plan_user_packs_needed( $t_info['team_count'] );
+		$t_info['attachments_count'] = plan_attachments_count();
+		$t_info['email_queue_count'] = mantishub_table_row_count( 'email' );
+		$t_info['server_ip'] = $_SERVER['SERVER_ADDR'];
+		$t_info['logo'] = file_exists( dirname( __FILE__ ) . '/images/logo.png' );
+		$t_info['creation_timestamp'] = strftime( '%m/%d/%Y %H:%M:%S', $g_mantishub_info_creation_date );
+		if ( $t_issues_count > 0 ) {
+			$t_info['last_activity_timestamp'] = strftime( '%m/%d/%Y %H:%M:%S', mantishub_last_issue_update() );
+		} else {
+			$t_info['last_activity_timestamp'] = $t_info['creation_date'];
+		}
+
+		# Add fields that we don't want to disclose on the web, but just internally on the server
+		# for cronjobs to use.
+		$t_info['administrator_email'] = config_get_global( 'mantishub_info_administrator_email' );
+		$t_info['administrator_firstname'] = config_get_global( 'mantishub_info_administrator_firstname' );
+		$t_info['administrator_lastname'] = config_get_global( 'mantishub_info_administrator_lastname' );
+
+		$t_info['company'] = config_get_global( 'mantishub_info_company' );
+
+		$t_info['value'] = plan_price() + $t_info['team_packs'] * 10;
+
+		$t_output = array();
+		exec( 'hostname', $t_output );
+		$t_info['hostname'] = str_replace( '.mantishub.com', '', $t_output[0] );
+
+		# In dev machine, this access may not be granted
+		$t_json = json_encode( $t_info );
+		@file_put_contents( $t_json_filename, $t_json );
+	}
+
+	# return void.
+	return;
+}
+
+function plan_info_get_public( $p_force_push = false ) {
+	plan_update_info( $p_force_push );
+
+	$t_json_filename = plan_info_file_path();
+	if( !file_exists( $t_json_filename ) ) {
+		return null;
+	}
+
+	$t_json = @file_get_contents( $t_json_filename );
+	if( $t_json === false ) {
+		return null;
+	}
+
+	$t_info = json_decode( $t_json );
+	if ( $t_info === null ) {
+		return null;
+	}
+
+	$t_public_fields = array(
+		'package_timestamp',
+		'creation_timestamp',
+		'last_activity_timestamp',
+		'issues_count',
+		'projects_count',
+		'users_count',
+		'team_count',
+		'team_packs',
+		'attachments_count',
+		'email_queue_count',
+		'server_ip',
+		'trial',
+		'logo',
+		'plan',
+		'package_type',
+		'generation'
+	);
+
+	$t_result = array();
+
+	foreach( $t_public_fields as $t_field ) {
+		$t_result[$t_field] = $t_info->$t_field;
+	}
+
+	return $t_result;
+}
+
