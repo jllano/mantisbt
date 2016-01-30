@@ -44,8 +44,8 @@ class MantisHubPlugin extends MantisPlugin {
 	 * Operations to do when a page is rendered.
 	 */
 	function handle_page_render() {
-		# This will internally check the timestamp and will run once every 30-60
-		# minutes.
+		# This will internally check the timestamp for last update of info and
+		# only run it every reasonable duration.
 		plan_update_info();
 	}
 }

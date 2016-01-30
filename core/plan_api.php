@@ -203,12 +203,12 @@ function plan_update_info( $p_force_refresh = false ) {
 	global $g_mantishub_info_trial, $g_mantishub_info_creation_date;
 	$t_json_filename = plan_info_file_path();
 
-	# If force refresh, json file doesn't exist, or older than 30-60 mins, then update it.
+	# If force refresh, json file doesn't exist, or older than 3-6 hours, then update it.
 	# The reason for the randomness is to distribute the time where instances update so it
 	# is not synchronized and hence reducing load.
 	if( $p_force_refresh ||
 	    !file_exists( $t_json_filename ) ||
-	    ( time() - filemtime( $t_json_filename ) ) > rand( 1800, 3600 ) ) {
+	    ( time() - filemtime( $t_json_filename ) ) > rand( 3 * 3600, 6 * 3600 ) ) {
 		$t_root_path = dirname( dirname( __FILE__ ) ) . '/';
 		$t_info = array();
 		$t_info['generation'] = plan_gen();
