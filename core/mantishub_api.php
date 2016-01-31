@@ -10,6 +10,12 @@
  */
 require_once( dirname( dirname( __FILE__ ) ) . DIRECTORY_SEPARATOR . 'core.php' );
 
+# MantisHub Guide Steps
+define( 'MANTISHUB_GUIDE_PROJECT',  1 );
+define( 'MANTISHUB_GUIDE_CATEGORY', 2 );
+define( 'MANTISHUB_GUIDE_BUG',      3 );
+define( 'MANTISHUB_GUIDE_USER',     4 );
+
 // for log correlation.
 $global_log_request_id = time();
 
@@ -30,6 +36,34 @@ function mantishub_impersonation() {
 	$t_impersonation = (int)gpc_get_cookie( $t_cookie_name, 0 );
 
 	return $t_impersonation == 1;
+}
+
+/**
+ * Gets the current guide step or false if user has done the steps outlined
+ * in the getting started guide and hence it shouldn't be shown.
+ *
+ * @return false if guide is done, otherwise guide step.
+ */
+function mantishub_guide_stage() {
+	global $g_mantishub_info_trial;
+
+	if ( $g_mantishub_info_trial && current_user_is_administrator() ) {
+		if ( mantishub_table_row_count( 'project' ) == 0 ) {
+			$t_active_step = MANTISHUB_GUIDE_PROJECT;
+		} else if ( mantishub_table_row_count( 'category' ) == 1 ) {
+			$t_active_step = MANTISHUB_GUIDE_CATEGORY;
+		} else if ( mantishub_table_row_count( 'bug' ) == 0 ) {
+			$t_active_step = MANTISHUB_GUIDE_BUG;
+		} else if ( mantishub_table_row_count( 'user' ) == 1 ) {
+			$t_active_step = MANTISHUB_GUIDE_USER;
+		} else {
+			$t_active_step = false;
+		}
+	} else {
+		$t_active_step = false;
+	}
+
+    return $t_active_step;
 }
 
 /**

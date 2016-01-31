@@ -1,17 +1,8 @@
 <?php
-if ( $g_mantishub_info_trial && current_user_is_administrator() ) {
-    $t_active_step = 0;
-    if ( mantishub_table_row_count( 'project' ) == 0 ) {
-        $t_active_step = 1;
-    } else if ( mantishub_table_row_count( 'category' ) == 1 ) {
-        $t_active_step = 2;
-    } else if ( mantishub_table_row_count( 'bug' ) == 0 ) {
-        $t_active_step = 3;
-    } else if ( mantishub_table_row_count( 'user' ) == 1 ) {
-        $t_active_step = 4;
-    } else {
-        return;
-    }
+$t_active_step = mantishub_guide_stage();
+if ( $t_active_step === false ) {
+    return;
+}
 ?>
 <div id="get_started_guide" class="widget-box widget-color-dark">
 	<div class="widget-header widget-header-small">
@@ -25,21 +16,31 @@ if ( $g_mantishub_info_trial && current_user_is_administrator() ) {
         <div class="widget-main">
 
             <p class="lead">Welcome to MantisHub</p>
-            <p>This 5-minute guide helps you get started with MantisHub and perform the most important tasks.
+
+            <p>A good place to start is to watch our getting started video.
+            This helps you get started with MantisHub and perform the most
+            important tasks.</p>
+
+            <div id="getting-started-video" style="margin-bottom: 20px;">
+                <?php # TODO: maintain aspect ratio: 500 x 281 ?>
+                <iframe src="https://player.vimeo.com/video/149359701" width="100%" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+            </div>
+
+            <p>Now let's take a couple of minutes to get this done for your MantisHub.
                 Once you complete all the tasks in this guide, you will acquire the essential knowledge to use MantisHub
-                to manage your own projects &amp; teams. Please follow the instructions in each of the steps below:</p>
+                to manage your own projects and teams.  This guide will also disappear once steps are completed.</p>
 
             <div class="panel-group accordion-style1 accordion-style2" id="step-list-1">
 
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <a class="accordion-toggle <?php echo $t_active_step == 1 ? '' : 'collapsed' ?>" data-toggle="collapse" data-parent="#step-list-1" href="#step-1-1">
+                        <a class="accordion-toggle <?php echo $t_active_step == MANTISHUB_GUIDE_PROJECT ? '' : 'collapsed' ?>" data-toggle="collapse" data-parent="#step-list-1" href="#step-1-1">
                             <i data-icon-show="ace-icon fa fa-chevron-left" data-icon-hide="ace-icon fa fa-chevron-down" class="pull-right ace-icon fa <?php echo $t_active_step == 1 ? 'fa-chevron-down' : 'fa-chevron-left' ?>"></i>
                             <i class="ace-icon fa fa-plus bigger-130"></i>
                             &nbsp; Create your projects
                         </a>
                     </div>
-                    <div id="step-1-1" class="panel-collapse collapse <?php echo $t_active_step == 1 ? 'in' : ''  ?>" style="height: auto;">
+                    <div id="step-1-1" class="panel-collapse collapse <?php echo $t_active_step == MANTISHUB_GUIDE_PROJECT ? 'in' : ''  ?>" style="height: auto;">
                         <div class="panel-body">
                             We have already pre-created your first project and called it 'MyProject'.
                             However, if you would like to create more projects,
@@ -56,13 +57,13 @@ if ( $g_mantishub_info_trial && current_user_is_administrator() ) {
 
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <a class="accordion-toggle <?php echo $t_active_step == 2 ? '' : 'collapsed' ?>" data-toggle="collapse" data-parent="#step-list-1" href="#step-1-2">
+                        <a class="accordion-toggle <?php echo $t_active_step == MANTISHUB_GUIDE_CATEGORY ? '' : 'collapsed' ?>" data-toggle="collapse" data-parent="#step-list-1" href="#step-1-2">
                             <i data-icon-show="ace-icon fa fa-chevron-left" data-icon-hide="ace-icon fa fa-chevron-down" class="ace-icon fa pull-right <?php echo $t_active_step == 2 ? 'fa-chevron-down' : 'fa-chevron-left' ?>"></i>
                             <i class="ace-icon fa fa-sitemap"></i>
                             &nbsp; Create new categories
                         </a>
                     </div>
-                    <div id="step-1-2" class="panel-collapse collapse <?php echo $t_active_step == 2 ? 'in' : ''  ?>">
+                    <div id="step-1-2" class="panel-collapse collapse <?php echo $t_active_step == MANTISHUB_GUIDE_CATEGORY ? 'in' : ''  ?>">
                         <div class="panel-body">
                             Projects grow big. Sooner or later you will need to get a bit organized by classifying
                             issues into different categories. This will help your team filter to only issues in their area
@@ -83,13 +84,13 @@ if ( $g_mantishub_info_trial && current_user_is_administrator() ) {
 
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <a class="accordion-toggle <?php echo $t_active_step == 3 ? '' : 'collapsed'  ?>" data-toggle="collapse" data-parent="#step-list-1" href="#step-1-3">
+                        <a class="accordion-toggle <?php echo $t_active_step == MANTISHUB_GUIDE_BUG ? '' : 'collapsed'  ?>" data-toggle="collapse" data-parent="#step-list-1" href="#step-1-3">
                             <i data-icon-show="ace-icon fa fa-chevron-left" data-icon-hide="ace-icon fa fa-chevron-down" class="ace-icon fa pull-right <?php echo $t_active_step == 3 ? 'fa-chevron-down' : 'fa-chevron-left' ?>"></i>
                             <i class="ace-icon fa fa-bug bigger-130"></i>
                             &nbsp; Report your first issue
                         </a>
                     </div>
-                    <div id="step-1-3" class="panel-collapse collapse <?php echo $t_active_step == 3 ? 'in' : ''  ?>">
+                    <div id="step-1-3" class="panel-collapse collapse <?php echo $t_active_step == MANTISHUB_GUIDE_BUG ? 'in' : ''  ?>">
                         <div class="panel-body">
                             You should be all set to create an issue or bug report against the 'MyProject' project you created
                             earlier:
@@ -106,14 +107,14 @@ if ( $g_mantishub_info_trial && current_user_is_administrator() ) {
 
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <a class="accordion-toggle <?php echo $t_active_step == 4 ? '' : 'collapsed'  ?>" data-toggle="collapse" data-parent="#step-list-1" href="#step-1-4">
+                        <a class="accordion-toggle <?php echo $t_active_step == MANTISHUB_GUIDE_USER ? '' : 'collapsed'  ?>" data-toggle="collapse" data-parent="#step-list-1" href="#step-1-4">
                             <i data-icon-show="ace-icon fa fa-chevron-left" data-icon-hide="ace-icon fa fa-chevron-down" class="ace-icon fa pull-right <?php echo $t_active_step == 4 ? 'fa-chevron-down' : 'fa-chevron-left' ?>"></i>
                             <i class="ace-icon fa fa-group bigger-130"></i>
                             &nbsp; Invite team members
                         </a>
                     </div>
 
-                    <div id="step-1-4" class="panel-collapse collapse <?php echo $t_active_step == 4 ? 'in' : ''  ?>">
+                    <div id="step-1-4" class="panel-collapse collapse <?php echo $t_active_step == MANTISHUB_GUIDE_USER ? 'in' : ''  ?>">
                         <div class="panel-body">
                             Open issues need to be assigned to someone (i.e. developer, tester, support, etc) to drive it
                             to resolution. Let's invite other team members to MantisHub:
@@ -138,6 +139,5 @@ if ( $g_mantishub_info_trial && current_user_is_administrator() ) {
     </div>
 </div>
 <div class="space-10"></div>
-<?php
-}
 
+<script src="/javascript/mantishub.js"></script>
