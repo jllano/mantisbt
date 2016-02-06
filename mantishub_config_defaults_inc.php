@@ -1,4 +1,34 @@
 <?php
+	/**
+	 * Remove columns from array of columns.  Define here since when this
+	 * file is included mantishub_api is not included yet.  This method
+	 * should be used instead of copying and altering the list.
+	 *
+	 * @params array $p_columns The list of columns to filter.
+	 * @params array|string $p_columns_to_remove The field(s) to filter out.
+	 * @return array The filtered list.
+	 */
+	function mantishub_remove_columns( $p_columns, $p_columns_to_remove ) {
+		if( $p_columns_to_remove === null ) {
+			return $p_columns;
+		}
+
+		$t_filtered_columns = array();
+		if( !is_array( $p_columns_to_remove ) ) {
+			$p_columns_to_remove = array( $p_columns_to_remove );
+		}
+
+		foreach( $p_columns as $t_column ) {
+			if( in_array( $t_column, $p_columns_to_remove ) ) {
+				continue;
+			}
+
+			$t_filtered_columns[] = $t_column;
+		}
+
+		return $t_filtered_columns;
+	}
+
 	$g_window_title			= 'MantisHub';
 	$g_allow_signup			= OFF;
 
@@ -97,3 +127,30 @@
 	$g_log_level = LOG_EMAIL | LOG_EMAIL_RECIPIENT;
 	$g_log_destination = 'none';
 
+	if ( $g_mantishub_gen >= 4 ) {
+		$t_columns_to_remove = array(
+			'additional_info',
+			'reproducibility',
+			'steps_to_reproduce'
+			);
+
+		$g_bug_report_page_fields = mantishub_remove_columns(
+			$g_bug_report_page_fields,
+			$t_columns_to_remove );
+
+		$g_bug_view_page_fields = mantishub_remove_columns(
+			$g_bug_view_page_fields,
+			$t_columns_to_remove );
+
+		$g_bug_print_page_fields = mantishub_remove_columns(
+			$g_bug_print_page_fields,
+			$t_columns_to_remove );
+
+		$g_bug_update_page_fields = mantishub_remove_columns(
+			$g_bug_update_page_fields,
+			$t_columns_to_remove );
+
+		$g_bug_change_status_page_fields = mantishub_remove_columns(
+			$g_bug_change_status_page_fields,
+			$t_columns_to_remove );
+	}
