@@ -6,6 +6,7 @@
  **************************************************************************/
 
 require_api( 'plan_api.php' );
+require_once( dirname( __FILE__ ) . '/core/mantishub_plugin_api.php' );
 
 /**
  * MantisHub plugin is enabled by default for all instances and can't be
@@ -47,6 +48,11 @@ class MantisHubPlugin extends MantisPlugin {
 		# This will internally check the timestamp for last update of info and
 		# only run it every reasonable duration.
 		plan_update_info();
+
+		mantishub_google_analytics();
+		mantishub_bingads_analytics();
+		mantishub_support_widget();
+		mantishub_drip();
 	}
 }
 
