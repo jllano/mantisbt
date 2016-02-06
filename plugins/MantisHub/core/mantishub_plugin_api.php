@@ -157,3 +157,45 @@ function mantishub_auth_attempt_login( $p_username, $p_token, $p_duration ) {
 
 	return true;
 }
+
+function mantishub_drip() {
+	// If a page auto-refreshes itself then don't report that as activity.
+	if ( ( isset( $_GET['refresh'] ) && $_GET['refresh'] == 'true' ) ) {
+		return;
+	}
+
+	if ( !auth_is_user_authenticated() || !current_user_is_administrator() ) {
+		return;
+	}
+
+	global $g_mantishub_info_trial;
+
+	if ( $g_mantishub_info_trial ) {
+		$t_value = 75;
+		$t_event = "Started a Trial";
+	} else {
+		$t_value = (int)(plan_price() * 100);
+		$t_event = "Converted to Paid";
+	}
+
+	echo <<<END
+		<script type="text/javascript">
+		  var _dcq = _dcq || [];
+		  var _dcs = _dcs || {};
+		  _dcs.account = '4007299';
+
+		  (function() {
+		    var dc = document.createElement('script');
+		    dc.type = 'text/javascript'; dc.async = true;
+		    dc.src = '//tag.getdrip.com/4007299.js';
+		    var s = document.getElementsByTagName('script')[0];
+		    s.parentNode.insertBefore(dc, s);
+		  })();
+		</script>
+
+		<script type="text/javascript">
+		  window._dcq = window._dcq || [];
+		  window._dcq.push(["track", "$t_event", { value: $t_value }]);
+		</script>
+END;
+}

@@ -5,6 +5,9 @@
  All rights reserved.
  **************************************************************************/
 
+require_api( 'plan_api.php' );
+require_once( dirname( __FILE__ ) . '/core/mantishub_plugin_api.php' );
+
 /**
  * MantisHub plugin is enabled by default for all instances and can't be
  * uninstalled.  It provides MantisHub features.
@@ -25,6 +28,31 @@ class MantisHubPlugin extends MantisPlugin {
 		$this->author  = 'Victor Boctor';
 		$this->contact = 'victor@mantishub.net';
 		$this->url     = 'http://www.mantishub.com';
+	}
+
+	/**
+	 * Event hook declaration.
+	 *
+	 * @return array An associated array that maps event names to handler names.
+	 */
+	function hooks() {
+		return array(
+			'EVENT_LAYOUT_BODY_END' => 'handle_page_render',
+		);
+	}
+
+	/**
+	 * Operations to do when a page is rendered.
+	 */
+	function handle_page_render() {
+		# This will internally check the timestamp for last update of info and
+		# only run it every reasonable duration.
+		plan_update_info();
+
+		mantishub_google_analytics();
+		mantishub_bingads_analytics();
+		mantishub_support_widget();
+		mantishub_drip();
 	}
 }
 
