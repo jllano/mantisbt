@@ -164,9 +164,13 @@ function mantishub_drip() {
 		return;
 	}
 
-	if ( !auth_is_user_authenticated() || !current_user_is_administrator() ) {
+	// Only update drip if user is authenticated and is the account creator
+	if ( !auth_is_user_authenticated() ||
+		 auth_get_current_user_id() != 1 ) {
 		return;
 	}
+
+	$t_email = config_get_global( 'webmaster_email' );
 
 	global $g_mantishub_info_trial;
 
@@ -195,6 +199,9 @@ function mantishub_drip() {
 
 		<script type="text/javascript">
 		  window._dcq = window._dcq || [];
+		  window._dcq.push(["identify", {
+		    email: "$t_email"
+		  }]);
 		  window._dcq.push(["track", "$t_event", { value: $t_value }]);
 		</script>
 END;
