@@ -183,26 +183,26 @@ function mantishub_drip() {
 	}
 
 	echo <<<END
-		<script type="text/javascript">
-		  var _dcq = _dcq || [];
-		  var _dcs = _dcs || {};
-		  _dcs.account = '4007299';
 
-		  (function() {
-		    var dc = document.createElement('script');
-		    dc.type = 'text/javascript'; dc.async = true;
-		    dc.src = '//tag.getdrip.com/4007299.js';
-		    var s = document.getElementsByTagName('script')[0];
-		    s.parentNode.insertBefore(dc, s);
-		  })();
-		</script>
+<script type="text/javascript">
+  var _dcq = _dcq || [];
+  var _dcs = _dcs || {};
+  _dcs.account = '4007299';
 
-		<script type="text/javascript">
-		  window._dcq = window._dcq || [];
-		  window._dcq.push(["identify", {
-		    email: "$t_email"
-		  }]);
-		  window._dcq.push(["track", "$t_event", { value: $t_value }]);
-		</script>
+  (function() {
+    var dc = document.createElement('script');
+    dc.type = 'text/javascript'; dc.async = true;
+    dc.src = '//tag.getdrip.com/4007299.js';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(dc, s);
+
+    window._dcq = window._dcq || [];
+    window._dcq.push(["identify", {
+      email: "$t_email"
+    }]);
+    window._dcq.push(["track", "$t_event", { value: $t_value }]);
+  })();
+</script>
+
 END;
 }
