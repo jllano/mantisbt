@@ -158,27 +158,40 @@ function mantishub_auth_attempt_login( $p_username, $p_token, $p_duration ) {
 	return true;
 }
 
+/**
+ * Add drip markup for measuring conversions.
+ */
 function mantishub_drip() {
-	// If a page auto-refreshes itself then don't report that as activity.
-	if ( ( isset( $_GET['refresh'] ) && $_GET['refresh'] == 'true' ) ) {
+	global $g_mantishub_gen;
+
+	# Started measuring conversion from gen 4.
+	if ( $g_mantishub_gen < 4 ) {
 		return;
 	}
 
-	// Only update drip if user is authenticated and is the account creator
-	if ( !auth_is_user_authenticated() ||
-		 auth_get_current_user_id() != 1 ) {
+	# If auto-refresh page, then ignore it.
+	if ( mantishub_auto_refresh_page() ) {
 		return;
 	}
 
+	# Just trigger on the default page after login
+	if ( !is_page_name( config_get_global( 'default_home_page' ) ) ||
+		 !current_user_is_administrator() ) {
+		return;
+	}
+
+	# We want to only trigger the event for the account owner.
 	$t_email = config_get_global( 'webmaster_email' );
 
 	global $g_mantishub_info_trial;
 
 	if ( $g_mantishub_info_trial ) {
-		$t_value = 75;
+		# Assume lifetime value of 15 month with conversion of 3%
+		$t_value = (int)(plan_price() * 100 * 15 * 0.03);
 		$t_event = "Started a Trial";
 	} else {
-		$t_value = (int)(plan_price() * 100);
+		# Assume lifetime value of 15 month in addition to trial value
+		$t_value = (int)(plan_price() * 100 * 15);
 		$t_event = "Converted to Paid";
 	}
 
@@ -205,4 +218,14 @@ function mantishub_drip() {
 </script>
 
 END;
+}
+
+/**
+ * Checks whether the current page was auto-refreshed rather than triggered by
+ * a user action.
+ *
+ * @return boolean true: auto-refreshed, false: otherwise.
+ */
+function mantishub_auto_refresh_page() {
+	return ( ( isset( $_GET['refresh'] ) && $_GET['refresh'] == 'true' ) );
 }
