@@ -157,3 +157,4 @@
 
 	$g_global_settings[] = 'allow_per_project_upload_path';
 
+	$g_email_login_enabled = ON;
