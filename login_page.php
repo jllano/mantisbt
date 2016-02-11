@@ -72,6 +72,12 @@ if( !user_is_name_valid( $f_username ) ) {
 	$f_username = '';
 }
 
+if( config_get_global( 'email_login_enabled' ) ) {
+	$t_username_label = lang_get( 'username_or_email' );
+} else {
+	$t_username_label = lang_get( 'username' );
+}
+
 $t_session_validation = ( ON == config_get_global( 'session_validation' ) );
 
 # If user is already authenticated and not anonymous
@@ -183,7 +189,9 @@ if( config_get_global( 'admin_checks' ) == ON && file_exists( dirname( __FILE__ 
 	}
 	$t_config = 'display_errors';
 	$t_errors = config_get_global( $t_config );
-	if( $t_errors[E_USER_ERROR] != DISPLAY_ERROR_HALT ) {
+	if( $t_errors[E_ALL] != DISPLAY_ERROR_HALT &&
+		$t_errors[E_USER_ERROR] != DISPLAY_ERROR_HALT
+	) {
 		$t_warnings[] = debug_setting_message(
 			'integrity',
 			$t_config . '[E_USER_ERROR]',
@@ -198,8 +206,6 @@ if( config_get_global( 'admin_checks' ) == ON && file_exists( dirname( __FILE__ 
 	}
 
 	# Check for db upgrade for versions > 1.0.0 using new installer and schema
-	# Note: install_helper_functions_api.php required for db_null_date() function definition
-	require_api( 'install_helper_functions_api.php' );
 	require_once( 'admin' . DIRECTORY_SEPARATOR . 'schema.php' );
 	$t_upgrades_reqd = count( $g_upgrade ) - 1;
 
@@ -308,7 +314,7 @@ if( count( $t_warnings ) > 0 ) {
 }
 ?>
 </div>
-				
+
 <div class="toolbar center">
 
 <?php

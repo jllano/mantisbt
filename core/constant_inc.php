@@ -40,7 +40,7 @@ define( 'PHP_CGI', 1 );
 
 # installation
 define( 'CONFIGURED_PASSWORD', '______' );
-define( 'DB_MIN_VERSION_ADODB', '5.19' ); # For mssql, oracle and pgsql
+define( 'DB_MIN_VERSION_ADODB', '5.20.2' );  # For mssql, oracle and pgsql
 define( 'DB_MIN_VERSION_MSSQL', '9.0.0' );
 define( 'DB_MIN_VERSION_MYSQL', '5.0.8' );   # See #16584
 define( 'DB_MIN_VERSION_PGSQL', '9.0' );     # Earliest supported version as of August 2014
@@ -304,6 +304,7 @@ define( 'ERROR_USER_REAL_NAME_INVALID', 809 );
 define( 'ERROR_USER_BY_NAME_NOT_FOUND', 810 );
 define( 'ERROR_USER_BY_ID_NOT_FOUND', 811 );
 define( 'ERROR_USER_CURRENT_PASSWORD_MISMATCH', 812 );
+define( 'ERROR_USER_EMAIL_NOT_UNIQUE', 813 );
 
 # ERROR_AUTH_*
 define( 'ERROR_AUTH_INVALID_COOKIE', 900 );

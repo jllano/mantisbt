@@ -254,7 +254,7 @@ if( $t_show_attachments ) {
 	<tr>
 		<th class="category" width="30%">
 			<?php
-			echo config_get( 'allow_no_category' ) ? '' : '<span class="required">*</span>';
+			echo config_get( 'allow_no_category' ) ? '' : '<span class="required">*</span> ';
 			echo '<label for="category_id">';
 			print_documentation_link( 'category' );
 			echo '</label>';
@@ -571,6 +571,14 @@ if( $t_show_attachments ) {
 		$t_def = custom_field_get_definition( $t_id );
 		if( ( $t_def['display_report'] || $t_def['require_report']) && custom_field_has_write_access_to_project( $t_id, $t_project_id ) ) {
 			$t_custom_fields_found = true;
+
+			$t_required_class = $t_def['require_report'] ? 'class="required" ' : '';
+
+			if( $t_def['type'] != CUSTOM_FIELD_TYPE_RADIO && $t_def['type'] != CUSTOM_FIELD_TYPE_CHECKBOX ) {
+				$t_label_for = 'for="custom_field_' . string_attribute( $t_def['id'] ) . '" ';
+			} else {
+				$t_label_for = '';
+			}
 ?>
 	<tr>
 		<th class="category">
