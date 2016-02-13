@@ -233,8 +233,6 @@ if( $f_new_status >= $t_resolved
 					</select>
 				</td>
 			</tr>
-<?php } ?>
-
 <?php
 	}
 
