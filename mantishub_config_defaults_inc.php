@@ -147,14 +147,12 @@
 			$g_bug_view_page_fields,
 			$t_columns_to_remove );
 
-		$t_columns_to_remove[] = 'additional_info';
-		$t_columns_to_remove[] = 'steps_to_reproduce';
-
-		# TODO: move this up along with view page once visibility of the field is determined based on
-		# config and the field not being blank.
 		$g_bug_print_page_fields = mantishub_remove_columns(
 			$g_bug_print_page_fields,
 			$t_columns_to_remove );
+
+		$t_columns_to_remove[] = 'additional_info';
+		$t_columns_to_remove[] = 'steps_to_reproduce';
 
 		$g_bug_report_page_fields = mantishub_remove_columns(
 			$g_bug_report_page_fields,
