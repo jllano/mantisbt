@@ -210,8 +210,6 @@ if( $f_new_status >= $t_resolved
 <?php } ?>
 
 <?php
-	}
-
 	if( access_has_bug_level( config_get( 'update_bug_assign_threshold', config_get( 'update_bug_threshold' ) ), $f_bug_id ) ) {
 		$t_suggested_handler_id = $t_bug->handler_id;
 
