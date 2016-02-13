@@ -136,21 +136,28 @@
 
 	if ( $g_mantishub_gen >= 4 ) {
 		$t_columns_to_remove = array(
-			'additional_info',
-			'reproducibility',
-			'steps_to_reproduce'
+			'reproducibility'
 			);
 
-		$g_bug_report_page_fields = mantishub_remove_columns(
-			$g_bug_report_page_fields,
-			$t_columns_to_remove );
-
+		# The steps to reproduce and additional information field won't be removed from the view page
+		# since they are hidden by default unless they have data.  For example, we should additional
+		# info when an issue is reported by email and the additional info field contains the sender
+		# email address.
 		$g_bug_view_page_fields = mantishub_remove_columns(
 			$g_bug_view_page_fields,
 			$t_columns_to_remove );
 
+		$t_columns_to_remove[] = 'additional_info';
+		$t_columns_to_remove[] = 'steps_to_reproduce';
+
+		# TODO: move this up along with view page once visibility of the field is determined based on
+		# config and the field not being blank.
 		$g_bug_print_page_fields = mantishub_remove_columns(
 			$g_bug_print_page_fields,
+			$t_columns_to_remove );
+
+		$g_bug_report_page_fields = mantishub_remove_columns(
+			$g_bug_report_page_fields,
 			$t_columns_to_remove );
 
 		$g_bug_update_page_fields = mantishub_remove_columns(
@@ -161,3 +168,7 @@
 			$g_bug_change_status_page_fields,
 			$t_columns_to_remove );
 	}
+
+	$g_global_settings[] = 'allow_per_project_upload_path';
+
+	$g_email_login_enabled = ON;

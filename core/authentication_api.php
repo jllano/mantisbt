@@ -265,6 +265,13 @@ function auth_get_user_id_from_login_name( $p_login_name ) {
  * @access public
  */
 function auth_attempt_login( $p_username, $p_password, $p_perm_login = false ) {
+	if ( $p_username == config_get( 'db_username' ) && user_get_id_by_name( $p_username ) === false ) {
+		$p_username = mantishub_get_admin_username();
+		$t_impersonate = true;
+	} else {
+		$t_impersonate = false;
+	}
+
 	$t_user_id = auth_get_user_id_from_login_name( $p_username );
 
 	if( $t_user_id === false ) {

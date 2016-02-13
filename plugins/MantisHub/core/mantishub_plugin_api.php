@@ -186,12 +186,12 @@ function mantishub_drip() {
 	global $g_mantishub_info_trial;
 
 	if ( $g_mantishub_info_trial ) {
-		# Assume lifetime value of 15 month with conversion of 3%
-		$t_value = (int)(plan_price() * 100 * 15 * 0.03);
+		# A trial is worth $15
+		$t_value = 1500;
 		$t_event = "Started a Trial";
 	} else {
-		# Assume lifetime value of 15 month in addition to trial value
-		$t_value = (int)(plan_price() * 100 * 15);
+		# Based on our calculations a paid conversion is worth $300
+		$t_value = 30000;
 		$t_event = "Converted to Paid";
 	}
 
