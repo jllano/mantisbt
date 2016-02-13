@@ -605,6 +605,8 @@ function user_create( $p_username, $p_password, $p_email = '',
 		email_signup( $t_user_id, $t_confirm_hash, $p_admin_name );
 	}
 
+	event_signal( 'EVENT_MANAGE_USER_CREATE', array( $t_user_id ) );
+
 	return $t_cookie_string;
 }
 
@@ -700,6 +702,8 @@ function user_delete( $p_user_id ) {
 	$c_user_id = (int)$p_user_id;
 
 	user_ensure_unprotected( $p_user_id );
+
+	event_signal( 'EVENT_MANAGE_USER_DELETE', array( $p_user_id ) );
 
 	# Remove associated profiles
 	user_delete_profiles( $p_user_id );
@@ -1535,6 +1539,10 @@ function user_increment_lost_password_in_progress_count( $p_user_id ) {
  * @return void
  */
 function user_set_fields( $p_user_id, array $p_fields ) {
+	if( empty( $p_fields ) ) {
+		return;
+	}
+
 	if( !array_key_exists( 'protected', $p_fields ) ) {
 		user_ensure_unprotected( $p_user_id );
 	}

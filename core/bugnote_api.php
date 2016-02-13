@@ -686,7 +686,6 @@ function bugnote_stats_get_events_array( $p_bug_id, $p_from, $p_to ) {
 }
 
 /**
-
  * Clear a bugnote from the cache or all bug notes if no bugnote id specified.
  * @param integer $p_bugnote_id Identifier to clear (optional).
  * @return boolean
