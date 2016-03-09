@@ -165,3 +165,9 @@
 	$g_global_settings[] = 'allow_per_project_upload_path';
 
 	$g_email_login_enabled = ON;
+
+	# This was removed causing some failures when MantisTouch is used.
+	# This config still exists in MantisHub, so just whitelisting it should
+	# work.
+	$g_public_config_names[] = 'administrator_email';
+
