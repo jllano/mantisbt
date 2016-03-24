@@ -91,7 +91,7 @@ function plan_get_disk_space_limit() {
 }
 
 function plan_users_count() {
-	return mantishub_table_row_count( 'user' );
+	return mantishub_table_row_count( 'user', 'enabled = 1' );
 }
 
 function plan_issues_count() {
@@ -99,7 +99,7 @@ function plan_issues_count() {
 }
 
 function plan_projects_count() {
-	return mantishub_table_row_count( 'project' );
+	return mantishub_table_row_count( 'project', 'enabled = 1' );
 }
 
 function plan_attachments_count() {
