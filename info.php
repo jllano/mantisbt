@@ -22,7 +22,7 @@ $f_json = gpc_get_bool( 'json', false );
 if ( $f_json ) {
 	header( 'Content-Type: application/json' );
 } else {
-	header( 'Content-Type: text' );
+	header( 'Content-Type: text/plain' );
 }
 
 html_robots_noindex();
