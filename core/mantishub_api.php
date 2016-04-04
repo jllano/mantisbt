@@ -627,11 +627,20 @@ function plan_team_count() {
 /**
  * Counts the number of rows in the specified table name.
  * The table name must be the output of calls to db_get_table().
+ *
+ * @param string $p_table table name without prefix/suffix
+ * @param string $p_where null or condition.
+ * @return int The number of rows.
  */
-function mantishub_table_row_count( $p_table ) {
-	$query = "SELECT COUNT(*) FROM {" . $p_table . "}";
-	$result = db_query( $query );
-	$t_count = db_result( $result );
+function mantishub_table_row_count( $p_table, $p_where = null ) {
+	$t_query = "SELECT COUNT(*) FROM {" . $p_table . "}";
+	if( $p_where !== null ) {
+		$t_query .= ' WHERE ' . $p_where;
+	}
+
+	$t_result = db_query( $t_query );
+
+	$t_count = db_result( $t_result );
 
 	return (int)$t_count;
 }
