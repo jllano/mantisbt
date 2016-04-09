@@ -38,7 +38,22 @@ class MantisHubPlugin extends MantisPlugin {
 	function hooks() {
 		return array(
 			'EVENT_LAYOUT_BODY_END' => 'handle_page_render',
+			'EVENT_MENU_ACCOUNT' => 'add_billing_menu',
 		);
+	}
+
+	/**
+	 * Add billing menu option to my account menu
+	 *
+	 * @return null|string The billing menu link
+	 */
+	function add_billing_menu() {
+		$t_billing_url = config_get( 'mantishub_info_billing_portal_url' );
+		if ( is_blank( $t_billing_url ) ) {
+			return null;
+		}
+
+		return '<a href="' . $t_billing_url . '" target="_blank">Billing</a>';
 	}
 
 	/**

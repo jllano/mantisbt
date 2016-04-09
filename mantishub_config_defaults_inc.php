@@ -65,6 +65,7 @@
 	$g_mantishub_info_administrator_firstname = '';
 	$g_mantishub_info_administrator_lastname = '';
 	$g_mantishub_info_company = '';
+	$g_mantishub_info_billing_portal_url = '';
 
 	$t_config_inc = dirname( __FILE__ ) . '/config_inc.php';
 	if ( file_exists( $t_config_inc ) ) {
