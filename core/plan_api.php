@@ -63,15 +63,20 @@ function plan_get_disk_usage() {
 	# --exclude="backup/*" --exclude="log*/*"
 	exec( 'du -c -b -h -s ' . $t_root_path, $t_output, $t_result );
 
-	$t_output = $t_output[0];
-	$t_line = str_replace( "\t", ' ', $t_output );
-	$t_index = strpos( $t_line, ' ' );
-	$t_value = substr( $t_line, 0, $t_index );
+	if( empty( $t_output ) ) {
+		# command fails on mac
+		$t_value = 'unknown';
+	} else {
+		$t_output = $t_output[0];
+		$t_line = str_replace( "\t", ' ', $t_output );
+		$t_index = strpos( $t_line, ' ' );
+		$t_value = substr( $t_line, 0, $t_index );
 
-	# Add the B to the disk space multiplier
-	$t_value = str_replace( 'K', 'KB', $t_value );
-	$t_value = str_replace( 'M', 'MB', $t_value );
-	$t_value = str_replace( 'G', 'GB', $t_value );
+		# Add the B to the disk space multiplier
+		$t_value = str_replace( 'K', 'KB', $t_value );
+		$t_value = str_replace( 'M', 'MB', $t_value );
+		$t_value = str_replace( 'G', 'GB', $t_value );
+	}
 
 	return $t_value;
 }
@@ -232,7 +237,7 @@ function plan_update_info( $p_force_refresh = false ) {
 		if ( $t_issues_count > 0 ) {
 			$t_info['last_activity_timestamp'] = strftime( '%m/%d/%Y %H:%M:%S', mantishub_last_issue_update() );
 		} else {
-			$t_info['last_activity_timestamp'] = $t_info['creation_date'];
+			$t_info['last_activity_timestamp'] = $t_info['creation_timestamp'];
 		}
 
 		# Add fields that we don't want to disclose on the web, but just internally on the server
