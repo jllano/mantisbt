@@ -188,10 +188,22 @@ $t_reset = ( mantishub_impersonation() || $t_user['id'] != auth_get_current_user
 	&& helper_call_custom_function( 'auth_can_change_password', array() );
 $t_unlock = OFF != config_get( 'max_failed_login_count' ) && $t_user['failed_login_count'] > 0;
 $t_delete = !( ( user_is_administrator( $t_user_id ) && ( user_count_level( config_get_global( 'admin_site_threshold' ) ) <= 1 ) ) );
+$t_impersonate = auth_can_impersonate( $t_user['id'] );
 
-if( $t_reset || $t_unlock || $t_delete ) {
+if( $t_reset || $t_unlock || $t_delete || $t_impersonate ) {
 ?>
 <div id="manage-user-actions-div" class="form-container">
+
+<!-- Impersonate Button -->
+<?php if( $t_impersonate ) { ?>
+	<form id="manage-user-impersonate-form" method="post" action="manage_user_impersonate.php" class="action-button">
+		<fieldset>
+			<?php echo form_security_field( 'manage_user_impersonate' ) ?>
+			<input type="hidden" name="user_id" value="<?php echo $t_user['id'] ?>" />
+			<span><input type="submit" class="button" value="<?php echo lang_get( 'impersonate_user_button' ) ?>" /></span>
+		</fieldset>
+	</form>
+<?php } ?>
 
 <!-- Reset/Unlock Button -->
 <?php if( $t_reset || $t_unlock ) { ?>
@@ -218,6 +230,7 @@ if( $t_reset || $t_unlock || $t_delete ) {
 		</fieldset>
 	</form>
 <?php } ?>
+
 </div>
 <?php } ?>
 
