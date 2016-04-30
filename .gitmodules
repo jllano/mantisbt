@@ -43,3 +43,6 @@
 [submodule "plugins/Auth0"]
 	path = plugins/Auth0
 	url = git@bitbucket.org:mantishub/auth0.git
+[submodule "plugins/Snippets"]
+	path = plugins/Snippets
+	url = git@github.com:mantisbt-plugins/snippets.git
