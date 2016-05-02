@@ -84,6 +84,10 @@ function mantishub_google_analytics() {
 		return;
 	}
 
+	if( config_get( 'mantishub_analytics_enabled' ) == OFF ) {
+		return;
+	}
+
 	// MantisHub Google Analytics to track engagement.
 	echo "<script>";
    	echo "(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){";
@@ -143,6 +147,10 @@ function mantishub_google_analytics() {
 function mantishub_bingads_analytics() {
 	// If a page auto-refreshes itself then don't report that as activity.
 	if ( isset( $_GET['refresh'] ) && $_GET['refresh'] == 'true' ) {
+		return;
+	}
+
+	if( config_get( 'mantishub_analytics_enabled' ) == OFF ) {
 		return;
 	}
 

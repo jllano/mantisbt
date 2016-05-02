@@ -172,3 +172,7 @@
 	# work.
 	$g_public_config_names[] = 'administrator_email';
 
+	# A configuration option to control the injection of analytics code
+	# like Google Analytics, Bing Analytics and Drip.
+	$g_mantishub_analytics_enabled = ON;
+
