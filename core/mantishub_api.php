@@ -10,6 +10,8 @@
  */
 require_once( dirname( dirname( __FILE__ ) ) . DIRECTORY_SEPARATOR . 'core.php' );
 
+$g_mantishub_domains = array( 'mantishub.com', 'mantishub.io' );
+
 // for log correlation.
 $global_log_request_id = time();
 
@@ -30,6 +32,24 @@ function mantishub_impersonation() {
 	$t_impersonation = (int)gpc_get_cookie( $t_cookie_name, 0 );
 
 	return $t_impersonation == 1;
+}
+
+/**
+ * Check if the specified text contains any of the mantishub domain.
+ *
+ * @param  string $p_text The text to check.
+ * @return bool true: contains a domain, false: otherwise.
+ */
+function mantishub_string_contains_domain( $p_text ) {
+	global $g_mantishub_domains;
+
+	foreach( $g_mantishub_domains as $t_domain ) {
+		if ( stristr( $p_text, $t_domain ) !== false ) {
+			return true;
+		}
+	}
+
+	return false;
 }
 
 function mantishub_top_message() {
@@ -338,6 +358,53 @@ function mantishub_log( $p_message ) {
 	error_log( date( 'c' ) . ' ' . $global_log_request_id . ' ' . $p_message . "\n", 3, dirname( dirname( __FILE__ ) ) . '/logs/mantishub.log' );
 }
 
+/**
+ * Get the domain for the instance with no dot infront of it.  If there is no
+ * match, then mantishub.com is returned.
+ *
+ * @return string The hosting domain.
+ */
+function mantishub_get_instance_domain() {
+	global $g_path, $g_mantishub_domains;
+
+	foreach( $g_mantishub_domains as $t_domain ) {
+		$t_dot_domain = '.' . $t_domain;
+
+		$t_index = strpos( $g_path, $t_dot_domain );
+		if ( $t_index != -1 ) {
+			return $t_domain;
+		}
+	}
+
+	return 'mantishub.com';
+}
+
+/**
+ * Strip the hosting domain from the instance name.
+ *
+ * @param  string $p_url  The URL for the instance.
+ * @return string The instance name without the hosting domain.
+ */
+function mantishub_strip_domain( $p_url ) {
+	global $g_mantishub_domains;
+
+	foreach ( $g_mantishub_domains as $t_domain ) {
+		$t_dot_domain = '.' . $t_domain;
+
+		$t_index = strpos( $p_url, $t_dot_domain );
+		if ( $t_index != -1 ) {
+			return substr( $p_url, 0, $t_index );
+		}
+	}
+
+	return $p_url;
+}
+
+/**
+ * Get the current instance name without the hosting domain.
+ *
+ * @return string The instance name.
+ */
 function mantishub_instance_name() {
 	$t_path = config_get( 'path' );
 	$t_path = str_ireplace( 'https://', '', $t_path );
@@ -348,9 +415,8 @@ function mantishub_instance_name() {
 
 	if ( stristr( $t_company_name, 'localhost' ) !== false ) {
 		$t_company_name = 'localhost';
-	} else if ( stristr( $t_company_name, '.mantishub.com' ) !== false ) {
-		$t_index = strpos( $t_company_name, '.mantishub.com' );
-		$t_company_name = substr( $t_company_name, 0, $t_index );
+	} else {
+		$t_company_name = mantishub_strip_domain( $t_company_name );
 	}
 
 	return strtolower( $t_company_name );
@@ -611,7 +677,7 @@ function mantishub_wrap_email( $p_issue_id, $p_message ) {
 function mantishub_reply_to_address( $p_issue_id ) {
 	if ( plan_mail_reporting() ) {
 		$t_md5 = md5( $p_issue_id . config_get( 'crypto_master_salt' ) );
-		return mantishub_instance_name() . '+' . $p_issue_id . '-' . $t_md5 . '@mantishub.com';
+		return mantishub_instance_name() . '+' . $p_issue_id . '-' . $t_md5 . '@' . mantishub_get_instance_domain();
 	}
 
 	return null;

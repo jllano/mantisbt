@@ -252,7 +252,7 @@ function plan_update_info( $p_force_refresh = false ) {
 
 		$t_output = array();
 		exec( 'hostname', $t_output );
-		$t_info['hostname'] = str_replace( '.mantishub.com', '', $t_output[0] );
+		$t_info['hostname'] = mantishub_strip_domain( $t_output[0] );
 
 		# In dev machine, this access may not be granted
 		$t_json = json_encode( $t_info );
