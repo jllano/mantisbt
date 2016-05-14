@@ -180,6 +180,10 @@ function mantishub_drip() {
 		return;
 	}
 
+	if( config_get( 'mantishub_analytics_enabled' ) == OFF ) {
+		return;
+	}
+
 	# We want to only trigger the event for the account owner.
 	$t_email = config_get_global( 'webmaster_email' );
 

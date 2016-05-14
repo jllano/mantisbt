@@ -177,3 +177,10 @@
 	# work.
 	$g_public_config_names[] = 'administrator_email';
 
+	# A configuration option to control the injection of analytics code
+	# like Google Analytics, Bing Analytics and Drip.
+	$g_mantishub_analytics_enabled = ON;
+
+	# Increase default preview limit to 10MB.
+	$g_preview_attachments_inline_max_size = 10 * 1024 * 1024;
+
