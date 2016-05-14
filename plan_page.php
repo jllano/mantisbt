@@ -91,15 +91,14 @@ $t_team_members_value .= ' ' . sprintf( lang_get( 'mantishub_plan_assign_access_
 
 if ( plan_show_user_limits_on_plan_page() ) {
 	$t_team_packs_needed = plan_user_packs_needed( $t_result['count'] );
-	if ( $t_team_packs_needed > 0 ) {
-		$t_team_members_value .= '<br />' . sprintf( lang_get( 'mantishub_plan_team_packs' ), $t_team_packs_needed );
-	}
+	print_field( lang_get( 'mantishub_plan_team_packs' ),  $t_team_packs_needed );
 }
 
-$t_team_members_value .= '<br /><br />' . team_info( $t_result );
+if ( plan_show_user_list_on_plan_page() ) {
+	$t_team_members_value .= '<br /><br />' . team_info( $t_result );
 
-print_field( lang_get( 'mantishub_plan_team_members' ), $t_team_members_value );
-#}
+	print_field( lang_get( 'mantishub_plan_team_members' ), $t_team_members_value );
+}
 
 print_plan_form_footer();
 

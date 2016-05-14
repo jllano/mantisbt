@@ -324,4 +324,28 @@ function plan_show_user_limits_on_plan_page() {
 	return !plan_is_enterprise();
 }
 
+function plan_show_user_list_on_plan_page() {
+	return plan_gen() < 5;
+}
+
+function plan_access_level_to_charge() {
+	if ( plan_gen() >= 5 ) {
+		$t_handle_bug_threshold = VIEWER;
+	} else {
+		$t_handle_bug_threshold = config_get( 'handle_bug_threshold' );
+		if( is_array( $t_handle_bug_threshold ) ) {
+			$t_min = ADMINISTRATOR;
+
+			foreach( $t_handle_bug_threshold as $t_access_level ) {
+				if( $t_access_level < $t_min ) {
+					$t_min = $t_access_level;
+				}
+			}
+
+			$t_handle_bug_threshold = $t_min;
+		}
+	}
+
+	return $t_handle_bug_threshold;
+}
 
