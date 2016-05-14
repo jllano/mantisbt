@@ -129,6 +129,7 @@ layout_page_begin();
 			if( ON == config_get( 'store_reminders' ) ) {
 				echo lang_get( 'reminder_store' );
 			}
+
 			if( mention_enabled() ) {
 				echo '<br /><br />', sprintf( lang_get( 'reminder_mentions' ), '<strong>' . mentions_tag() . user_get_field( auth_get_current_user_id(), 'username' ) . '</strong>' );
 			}

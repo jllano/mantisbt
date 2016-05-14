@@ -58,7 +58,6 @@ function mantishub_string_contains_domain( $p_text ) {
 	return false;
 }
 
-function mantishub_top_message() {
 /**
  * Gets the current guide step or false if user has done the steps outlined
  * in the getting started guide and hence it shouldn't be shown.

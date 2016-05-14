@@ -246,7 +246,7 @@ if( $t_reset || $t_unlock || $t_delete ) {
 		<fieldset>
 			<?php echo form_security_field( 'manage_user_impersonate' ) ?>
 			<input type="hidden" name="user_id" value="<?php echo $t_user['id'] ?>" />
-			<span><input type="submit" class="button" value="<?php echo lang_get( 'impersonate_user_button' ) ?>" /></span>
+			<input type="submit" class="btn btn-primary btn-white btn-round" value="<?php echo lang_get( 'impersonate_user_button' ) ?>" />
 		</fieldset>
 	</form>
 <?php } ?>
