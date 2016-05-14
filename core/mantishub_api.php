@@ -642,18 +642,7 @@ HTML;
 function mantishub_team_users_list_info() {
 	$t_info = array();
 
-	$t_handle_bug_threshold = config_get( 'handle_bug_threshold' );
-	if( is_array( $t_handle_bug_threshold ) ) {
-		$t_min = ADMINISTRATOR;
-
-		foreach( $t_handle_bug_threshold as $t_access_level ) {
-			if( $t_access_level < $t_min ) {
-				$t_min = $t_access_level;
-			}
-		}
-
-		$t_handle_bug_threshold = $t_min;
-	}
+	$t_handle_bug_threshold = plan_access_level_to_charge();
 
 	$t_info['count'] = 0;
 	$t_info['access_level'] = $t_handle_bug_threshold;
