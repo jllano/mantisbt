@@ -106,7 +106,7 @@ class GravatarPlugin extends MantisPlugin {
 	function hooks() {
 		return array(
 			'EVENT_USER_AVATAR' => 'user_get_avatar',
-			'EVENT_LAYOUT_RESOURCES' => 'csp_headers',
+			# 'EVENT_LAYOUT_RESOURCES' => 'csp_headers',
 		);
 	}
 
@@ -119,8 +119,7 @@ class GravatarPlugin extends MantisPlugin {
 		# Policy for images: Allow gravatar URL
 		if( config_get_global( 'show_avatar' ) !== OFF ) {
 			# Set CSP header
-			header( "Content-Security-Policy: img-src 'self' " .
-				self::getAvatarUrl() );
+			# header( "Content-Security-Policy: img-src 'self' " . self::getAvatarUrl() );
 		}
 	}
 

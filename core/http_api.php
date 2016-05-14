@@ -172,7 +172,7 @@ function http_security_headers() {
 		$t_csp[] = $t_script_src;
 
 		# Set CSP header
-		header( 'Content-Security-Policy: ' . implode('; ', $t_csp) );
+		# header( 'Content-Security-Policy: ' . implode('; ', $t_csp) );
 
 		if( http_is_protocol_https() ) {
 			header( 'Strict-Transport-Security: max-age=7776000' );
