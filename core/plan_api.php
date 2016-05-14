@@ -37,7 +37,9 @@ function plan_ensure_allowed() {
 }
 
 function plan_price() {
-	if ( plan_is_platinum() ) {
+	if ( plan_is_enterprise() ) {
+		$t_value = '300';
+	} else if ( plan_is_platinum() ) {
 		$t_value = '50';
 	} else if ( plan_is_gold() ) {
 		$t_value = '25';
@@ -82,7 +84,9 @@ function plan_get_disk_usage() {
 }
 
 function plan_get_disk_space_limit() {
-	if ( plan_is_platinum() ) {
+	if ( plan_is_enterprise() ) {
+		$t_value = '100GB';
+	} else if ( plan_is_platinum() ) {
 		$t_value = '10GB';
 	} else if ( plan_is_gold() ) {
 		$t_value = '4GB';
@@ -128,7 +132,9 @@ function plan_max_team_members_string() {
 		return lang_get( 'mantishub_plan_unlimited' );
 	}
 
-	if ( plan_is_platinum() ) {
+	if ( plan_is_enterprise() ) {
+		$t_value = '50';
+	} else if ( plan_is_platinum() ) {
 		$t_value = '30';
 	} else if ( plan_is_gold() ) {
 		$t_value = '15';
@@ -140,14 +146,12 @@ function plan_max_team_members_string() {
 }
 
 function plan_max_projects_string() {
-	if ( plan_is_platinum() ) {
-		$t_value = lang_get( 'mantishub_plan_unlimited' );
-	} else if ( plan_is_gold() ) {
-		$t_value = lang_get( 'mantishub_plan_unlimited' );
-	} else if ( plan_is_silver() ) {
+	if ( plan_is_silver() ) {
 		$t_value = '10';
-	} else {
+	} else if ( plan_is_bronze() ) {
 		$t_value = '1';
+	} else {
+		$t_value = lang_get( 'mantishub_plan_unlimited' );
 	}
 
 	return $t_value;
@@ -159,7 +163,9 @@ function plan_user_packs_needed( $p_team_user_count ) {
 	}
 
 	# gen 2 and above has the user packs concept and doesn't have silver plan
-	if ( plan_is_platinum() ) {
+	if ( plan_is_enterprise() ) {
+		$t_included_in_plan = 50;
+	} else if ( plan_is_platinum() ) {
 		$t_included_in_plan = 30;
 	} else if ( plan_is_gold() ) {
 		$t_included_in_plan = 15;
@@ -180,6 +186,10 @@ function plan_user_packs_needed( $p_team_user_count ) {
 function plan_name() {
 	global $g_mantishub_plan;
 	return $g_mantishub_plan;
+}
+
+function plan_is_enterprise() {
+	return plan_name() == 'Enterprise';
 }
 
 function plan_is_platinum() {
@@ -248,6 +258,7 @@ function plan_update_info( $p_force_refresh = false ) {
 
 		$t_info['company'] = config_get_global( 'mantishub_info_company' );
 
+		# TODO: Update for enterprise
 		$t_info['value'] = plan_price() + $t_info['team_packs'] * 10;
 
 		$t_output = array();
@@ -308,4 +319,9 @@ function plan_info_get_public( $p_force_push = false ) {
 
 	return $t_result;
 }
+
+function plan_show_user_limits_on_plan_page() {
+	return !plan_is_enterprise();
+}
+
 

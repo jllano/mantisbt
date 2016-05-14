@@ -82,20 +82,35 @@ $t_value_of_limit = lang_get( 'mantishub_plan_value_of_limit' );
 print_field( lang_get( 'mantishub_plan_level' ), $t_plan );
 print_field( lang_get( 'mantishub_plan_projects_count' ), sprintf( $t_value_of_limit, plan_projects_count(), plan_max_projects_string() ) );
 print_field( lang_get( 'mantishub_plan_issues_count' ), sprintf( $t_value_of_limit, plan_issues_count(), plan_max_issues_string() ) );
-print_field( lang_get( 'mantishub_plan_users_count' ), sprintf( $t_value_of_limit, plan_users_count(), plan_max_users_string() ) );
+
+if ( plan_show_user_limits_on_plan_page() ) {
+	print_field( lang_get( 'mantishub_plan_users_count' ), sprintf( $t_value_of_limit, plan_users_count(), plan_max_users_string() ) );
+} else {
+	print_field( lang_get( 'mantishub_plan_users_count' ), plan_users_count() );
+}
+
 print_field( lang_get( 'mantishub_plan_attachments_count' ), sprintf( $t_value_of_limit, plan_attachments_count(), plan_max_attachments_string() ) );
 print_field( lang_get( 'mantishub_plan_disk_usage' ), sprintf( $t_value_of_limit, plan_get_disk_usage(), plan_get_disk_space_limit() ) );
-$t_team_members_value = sprintf( $t_value_of_limit, $t_result['count'], plan_max_team_members_string() );
+
+if ( plan_show_user_limits_on_plan_page() ) {
+	$t_team_members_value = sprintf( $t_value_of_limit, $t_result['count'], plan_max_team_members_string() );
+} else {
+	$t_team_members_value = $t_result['count'];
+}
+
 $t_team_members_value .= ' ' . sprintf( lang_get( 'mantishub_plan_assign_access_level' ), MantisEnum::getLabel( lang_get( 'access_levels_enum_string' ), $t_result['access_level'] ) );
 
-$t_team_packs_needed = plan_user_packs_needed( $t_result['count'] );
-if ( $t_team_packs_needed > 0 ) {
-	$t_team_members_value .= '<br />' . sprintf( lang_get( 'mantishub_plan_team_packs' ), $t_team_packs_needed );
+if ( plan_show_user_limits_on_plan_page() ) {
+	$t_team_packs_needed = plan_user_packs_needed( $t_result['count'] );
+	if ( $t_team_packs_needed > 0 ) {
+		$t_team_members_value .= '<br />' . sprintf( lang_get( 'mantishub_plan_team_packs' ), $t_team_packs_needed );
+	}
 }
 
 $t_team_members_value .= '<br /><br />' . team_info( $t_result );
 
 print_field( lang_get( 'mantishub_plan_team_members' ), $t_team_members_value );
+#}
 
 print_plan_form_footer();
 
