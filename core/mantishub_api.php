@@ -1,7 +1,7 @@
 <?php
 /**
  * @package MantisHub
- * @copyright Copyright (C) 2013 - 2014 Victor Boctor - vboctor@gmail.com
+ * @copyright Copyright (C) Victor Boctor - vboctor@gmail.com
  * @link http://www.mantishub.com
  */
 
@@ -378,8 +378,8 @@ function mantishub_get_instance_domain() {
 	foreach( $g_mantishub_domains as $t_domain ) {
 		$t_dot_domain = '.' . $t_domain;
 
-		$t_index = strpos( $g_path, $t_dot_domain );
-		if ( $t_index != -1 ) {
+		$t_index = stripos( $g_path, $t_dot_domain );
+		if ( $t_index !== false ) {
 			return $t_domain;
 		}
 	}
@@ -399,8 +399,8 @@ function mantishub_strip_domain( $p_url ) {
 	foreach ( $g_mantishub_domains as $t_domain ) {
 		$t_dot_domain = '.' . $t_domain;
 
-		$t_index = strpos( $p_url, $t_dot_domain );
-		if ( $t_index != -1 ) {
+		$t_index = stripos( $p_url, $t_dot_domain );
+		if ( $t_index !== false ) {
 			return substr( $p_url, 0, $t_index );
 		}
 	}
