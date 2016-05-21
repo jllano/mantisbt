@@ -14,8 +14,6 @@
 # You should have received a copy of the GNU General Public License
 # along with MantisBT.  If not, see <http://www.gnu.org/licenses/>.
 
-plan_ensure_allowed();
-
 function plan_gen() {
 	global $g_mantishub_gen;
 	return $g_mantishub_gen;
@@ -31,13 +29,6 @@ function plan_mantistouch() {
 
 function plan_auto_enable_mantistouch() {
 	return plan_mantistouch() && plan_gen() <= 4;
-}
-
-function plan_ensure_allowed() {
-	if ( plan_gen() > 1 && plan_is_silver() ) {
-		echo "<h1>Silver plan is no longer offered.</h1>";
-		exit;
-	}
 }
 
 function plan_price() {
