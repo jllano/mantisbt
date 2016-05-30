@@ -1285,6 +1285,7 @@ function email_bug_reminder( $p_recipients, $p_bug_id, $p_message ) {
 		$t_header = "\n" . lang_get( 'on_date' ) . ' ' . $t_date . ', ' . $t_sender . ' ' . $t_sender_email . lang_get( 'sent_you_this_reminder_about' ) . ': ' . "\n\n";
 		$t_contents = $t_header . string_get_bug_view_url_with_fqdn( $p_bug_id ) . " \n\n" . $p_message;
 
+		# MantisHub: Stamp headers to enable users to reply-to-comment
 		$t_mail_headers = array();
 		$t_reply_to = mantishub_reply_to_address( $p_bug_id );
 		if ( $t_reply_to !== null ) {
@@ -1368,7 +1369,14 @@ function email_user_mention( $p_bug_id, $p_mention_user_ids, $p_message, $p_remo
 		$t_header = "\n" . lang_get( 'on_date' ) . ' ' . $t_date . ', ' . $t_sender . ' ' . $t_sender_email . lang_get( 'mentioned_you' ) . "\n\n";
 		$t_contents = $t_header . string_get_bug_view_url_with_fqdn( $p_bug_id ) . " \n\n" . $p_message;
 
-		$t_id = email_store( $t_email, $t_subject, $t_contents );
+		# MantisHub: Stamp headers to enable users to reply-to-comment
+		$t_mail_headers = array();
+		$t_reply_to = mantishub_reply_to_address( $p_bug_id );
+		if ( $t_reply_to !== null ) {
+			$t_mail_headers['Reply-To'] = $t_reply_to;
+		}
+
+		$t_id = email_store( $t_email, $t_subject, $t_contents, $t_mail_headers );
 		if( $t_id !== null ) {
 			$t_result[] = $t_mention_user_id;
 		}
@@ -1427,6 +1435,7 @@ function email_bug_info_to_one_user( array $p_visible_bug_data, $p_message_id, $
 		$t_mail_headers['In-Reply-To'] = $t_message_md5;
 	}
 
+	# MantisHub: Stamp headers to enable users to reply-to-comment
 	$t_reply_to = mantishub_reply_to_address( $t_bug_id );
 	if ( $t_reply_to !== null ) {
 		$t_mail_headers['Reply-To'] = $t_reply_to;
