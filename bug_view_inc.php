@@ -260,7 +260,7 @@ if( $t_show_reminder_link ) {
 }
 
 if( !is_blank( $t_wiki_link ) ) {
-	print_small_button( $t_wiki_link, lang_get( 'wiki' ), false );
+	print_button( $t_wiki_link, lang_get( 'wiki' ), false, 'btn btn-primary btn-sm btn-white btn-round' );
 }
 
 foreach ( $t_links as $t_plugin => $t_hooks ) {
