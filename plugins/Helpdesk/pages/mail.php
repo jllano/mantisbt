@@ -77,7 +77,7 @@ function mantishub_email_response( $p_message, $p_success = false ) {
 }
 
 function mantishub_email_error( $p_error_message ) {
-	$t_message = plugin_config_get( 'email_incoming_failed_message' );
+	$t_message = plugin_config_get( 'failed_message' );
 	$t_message = str_replace( '{error}', $p_error_message, $t_message );
 
 	mantishub_email_response( $t_message );
@@ -94,7 +94,7 @@ if ( empty( $f_subject ) ) {
 	exit;
 }
 
-if ( plugin_config_get( 'email_incoming_enabled' ) == OFF ) {
+if ( plugin_config_get( 'enabled' ) == OFF ) {
 	header( 'HTTP/1.0 406 Email Reporting Disabled' );
 	$t_event = array( 'level' => 'error', 'comp' => 'email_reporting', 'event' => 'feature_disabled' );
 	mantishub_event( $t_event );
@@ -122,7 +122,7 @@ $f_timestamp = gpc_get_int( 'timestamp' );
 $f_token = gpc_get_string( 'token' );
 $f_signature = gpc_get_string( 'signature' );
 
-$t_key = plugin_config_get( 'email_reporting_mailgun_key' );
+$t_key = plugin_config_get( 'mailgun_key' );
 $t_data = $f_timestamp . $f_token;
 $t_hash = hash_hmac ( 'sha256', $t_data, $t_key );
 
@@ -204,7 +204,7 @@ if ( $t_new_issue ) {
 
 	$t_project = helpdesk_project_from_recipient( $f_recipient );
 	if ( $t_project === false ) {
-		$t_default_project_id = plugin_config_get( 'email_incoming_default_project' );
+		$t_default_project_id = plugin_config_get( 'default_project' );
 		if ( $t_default_project_id == 0 ) {
 			$t_default_project_id = user_pref_get_pref( $t_user_id, 'default_project' );
 			if ( $t_default_project_id != 0 ) {
@@ -347,7 +347,7 @@ if ( $t_new_issue ) {
 
 	email_generic( $t_bug_id, 'new', 'email_notification_title_for_action_bug_submitted' );
 
-	$t_message = plugin_config_get( 'email_incoming_issue_reported_message' );
+	$t_message = plugin_config_get( 'issue_reported_message' );
 	$t_message = str_replace( '{issue_id}', $t_bug_id, $t_message );
 
 	mantishub_email_response( $t_message, /* success */ true );
