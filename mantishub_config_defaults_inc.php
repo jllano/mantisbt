@@ -176,6 +176,6 @@
 	# like Google Analytics, Bing Analytics and Drip.
 	$g_mantishub_analytics_enabled = ON;
 
-	# Increase default preview limit to 10MB.
-	$g_preview_attachments_inline_max_size = 10 * 1024 * 1024;
+	# Increase default preview limit to 1MB.
+	$g_preview_attachments_inline_max_size = 1 * 1024 * 1024;
 
