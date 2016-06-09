@@ -65,7 +65,7 @@ function mantishub_email_response( $p_message, $p_success = false ) {
 
     if ( !$p_success ) {
         $t_message .= "\nFor more details about how email reporting works, checkout documentation at:\n";
-        $t_message .= "http://www.mantishub.com/docs/reporting_issues_via_email.html\n";
+        $t_message .= "http://support.mantishub.com/hc/en-us/articles/204273585\n";
     }
 
     email_store( $f_from_email, 'RE: ' . $f_subject, $t_message );
