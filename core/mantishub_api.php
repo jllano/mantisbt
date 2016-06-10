@@ -9,6 +9,7 @@
  * MantisBT Core API's
  */
 require_once( dirname( dirname( __FILE__ ) ) . DIRECTORY_SEPARATOR . 'core.php' );
+require_api( 'plugin_api.php' );
 
 $g_mantishub_domains = array( 'mantishub.com', 'mantishub.io' );
 
@@ -556,5 +557,40 @@ function mantishub_cleanup_plugin_name( $p_name ) {
 	$t_name = str_replace( 'MantisBT ', '', $t_name );
 	$t_name = str_replace( 'Mantis ', '', $t_name );
 	return $t_name;
+}
+
+function mantishub_upgrade_unattended() {
+	mantishub_install_plugin( 'Helpdesk' );
+
+	$t_plugins = plugin_find_all();
+	uasort( $t_plugins,
+		function ( $p_p1, $p_p2 ) {
+			return strcasecmp( $p_p1->name, $p_p2->name );
+		}
+	);
+
+	foreach( $t_plugins as $t_plugin ) {
+		if ( plugin_is_installed( $t_plugin->basename ) ) {
+			if ( plugin_needs_upgrade( $t_plugin ) ) {
+				echo "{$t_plugin->basename}: upgrading schema...\n";
+				if ( !plugin_upgrade( $t_plugin ) ) {
+					echo "{$t_plugin->basename}: upgrade failed...\n";
+					return false;
+				}
+			} else {
+				echo "{$t_plugin->basename}: schema up-to-date.\n";
+			}
+		}
+	}
+
+	return true;
+}
+
+function mantishub_install_plugin( $p_plugin_name ) {
+	$t_plugin = plugin_register( $p_plugin_name, true );
+
+	if ( !plugin_is_installed( $p_plugin_name ) ) {
+		plugin_install( $t_plugin );
+	}
 }
 

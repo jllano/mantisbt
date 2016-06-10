@@ -33,6 +33,8 @@ define( 'MANTIS_MAINTENANCE_MODE', true );
 
 require_once( dirname( dirname( __FILE__ ) ) . '/core.php' );
 require_api( 'crypto_api.php' );
+require_api( 'mantishub_api.php' );
+
 $g_error_send_page_header = false; # suppress page headers in the error handler
 
 $g_failed = false;
@@ -189,6 +191,10 @@ while( ( $i <= $t_last_id ) && !$g_failed ) {
 }
 
 echo $t_count_done . ' schema upgrades executed.' . "\n";
+
+if ( !mantishub_upgrade_unattended() ) {
+	$g_failed = false;	
+}
 
 if( false == $g_failed ) {
 	echo 'Done.' . "\n";
