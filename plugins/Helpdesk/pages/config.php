@@ -23,6 +23,17 @@ print_manage_menu();
 		<td><input type="checkbox" name="enabled" <?php echo plugin_config_get( 'enabled' ) == 1 ? ' checked="checked"' : '' ?> /></td>
 	</tr>
 	<tr>
+		<td class="category" width="30%"><?php echo plugin_lang_get( 'enable_unregistered' ) ?></td>
+		<td>
+			<input type="checkbox" name="enable_unregistered"
+			<?php check_checked( plugin_config_get( 'enable_unregistered' ), 1 ) ?> />
+			<?php echo plugin_lang_get( 'enable_unregistered_label' ); ?>
+			<br /><br />
+			<?php echo plugin_lang_get( 'enable_unregistered_help' ); ?>
+			<br /><br />
+		</td>
+	</tr>
+	<tr>
 		<td class="category" width="30%"><?php echo plugin_lang_get( 'default_project' ) ?></td>
 		<td>
 			<select name="default_project">

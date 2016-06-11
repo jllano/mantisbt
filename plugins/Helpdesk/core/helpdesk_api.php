@@ -5,6 +5,8 @@ require_once( 'core.php' );
 require_api( 'collapse_api.php' );
 require_api( 'mantishub_api.php' );
 
+define( 'HELPDESK_GENERIC_USERNAME', 'Email' );
+
 function helpdesk_log( $p_message ) {
 	global $global_log_request_id;
 	log_event( LOG_EMAIL, $global_log_request_id . ' ' . $p_message );
@@ -168,6 +170,36 @@ function helpdesk_users_from_additional_information( $p_additional_information )
 	}
 
 	return substr( $p_additional_information, strlen( $t_prefix ) );
+}
+
+function helpdesk_create_generic_user() {
+	if ( helpdesk_generic_user_id() === false ) {
+		$t_reporter_access = config_get( 'report_bug_threshold' );
+
+		# Create the email user
+		user_create(
+			HELPDESK_GENERIC_USERNAME,
+			auth_generate_random_password(),
+			'',
+			$t_reporter_access,
+			true,			# Protected
+			true,			# Enabled
+			'' );           # Real name
+
+		# Add explicit reporter access when necessary
+		$t_projects = project_get_all_rows();
+		$t_user_id = helpdesk_generic_user_id();
+		foreach( $t_projects as $t_project ) {
+			$t_project_id = $t_project['id'];
+			if ( !access_has_project_level( $t_reporter_access, $t_project_id, $t_user_id ) ) {
+				project_add_user( $t_project_id, $t_user_id, $t_reporter_access );
+			}
+		}
+	}
+}
+
+function helpdesk_generic_user_id() {
+	return user_get_id_by_name( HELPDESK_GENERIC_USERNAME );
 }
 
 function helpdesk_users_for_issue( $p_issue_id ) {

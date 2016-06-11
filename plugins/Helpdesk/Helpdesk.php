@@ -19,6 +19,7 @@ class HelpdeskPlugin extends MantisPlugin {
 		return array(
 			'mailgun_key' => config_get( 'email_incoming_mailgun_key', '' ),
 			'enabled' => config_get( 'email_incoming_enabled' ),
+			'enable_unregistered' => ON,
 			'default_project' => config_get( 'email_incoming_default_project' ),
 			'failed_message' => config_get( 'email_incoming_failed_message' ),
 			'issue_reported_message' => config_get( 'email_incoming_issue_reported_message' ),

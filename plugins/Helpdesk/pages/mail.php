@@ -152,7 +152,7 @@ if ( $f_spam == 'Yes' ) {
 
 $t_user_id = user_get_id_by_email( $f_from_email );
 if ( $t_user_id === false ) {
-	$t_user_id = user_get_id_by_name( 'email' );
+	$t_user_id = helpdesk_generic_user_id();
 	$t_generic_user = true;
 } else {
 	$t_generic_user = false;
