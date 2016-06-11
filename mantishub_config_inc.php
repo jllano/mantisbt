@@ -21,3 +21,4 @@ if ( plan_auto_enable_mantistouch() ) {
 
 $g_crypto_master_salt = 'salt-for-dev-machine-where-normal-salt-is-short' . $g_database_name . $g_db_username . $g_db_password;
 $g_plugins_force_installed['MantisHub'] = 3;
+

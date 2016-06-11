@@ -9,6 +9,7 @@
  * MantisBT Core API's
  */
 require_once( dirname( dirname( __FILE__ ) ) . DIRECTORY_SEPARATOR . 'core.php' );
+require_api( 'plugin_api.php' );
 
 $g_mantishub_domains = array( 'mantishub.com', 'mantishub.io' );
 
@@ -58,46 +59,7 @@ function mantishub_string_contains_domain( $p_text ) {
 	return false;
 }
 
-/**
- * Gets the current guide step or false if user has done the steps outlined
- * in the getting started guide and hence it shouldn't be shown.
- *
- * @return false if guide is done, otherwise guide step.
- */
-function mantishub_guide_stage() {
-	global $g_mantishub_info_trial;
-
-	if ( $g_mantishub_info_trial && current_user_is_administrator() ) {
-		if ( mantishub_table_row_count( 'project' ) == 0 ) {
-			$t_active_step = MANTISHUB_GUIDE_PROJECT;
-		} else if ( mantishub_table_row_count( 'category' ) == 1 ) {
-			$t_active_step = MANTISHUB_GUIDE_CATEGORY;
-		} else if ( mantishub_table_row_count( 'bug' ) == 0 ) {
-			$t_active_step = MANTISHUB_GUIDE_BUG;
-		} else if ( mantishub_table_row_count( 'user' ) == 1 ) {
-			$t_active_step = MANTISHUB_GUIDE_USER;
-		} else {
-			$t_active_step = false;
-		}
-	} else {
-		$t_active_step = false;
-	}
-
-    return $t_active_step;
-}
-
-/**
- * Display instance-wide messages just under the navbar
- * @returns null
- */
-function mantishub_show_messages() {
-
-	mantishub_announcements();
-
-	mantishub_trial_message();
-}
-
-function mantishub_trial_message() {
+function mantishub_top_message() {
 	global $g_mantishub_info_trial, $g_mantishub_info_payment_on_file;
 
 	if ( $g_mantishub_info_trial && !$g_mantishub_info_payment_on_file && current_user_is_administrator() ) {
@@ -105,54 +67,8 @@ function mantishub_trial_message() {
 
 		$t_trial_conversion_url = config_get( 'mantishub_info_trial_conversion_url', '' );
 		if ( $t_issues_count >= 5 && !is_blank( $t_trial_conversion_url ) ) {
-			echo '<div class="alert alert-warning padding-8 no-margin">';
-			echo '<strong><i class="ace-icon fa fa-flag-checkered fa-lg"></i> Trial Version: </strong>';
-			echo 'Click <a href="' . $t_trial_conversion_url . '" target="_blank">here</a> to convert to paid and enable daily backups.';
-			echo '</div>';
+			echo '<div style="background-color: #fff494; z-index: 10; position: absolute; right: 5px; top: 5px; text-align: right;"><b>Trial Version:</b> Click <a href="' . $t_trial_conversion_url . '" target="_blank">here</a> to convert to paid and enable daily backups.</div>';
 		}
-	}
-}
-
-function mantishub_announcements() {
-	global $g_config_path;
-
-	try {
-		$t_messages_file_path = $g_config_path . 'mantishub_config.json';
-		if( file_exists( $t_messages_file_path ) ) {
-			# warm up the cache if needed
-			mantishub_cache_dismissed_blocks();
-
-			$str = file_get_contents( $t_messages_file_path );
-			$json = json_decode($str, true);
-
-			foreach ( $json['announcements'] as  $message ) {
-				if ( isset( $message['access_level'] ) && $message['access_level'] > current_user_get_access_level() ) {
-					continue;
-				}
-
-				$t_show = !mantishub_is_dismissed_block( $message['id'] );
-				$t_now = time();
-				if( $t_show
-					&& ( $t_now >= strtotime( $message['valid_from'] ) )
-					&& ( $t_now <= strtotime( $message['valid_until'] ) ) ) {
-
-					echo '<div id="' . $message['id'] . '" class="alert alert-warning padding-8 no-margin">';
-					if ( isset( $message['dismissable'] ) && $message['dismissable'] === true ) {
-						echo '<a data-dismiss="alert" class="close" type="button" href="#">';
-						echo '<i class="ace-icon fa fa-times bigger-125"></i> ';
-						echo '</a>';
-					}
-					echo '<i class="ace-icon fa fa-lg ' . $message['icon'] . '"></i> ' . $message['text'];
-					echo '</div>';
-				}
-			}
-		} else {
-			# clear dismissed blocks cache
-			mantishub_clear_dismissed_blocks_cache();
-		}
-	}
-	catch ( Exception $e ) {
-		log_event( LOG_ALL, "Processing announcements file failed " . $e->ErrorInfo );
 	}
 }
 
@@ -525,65 +441,30 @@ function mantishub_is_manage_section() {
 	return is_page_name( 'manage_' ) || is_page_name( 'logo_page' ) || is_page_name( 'adm_' );
 }
 
-/**
- * Check whether to show mantishub support widget
- * @return boolean
- */
-function mantishub_display_support_widget() {
-	if( !auth_is_user_authenticated() ) {
-		return false;
-	}
-
-	if ( !current_user_is_administrator() ) {
-		return false;
-	}
-
-	if ( config_get( 'in_app_support_enabled' ) != ON ) {
-		return false;
-	}
-
-	return true;
-}
-
-/**
- * Print navbar help menu at the top right of the page
- * @return null
- */
-function mantishub_navbar_help_menu() {
-	if( !mantishub_display_support_widget() ) {
-		return;
-	}
-
-	echo '<li class="grey">';
-	echo '<a id="help-widget" href="#">';
-	echo '<i class="ace-icon fa fa fa-question bigger-150"></i>';
-	echo '</a>';
-	echo '</li>';
-}
-
 function mantishub_support_widget() {
-	if( !mantishub_display_support_widget() ) {
-		return;
+	if ( config_get( 'in_app_support_enabled' ) != OFF && mantishub_is_manage_section() ) {
+		mantishub_zendesk();
 	}
+}
 
-	$t_user_email = current_user_get_field( 'email' );
-	$t_realname = current_user_get_field( 'realname' );
+function mantishub_zendesk() {
+	if ( auth_is_user_authenticated() ) {
+		if ( current_user_is_administrator() ) {
+			$t_user_email = current_user_get_field( 'email' );
+			$t_realname = current_user_get_field( 'realname' );
 
-echo <<< HTML
-<!-- Support Widget -->
-<script>/*<![CDATA[*/window.zEmbed||function(e,t){var n,o,d,i,s,a=[],r=document.createElement("iframe");window.zEmbed=function(){a.push(arguments)},window.zE=window.zE||window.zEmbed,r.src="javascript:false",r.title="",r.role="presentation",(r.frameElement||r).style.cssText="display: none",d=document.getElementsByTagName("script"),d=d[d.length-1],d.parentNode.insertBefore(r,d),i=r.contentWindow,s=i.document;try{o=s}catch(c){n=document.domain,r.src='javascript:var d=document.open();d.domain="'+n+'";void(0);',o=s}o.open()._l=function(){var o=this.createElement("script");n&&(this.domain=n),o.id="js-iframe-async",o.src=e,this.t=+new Date,this.zendeskHost=t,this.zEQueue=a,this.body.appendChild(o)},o.write('<body onload="document._l();">'),o.close()}("//assets.zendesk.com/embeddable_framework/main.js","mantishub.zendesk.com");/*]]>*/</script>
+			echo <<< HTML
+					<!-- Support Widget -->
+					<script>/*<![CDATA[*/window.zEmbed||function(e,t){var n,o,d,i,s,a=[],r=document.createElement("iframe");window.zEmbed=function(){a.push(arguments)},window.zE=window.zE||window.zEmbed,r.src="javascript:false",r.title="",r.role="presentation",(r.frameElement||r).style.cssText="display: none",d=document.getElementsByTagName("script"),d=d[d.length-1],d.parentNode.insertBefore(r,d),i=r.contentWindow,s=i.document;try{o=s}catch(c){n=document.domain,r.src='javascript:var d=document.open();d.domain="'+n+'";void(0);',o=s}o.open()._l=function(){var o=this.createElement("script");n&&(this.domain=n),o.id="js-iframe-async",o.src=e,this.t=+new Date,this.zendeskHost=t,this.zEQueue=a,this.body.appendChild(o)},o.write('<body onload="document._l();">'),o.close()}("//assets.zendesk.com/embeddable_framework/main.js","mantishub.zendesk.com");/*]]>*/</script>
 <script>
   zE(function() {
     zE.identify( { name: '$t_realname', email: '$t_user_email' });
-    zE.hide();
-  });
-  $( "#help-widget" ).click(function() {
-  	zE.activate({hideOnClose: true});
   });
 </script>
-<!-- End of Support Widget -->
+					<!-- End of Support Widget -->
 HTML;
-
+		}
+	}	
 }
 
 /**
@@ -811,6 +692,41 @@ function mantishub_cleanup_plugin_name( $p_name ) {
 	$t_name = str_replace( 'MantisBT ', '', $t_name );
 	$t_name = str_replace( 'Mantis ', '', $t_name );
 	return $t_name;
+}
+
+function mantishub_upgrade_unattended() {
+	mantishub_install_plugin( 'Helpdesk' );
+
+	$t_plugins = plugin_find_all();
+	uasort( $t_plugins,
+		function ( $p_p1, $p_p2 ) {
+			return strcasecmp( $p_p1->name, $p_p2->name );
+		}
+	);
+
+	foreach( $t_plugins as $t_plugin ) {
+		if ( plugin_is_installed( $t_plugin->basename ) ) {
+			if ( plugin_needs_upgrade( $t_plugin ) ) {
+				echo "{$t_plugin->basename}: upgrading schema...\n";
+				if ( !plugin_upgrade( $t_plugin ) ) {
+					echo "{$t_plugin->basename}: upgrade failed...\n";
+					return false;
+				}
+			} else {
+				echo "{$t_plugin->basename}: schema up-to-date.\n";
+			}
+		}
+	}
+
+	return true;
+}
+
+function mantishub_install_plugin( $p_plugin_name ) {
+	$t_plugin = plugin_register( $p_plugin_name, true );
+
+	if ( !plugin_is_installed( $p_plugin_name ) ) {
+		plugin_install( $t_plugin );
+	}
 }
 
 /**
