@@ -59,7 +59,46 @@ function mantishub_string_contains_domain( $p_text ) {
 	return false;
 }
 
-function mantishub_top_message() {
+/**
+ * Gets the current guide step or false if user has done the steps outlined
+ * in the getting started guide and hence it shouldn't be shown.
+ *
+ * @return false if guide is done, otherwise guide step.
+ */
+function mantishub_guide_stage() {
+	global $g_mantishub_info_trial;
+
+	if ( $g_mantishub_info_trial && current_user_is_administrator() ) {
+		if ( mantishub_table_row_count( 'project' ) == 0 ) {
+			$t_active_step = MANTISHUB_GUIDE_PROJECT;
+		} else if ( mantishub_table_row_count( 'category' ) == 1 ) {
+			$t_active_step = MANTISHUB_GUIDE_CATEGORY;
+		} else if ( mantishub_table_row_count( 'bug' ) == 0 ) {
+			$t_active_step = MANTISHUB_GUIDE_BUG;
+		} else if ( mantishub_table_row_count( 'user' ) == 1 ) {
+			$t_active_step = MANTISHUB_GUIDE_USER;
+		} else {
+			$t_active_step = false;
+		}
+	} else {
+		$t_active_step = false;
+	}
+
+	return $t_active_step;
+}
+
+/**
+ * Display instance-wide messages just under the navbar
+ * @returns null
+ */
+function mantishub_show_messages() {
+
+	mantishub_announcements();
+
+	mantishub_trial_message();
+}
+
+function mantishub_trial_message() {
 	global $g_mantishub_info_trial, $g_mantishub_info_payment_on_file;
 
 	if ( $g_mantishub_info_trial && !$g_mantishub_info_payment_on_file && current_user_is_administrator() ) {
@@ -67,8 +106,54 @@ function mantishub_top_message() {
 
 		$t_trial_conversion_url = config_get( 'mantishub_info_trial_conversion_url', '' );
 		if ( $t_issues_count >= 5 && !is_blank( $t_trial_conversion_url ) ) {
-			echo '<div style="background-color: #fff494; z-index: 10; position: absolute; right: 5px; top: 5px; text-align: right;"><b>Trial Version:</b> Click <a href="' . $t_trial_conversion_url . '" target="_blank">here</a> to convert to paid and enable daily backups.</div>';
+			echo '<div class="alert alert-warning padding-8 no-margin">';
+			echo '<strong><i class="ace-icon fa fa-flag-checkered fa-lg"></i> Trial Version: </strong>';
+			echo 'Click <a href="' . $t_trial_conversion_url . '" target="_blank">here</a> to convert to paid and enable daily backups.';
+			echo '</div>';
 		}
+	}
+}
+
+function mantishub_announcements() {
+	global $g_config_path;
+
+	try {
+		$t_messages_file_path = $g_config_path . 'mantishub_config.json';
+		if( file_exists( $t_messages_file_path ) ) {
+			# warm up the cache if needed
+			mantishub_cache_dismissed_blocks();
+
+			$str = file_get_contents( $t_messages_file_path );
+			$json = json_decode($str, true);
+
+			foreach ( $json['announcements'] as  $message ) {
+				if ( isset( $message['access_level'] ) && $message['access_level'] > current_user_get_access_level() ) {
+					continue;
+				}
+
+				$t_show = !mantishub_is_dismissed_block( $message['id'] );
+				$t_now = time();
+				if( $t_show
+					&& ( $t_now >= strtotime( $message['valid_from'] ) )
+					&& ( $t_now <= strtotime( $message['valid_until'] ) ) ) {
+
+					echo '<div id="' . $message['id'] . '" class="alert alert-warning padding-8 no-margin">';
+					if ( isset( $message['dismissable'] ) && $message['dismissable'] === true ) {
+						echo '<a data-dismiss="alert" class="close" type="button" href="#">';
+						echo '<i class="ace-icon fa fa-times bigger-125"></i> ';
+						echo '</a>';
+					}
+					echo '<i class="ace-icon fa fa-lg ' . $message['icon'] . '"></i> ' . $message['text'];
+					echo '</div>';
+				}
+			}
+		} else {
+			# clear dismissed blocks cache
+			mantishub_clear_dismissed_blocks_cache();
+		}
+	}
+	catch ( Exception $e ) {
+		log_event( LOG_ALL, "Processing announcements file failed " . $e->ErrorInfo );
 	}
 }
 
@@ -182,135 +267,6 @@ function mantishub_bingads_analytics() {
 	}
 }
 
-function mantishub_mailgun_key() {
-	return 'key-8j9a2ntv0ti6f4ldntxgpoxkk6774wt0';
-}
-
-/**
- * Clean project name to be part of the email address.
- * instance+project@mantishub.net
- *
- * Used in creating mailgun routes.
- */
-function mantishub_mailgun_project_name_clean( $p_project_name ) {
-	$t_clean_project_name = '';
-	$t_last_underscore = true;
-
-	for ( $i = 0; $i < strlen( $p_project_name ); ++$i ) {
-		$c = $p_project_name[$i];
-		if ( ( $c >= 'a' && $c <= 'z' ) || ( $c >= 'A' && $c <= 'Z' ) || ( $c >= '0' && $c <= '9' ) ) {
-			$t_clean_project_name .= $c;
-			$t_last_underscore = false;
-		} else if ( !$t_last_underscore ) {
-			$t_clean_project_name .= '_';
-		}
-	}
-
-	return strtolower( $t_clean_project_name );
-}
-
-function mantishub_project_get_row_by_clean_name( $p_project_name ) {
-	$t_project_id = project_get_id_by_name( $p_project_name );
-
-	if ( $t_project_id == 0 ) {
-		$t_projects = project_get_all_rows();
-		$t_project_found = false;
-
-		foreach ( $t_projects as $t_project ) {
-			if ( mantishub_mailgun_project_name_clean( $t_project['name'] ) != $p_project_name ) {
-				continue;
-			}
-
-			$t_project_found = $t_project;
-			break;
-		}
-	} else {
-		$t_project_found = project_get_row( $t_project_id );
-	}
-
-	return $t_project_found;
-}
-
-/**
- * For recipient instance+proj@mantishub.net, the project is 'proj'.
- * @return false if not found, otherwise project info.
- */
-function mantishub_mailgun_project_from_recipient( $p_recipient ) {
-	$t_instance_name = mantishub_instance_name();
-	$t_instance_name = strtolower( $t_instance_name );
-
-	$t_target_project_name = strtolower( $p_recipient );
-	$t_target_project_name = substr( $t_target_project_name, 0, strpos( $t_target_project_name, '@' ) );
-
-	// If instancename@domain.com, then return false since project is not specified.
-	if ( $t_target_project_name == $t_instance_name ) {
-		return false;
-	}
-
-	$t_target_project_name = str_replace( $t_instance_name . '+', '', $t_target_project_name );
-
-	return mantishub_project_get_row_by_clean_name( $t_target_project_name );
-}
-
-function mantishub_mailgun_issue_from_recipient( $p_recipient, &$p_abort_error ) {
-	$p_abort_error = '';
-	$t_instance_name = mantishub_instance_name();
-	$t_instance_name = strtolower( $t_instance_name );
-
-	$t_before_at = strtolower( $p_recipient );
-	$t_before_at = substr( $t_before_at, 0, strpos( $t_before_at, '@' ) );
-
-	// If instancename@domain.com, then return false since project is not specified.
-	if ( $t_before_at == $t_instance_name ) {
-		return 0;
-	}
-
-	$t_between_plus_and_at = str_replace( $t_instance_name . '+', '', $t_before_at );
-
-	# Don't match an issue if a project exists with the same name.
-	$t_project_row = mantishub_project_get_row_by_clean_name( $t_between_plus_and_at );
-	if ( $t_project_row !== false ) {
-		return 0;
-	}
-
-	$t_parts = explode( '-', $t_between_plus_and_at );
-	if ( count( $t_parts ) != 2 ) {
-		# If numeric, then looks like the email is related to an issue but without a hash.
-		# Otherwise, then it is just a project that doesn't exist.
-		if ( is_numeric( $t_between_plus_and_at ) ) {
-			$p_abort_error = "missing token from recipient address.";
-		}
-
-		return 0;
-	}
-
-	$t_id = $t_parts[0];
-
-	if ( !is_numeric( $t_id ) ) {
-		return 0;
-	}
-
-	mantishub_log( 'incoming mail: issue id = ' . $t_id );
-
-	if ( !bug_exists( $t_id ) ) {
-		$p_abort_error = "issue $t_id doesn't exist.";
-		return 0;
-	}
-
-	$t_md5 = $t_parts[1];
-	mantishub_log( 'incoming mail: received md5 = ' . $t_md5 );
-
-	$t_expected_md5 = md5( $t_id . config_get( 'crypto_master_salt' ) );
-	mantishub_log( 'incoming mail: expected md5 = ' . $t_expected_md5 );
-
-	if ( $t_md5 != $t_expected_md5 ) {
-		$p_abort_error = "Invalid recipient address";
-		return 0;
-	}
-
-	return $t_id;
-}
-
 function mantishub_event( $p_event, $p_can_call_db = true ) {
 	$t_line = '';
 
@@ -318,7 +274,7 @@ function mantishub_event( $p_event, $p_can_call_db = true ) {
 		$p_event['level'] = 'info';
 	}
 
-	if ( $p_can_call_db ) {	
+	if ( $p_can_call_db ) {
 		global $g_common_log_fields;
 		if ( $g_common_log_fields === null ) {
 			$g_common_log_fields = '';
@@ -441,6 +397,42 @@ function mantishub_is_manage_section() {
 	return is_page_name( 'manage_' ) || is_page_name( 'logo_page' ) || is_page_name( 'adm_' );
 }
 
+/**
+ * Check whether to show mantishub support widget
+ * @return boolean
+ */
+function mantishub_display_support_widget() {
+	if( !auth_is_user_authenticated() ) {
+		return false;
+	}
+
+	if ( !current_user_is_administrator() ) {
+		return false;
+	}
+
+	if ( config_get( 'in_app_support_enabled' ) != ON ) {
+		return false;
+	}
+
+	return true;
+}
+
+/**
+ * Print navbar help menu at the top right of the page
+ * @return null
+ */
+function mantishub_navbar_help_menu() {
+	if( !mantishub_display_support_widget() ) {
+		return;
+	}
+
+	echo '<li class="grey">';
+	echo '<a id="help-widget" href="#">';
+	echo '<i class="ace-icon fa fa fa-question bigger-150"></i>';
+	echo '</a>';
+	echo '</li>';
+}
+
 function mantishub_support_widget() {
 	if ( config_get( 'in_app_support_enabled' ) != OFF && mantishub_is_manage_section() ) {
 		mantishub_zendesk();
@@ -464,7 +456,7 @@ function mantishub_zendesk() {
 					<!-- End of Support Widget -->
 HTML;
 		}
-	}	
+	}
 }
 
 /**
@@ -517,7 +509,7 @@ function mantishub_intercom() {
 HTML;
 			}
 		}
-	}	
+	}
 }
 
 function mantishub_team_users_list_info() {
@@ -787,3 +779,4 @@ function mantishub_cache_dismissed_blocks() {
 function mantishub_clear_dismissed_blocks_cache() {
 	gpc_clear_cookie('MANTIS_collapse_settings');
 }
+
