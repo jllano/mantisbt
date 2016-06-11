@@ -183,7 +183,3 @@
 
 	# Increase default preview limit to 1MB.
 	$g_preview_attachments_inline_max_size = 1 * 1024 * 1024;
-
-	# Mailgun Key for MantisHub
-	$g_email_incoming_mailgun_key = 'key-8j9a2ntv0ti6f4ldntxgpoxkk6774wt0';
-
