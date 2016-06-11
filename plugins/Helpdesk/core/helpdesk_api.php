@@ -231,34 +231,36 @@ function helpdesk_print_issue_view_info( $p_issue_id ) {
 	echo '<div id="helpdesk" style="padding: 0px; margin-top: 20px; display: none;">';
 	collapse_open( 'helpdesk' );
 ?>
-<table class="width100" cellspacing="1">
-<tr class="row-2">
-	<td width="15%" class="form-title" colspan="2"><?php
-		collapse_icon( 'helpdesk' );
-		echo plugin_lang_get( 'helpdesk_title' ); ?>
-	</td>
-</tr>
-<tr class="row-1">
-	<td class="category" width="15%">
-		<?php echo plugin_lang_get( 'customers' ); ?>
-	</td>
-	<td>
-		<?php echo implode( '<br />', $t_users ); ?>
-	</td>
-</tr>
-</table>
-<?php collapse_closed( 'helpdesk' ); ?>
-<table class="width100" cellspacing="1">
-<tr>
-	<td class="form-title"><?php
-		collapse_icon( 'helpdesk' );
-		echo plugin_lang_get( 'helpdesk_title' ); ?>
-	</td>
-</tr>
-</table>
-<?php
-	collapse_end( 'helpdesk' );
-?>
+	<div class="col-md-12 col-xs-12">
+		<div class="space-10"></div>
+		<div class="widget-box widget-color-blue2" id="changesets">
+			<div class="widget-header widget-header-small">
+				<h4 class="widget-title lighter">
+					<i class="ace-icon fa fa-medkit"></i>
+					<?php echo plugin_lang_get( 'helpdesk_title' ) ?>
+				</h4>
+				<div class="widget-toolbar">
+					<a href="#" data-action="collapse">
+						<i class="1 ace-icon fa-chevron-down fa bigger-125"></i>
+					</a>
+				</div>
+			</div>
+			<div class="widget-body">
+				<div class="table-responsive">
+					<table class="table table-bordered table-striped table-condensed no-margin">
+						<tr>
+							<td class="category" width="15%">
+								<?php echo plugin_lang_get( 'customers' ); ?>
+							</td>
+							<td>
+								<?php echo implode( '<br />', $t_users ); ?>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
 <script type="text/javascript">
 	$(document).ready(function() {
 		$('#helpdesk').insertAfter('#view-issue-details');
