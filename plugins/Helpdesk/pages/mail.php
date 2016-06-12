@@ -51,11 +51,14 @@ function mantishub_email_new_issue_success( $p_issue_id, $p_message ) {
 		return;
 	}
 
-	$t_mail_headers = helpdesk_headers_for_issue( $p_issue_id, /* initial_message */ true );
+	$t_mail_headers = helpdesk_headers_for_issue( $p_issue_id );
 	$t_subject = helpdesk_subject_for_issue( $p_issue_id );
 	$t_issue_url = helpdesk_url_for_issue( $p_issue_id );
 
-    $t_message = $p_message . "\n";
+    $t_message = $p_message . "\n\n";
+
+	$t_message .= "---\n";
+	$t_message = mantishub_wrap_email( $p_issue_id, $t_message );
 
     email_store( $f_from_email, $t_subject, $t_message, $t_mail_headers );
     log_event( LOG_EMAIL, sprintf( 'Incoming Mail API response to = \'%s\'', $f_from_email ) );

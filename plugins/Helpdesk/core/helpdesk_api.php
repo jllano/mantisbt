@@ -147,7 +147,7 @@ function helpdesk_url_for_issue( $p_issue_id ) {
 	return config_get( 'path' ) . 'view.php?id=' . $p_issue_id;
 }
 
-function helpdesk_headers_for_issue( $p_issue_id, $p_initial_message = false ) {
+function helpdesk_headers_for_issue( $p_issue_id ) {
 	$t_mail_headers = array();
 	$t_reply_to = mantishub_reply_to_address( $p_issue_id );
 	if ( $t_reply_to !== null ) {
@@ -157,11 +157,7 @@ function helpdesk_headers_for_issue( $p_issue_id, $p_initial_message = false ) {
 	$t_issue = bug_get( $p_issue_id );
 
 	$t_message_md5 = md5( $p_issue_id . $t_issue->date_submitted );
-	if( $p_initial_message ) {
-		$t_mail_headers['Message-ID'] = $t_message_md5;
-	} else {
-		$t_mail_headers['In-Reply-To'] = $t_message_md5;
-	}
+	$t_mail_headers['In-Reply-To'] = $t_message_md5;
 
 	return $t_mail_headers;
 }
