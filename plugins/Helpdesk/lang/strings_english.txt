@@ -18,4 +18,8 @@ $s_plugin_Helpdesk_customers = 'Customers';
 $s_plugin_Helpdesk_enable_unregistered = 'Enable unregistered';
 $s_plugin_Helpdesk_enable_unregistered_label = 'Accept emails from an email address that is not associated with a registered user.';
 $s_plugin_Helpdesk_enable_unregistered_help = 'Such emails will be reported via user "Email", this user by default has REPORTER access to all projects.  Manage such user account to revoke access to specific private projects.';
+$s_plugin_Helpdesk_see_issue_details = 'See issue details at %1s';
+$s_plugin_Helpdesk_responded = '%1s responded with the following:';
+$s_plugin_Helpdesk_resolved_issue = '%1$s resolved the issue';
+$s_plugin_Helpdesk_reopened_issue = '%1$s re-opened the issue';
 
