@@ -1,7 +1,6 @@
 <?php
 # Copyright (c) 2016 Victor Boctor @ MantisHub.com
 
-require_once( 'core.php' );
 require_api( 'collapse_api.php' );
 require_api( 'mantishub_api.php' );
 
