@@ -5,6 +5,7 @@
   * MantisBT Core API's
   */
 require_once( 'core.php' );
+require_once( dirname( dirname( __FILE__ ) ) . '/core/helpdesk_api.php' );
 require_api( 'access_api.php' );
 require_api( 'bug_api.php' );
 require_api( 'email_api.php' );
@@ -15,7 +16,7 @@ require_api( 'project_api.php' );
 
 $f_subject = trim( gpc_get_string( 'subject', '' ) );
 $f_from_name_email = gpc_get_string( 'from' );
-$f_from_email = mantishub_get_email_from_name_email( $f_from_name_email );
+$f_from_email = helpdesk_get_email_from_name_email( $f_from_name_email );
 
 $f_message_headers = gpc_get_string( 'message-headers' );
 $t_headers = json_decode( $f_message_headers );
@@ -31,17 +32,6 @@ if ( mantishub_string_contains_domain( $t_message_id ) ) {
 	exit;
 }
 
-function mantishub_get_email_from_name_email( $p_name_email ) {
-	$t_start_pos = stripos( $p_name_email, '<' );
-	$t_end_pos = stripos( $p_name_email, '>' );
-
-	if ( $t_start_pos === false || $t_end_pos === false || $t_start_pos >= $t_end_pos ) {
-		return $p_name_email;
-	}
-
-	return substr( $p_name_email, $t_start_pos + 1, $t_end_pos - $t_start_pos - 1 );
-}
-
 function mantishub_get_header( $p_headers, $p_header_name ) {
 	foreach( $p_headers as $t_header ) {
 		if ( strcasecmp( $t_header[0], $p_header_name ) === 0 ) {
@@ -52,7 +42,7 @@ function mantishub_get_header( $p_headers, $p_header_name ) {
 	return null;
 }
 
-function mantishub_email_response( $p_message, $p_success = false ) {
+function mantishub_email_new_issue_success( $p_issue_id, $p_message ) {
     global $f_from_email, $f_subject, $g_auto_response_suppress;
 
 	# Don't respond if message supresses auto-response to avoid loopback.
@@ -61,14 +51,13 @@ function mantishub_email_response( $p_message, $p_success = false ) {
 		return;
 	}
 
+	$t_mail_headers = helpdesk_headers_for_issue( $p_issue_id, /* initial_message */ true );
+	$t_subject = helpdesk_subject_for_issue( $p_issue_id );
+	$t_issue_url = helpdesk_url_for_issue( $p_issue_id );
+
     $t_message = $p_message . "\n";
 
-    if ( !$p_success ) {
-        $t_message .= "\nFor more details about how email reporting works, checkout documentation at:\n";
-        $t_message .= "http://support.mantishub.com/hc/en-us/articles/204273585\n";
-    }
-
-    email_store( $f_from_email, 'RE: ' . $f_subject, $t_message );
+    email_store( $f_from_email, $t_subject, $t_message, $t_mail_headers );
     log_event( LOG_EMAIL, sprintf( 'Incoming Mail API response to = \'%s\'', $f_from_email ) );
 
     if( OFF == config_get( 'email_send_using_cronjob' ) ) {
@@ -77,10 +66,24 @@ function mantishub_email_response( $p_message, $p_success = false ) {
 }
 
 function mantishub_email_error( $p_error_message ) {
-	$t_message = plugin_config_get( 'failed_message' );
-	$t_message = str_replace( '{error}', $p_error_message, $t_message );
+    global $f_from_email, $f_subject, $g_auto_response_suppress;
 
-	mantishub_email_response( $t_message );
+	# Don't respond if message supresses auto-response to avoid loopback.
+	if ( $g_auto_response_suppress == 'All' )
+	{
+		return;
+	}
+
+	$t_message = str_replace( '{error}', $p_error_message, plugin_config_get( 'failed_message' ) ) . "\n\n";
+    $t_message .= "For more details about how email reporting works, checkout documentation at:\n";
+    $t_message .= "http://support.mantishub.com/hc/en-us/articles/204273585\n";
+
+    email_store( $f_from_email, 'RE: ' . $f_subject, $t_message, $t_mail_headers );
+    log_event( LOG_EMAIL, sprintf( 'Incoming Mail API response to = \'%s\'', $f_from_email ) );
+
+    if( OFF == config_get( 'email_send_using_cronjob' ) ) {
+        email_send_all();
+    }
 }
 
 $t_event = array( 'comp' => 'email_reporting', 'event' => 'receiving_email', 'subject' => ( empty( $f_subject ) ? '<blank>' : $f_subject ), 'post' => var_export( $_POST, true ) );
@@ -323,6 +326,7 @@ if ( $t_new_issue ) {
 
 	if ( $t_generic_user ) {
 		$t_note_text .= "\n\n---\n" . $f_from_name_email;
+		helpdesk_add_user_to_issue( $t_bug_id, $f_from_name_email );
 	}
 
 	$t_event = array( 'comp' => 'email_reporting', 'event' => 'adding_note', 'issue_id' => $t_bug_id );
@@ -347,10 +351,11 @@ if ( $t_new_issue ) {
 
 	email_generic( $t_bug_id, 'new', 'email_notification_title_for_action_bug_submitted' );
 
-	$t_message = plugin_config_get( 'issue_reported_message' );
+	$t_message = plugin_config_get( 'issue_reported_message' ) . "\n\n";
 	$t_message = str_replace( '{issue_id}', $t_bug_id, $t_message );
+	$t_message .= $f_body_plain;
 
-	mantishub_email_response( $t_message, /* success */ true );
+	mantishub_email_new_issue_success( $t_bug_id, $t_message );
 
 	$t_event = array( 'comp' => 'email_reporting', 'event' => 'issue_reported' );
 	mantishub_event( $t_event );

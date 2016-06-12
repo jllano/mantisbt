@@ -124,12 +124,12 @@ function helpdesk_issue_from_recipient( $p_recipient, &$p_abort_error ) {
 	}
 
 	$t_md5 = $t_parts[1];
-	helpdesk_log( 'incoming mail: received md5 = ' . $t_md5 );
-
 	$t_expected_md5 = md5( $t_id . config_get( 'crypto_master_salt' ) );
-	helpdesk_log( 'incoming mail: expected md5 = ' . $t_expected_md5 );
 
 	if ( $t_md5 != $t_expected_md5 ) {
+		helpdesk_log( 'incoming mail: received md5 = ' . $t_md5 );
+		helpdesk_log( 'incoming mail: expected md5 = ' . $t_expected_md5 );
+
 		$p_abort_error = "Invalid recipient address";
 		return 0;
 	}
@@ -137,7 +137,63 @@ function helpdesk_issue_from_recipient( $p_recipient, &$p_abort_error ) {
 	return $t_id;
 }
 
+function helpdesk_subject_for_issue( $p_issue_id ) {
+	$t_issue = bug_get( $p_issue_id );
+	$t_project_name = project_get_name( $t_issue->project_id );
+	$t_subject = "[{$t_project_name} {$p_issue_id}]: {$t_issue->summary}";
+	return $t_subject;
+}
+
+function helpdesk_url_for_issue( $p_issue_id ) {
+	return config_get( 'path' ) . 'view.php?id=' . $p_issue_id;
+}
+
+function helpdesk_headers_for_issue( $p_issue_id, $p_initial_message = false ) {
+	$t_mail_headers = array();
+	$t_reply_to = mantishub_reply_to_address( $p_issue_id );
+	if ( $t_reply_to !== null ) {
+		$t_mail_headers['Reply-To'] = $t_reply_to;
+	}
+
+	$t_issue = bug_get( $p_issue_id );
+
+	$t_message_md5 = md5( $p_issue_id . $t_issue->date_submitted );
+	if( $p_initial_message ) {
+		$t_mail_headers['Message-ID'] = $t_message_md5;
+	} else {
+		$t_mail_headers['In-Reply-To'] = $t_message_md5;
+	}
+
+	return $t_mail_headers;
+}
+
+function helpdesk_get_email_from_name_email( $p_name_email ) {
+	$t_start_pos = stripos( $p_name_email, '<' );
+	$t_end_pos = stripos( $p_name_email, '>' );
+
+	if ( $t_start_pos === false || $t_end_pos === false || $t_start_pos >= $t_end_pos ) {
+		return $p_name_email;
+	}
+
+	return substr( $p_name_email, $t_start_pos + 1, $t_end_pos - $t_start_pos - 1 );
+}
+
+/**
+ * Adds the reporter of the issue to the db.
+ *
+ * @param  int $p_issue_id         The issue id
+ * @param  string $p_email_address The name and email address.
+ * @return int|bool                The row id or false if duplicate.
+ */
 function helpdesk_add_user_to_issue( $p_issue_id, $p_email_address ) {
+	$t_recipients = helpdesk_users_for_issue( $p_issue_id );
+
+	foreach( $t_recipients as $t_recipient ) {
+		if ( $t_recipient == $p_email_address ) {
+			return false;
+		}
+	}
+
 	$t_recipients_table = plugin_table( 'recipients' );
 
 	$t_query = "INSERT INTO {$t_recipients_table}
@@ -228,6 +284,11 @@ function helpdesk_print_issue_view_info( $p_issue_id ) {
 		return;
 	}
 
+	$t_recipients_for_display = array();
+	foreach( $t_users as $t_from ) {
+		$t_recipients_for_display[] = string_display( $t_from );
+	}
+
 	echo '<div id="helpdesk" style="padding: 0px; margin-top: 20px; display: none;">';
 	collapse_open( 'helpdesk' );
 ?>
@@ -253,7 +314,7 @@ function helpdesk_print_issue_view_info( $p_issue_id ) {
 								<?php echo plugin_lang_get( 'customers' ); ?>
 							</td>
 							<td>
-								<?php echo implode( '<br />', $t_users ); ?>
+								<?php echo implode( '<br />', $t_recipients_for_display ); ?>
 							</td>
 						</tr>
 					</table>
