@@ -317,6 +317,18 @@ function helpdesk_print_issue_view_info( $p_issue_id ) {
 			</div>
 		</div>
 	</div>
+<?php collapse_closed( 'helpdesk' ); ?>
+<table class="width100" cellspacing="1">
+<tr>
+	<td class="form-title"><?php
+		collapse_icon( 'helpdesk' );
+		echo plugin_lang_get( 'helpdesk_title' ); ?>
+	</td>
+</tr>
+</table>
+<?php
+	collapse_end( 'helpdesk' );
+?>
 <script type="text/javascript">
 	$(document).ready(function() {
 		$('#helpdesk').insertAfter('#view-issue-details');
