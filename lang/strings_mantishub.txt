@@ -12,7 +12,7 @@ $s_mantishub_plan_value_of_limit = '%1s of %2s';
 $s_mantishub_plan_trial = 'trial';
 $s_mantishub_plan_team_members = 'Team Members';
 $s_mantishub_plan_assign_access_level = '(access level for team members is "%s")';
-$s_mantishub_plan_team_packs = 'Team Packs';
+$s_mantishub_plan_team_packs = 'User Packs';
 $s_mantishub_plan_disk_usage = 'Disk usage';
 
 # Backup page

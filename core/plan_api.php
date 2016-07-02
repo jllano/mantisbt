@@ -115,7 +115,11 @@ function plan_max_issues_string() {
 }
 
 function plan_max_users_string() {
-	return lang_get( 'mantishub_plan_unlimited' );
+	if ( plan_gen() < 5 ) {
+		return lang_get( 'mantishub_plan_unlimited' );
+	}
+
+	return plan_max_team_members_string();	
 }
 
 function plan_max_attachments_string() {
