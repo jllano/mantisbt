@@ -467,59 +467,6 @@ HTML;
 	}
 }
 
-/**
- * Echos the intercom javascript calls with the appropriate MantisHub specific data.
- * It should be called just before the closing html body tag.
- */
-function mantishub_intercom() {
-	// If a page auto-refreshes itself then don't report that as activity.
-	if ( isset( $_GET['refresh'] ) && $_GET['refresh'] == 'true' ) {
-		return;
-	}
-
-	// MantisHub Intercom-IO
-	if ( auth_is_user_authenticated() ) {
-		$t_user_email = current_user_get_field( 'email' );
-
-		if ( current_user_is_administrator() && stristr( $t_user_email, "@localhost" ) === false ) {
-			// Use the database as the company id since it will never change.
-			// The instance name may change due to renaming the instance or using custom domain.
-			$t_company_id = config_get( 'database_name' );
-
-			$t_company_name = mantishub_instance_name();
-	 		$t_user_created = current_user_get_field( 'date_created' );
-	 		$t_user_language = user_pref_get_language( auth_get_current_user_id() );
-			$t_username = current_user_get_field( 'username' );
-			$t_generation = config_get_global( 'mantishub_gen' );
-
-			$t_security_token = 'Jfm5VSe9aRpM8dAtk9A8Ae5h6TxUnmcF_KFK5EX-';
-
-			echo '<script id="IntercomSettingsScriptTag">';
-			echo 'window.intercomSettings = {';
-			echo '"user_hash": "' . hash_hmac( 'sha256', $t_user_email, $t_security_token ) . '",';
-			echo 'email: "' . $t_user_email . '",';
-			echo 'created_at: ' . $t_user_created . ',';
-			echo '"username": "' . $t_username . '",';
-			echo '"language": "' . $t_user_language . '",';
-			echo '"company": {';
-			echo 'id: "' . $t_company_id . '",';
-			echo 'name: "' . $t_company_name . '",';
-			echo '"ip": "' . $_SERVER['SERVER_ADDR'] . '",';
-			echo '"gen": "' . $t_generation . '"';
-			echo '},';
-			echo 'app_id: "eb7d1d2171933b95f1ecb4fc4d1db866879776d2"';
-			echo '}';
-			echo '</script>';
-
-			if ( $t_company_name !== 'localhost' && !mantishub_impersonation() ) {
-				echo <<< HTML
-					<script>(function(){var w=window;var ic=w.Intercom;if(typeof ic==="function"){ic('reattach_activator');ic('update',intercomSettings);}else{var d=document;var i=function(){i.c(arguments)};i.q=[];i.c=function(args){i.q.push(args)};w.Intercom=i;function l(){var s=d.createElement('script');s.type='text/javascript';s.async=true;s.src='https://static.intercomcdn.com/intercom.v1.js';var x=d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s,x);}if(w.attachEvent){w.attachEvent('onload',l);}else{w.addEventListener('load',l,false);}}})()</script>
-HTML;
-			}
-		}
-	}
-}
-
 function mantishub_team_users_list_info() {
 	$t_info = array();
 
