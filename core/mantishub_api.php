@@ -410,6 +410,10 @@ function mantishub_display_support_widget() {
 		return false;
 	}
 
+	if ( !mantishub_is_manage_section() ) {
+		return false;
+	}
+
 	if ( config_get( 'in_app_support_enabled' ) != ON ) {
 		return false;
 	}
@@ -451,6 +455,10 @@ function mantishub_zendesk() {
 <script>
   zE(function() {
     zE.identify( { name: '$t_realname', email: '$t_user_email' });
+    zE.hide();
+  });
+  $( "#help-widget" ).click(function() {
+  	zE.activate({hideOnClose: true});
   });
 </script>
 					<!-- End of Support Widget -->
