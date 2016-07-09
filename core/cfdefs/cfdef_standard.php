@@ -27,7 +27,8 @@ $g_custom_field_type_definition[CUSTOM_FIELD_TYPE_STRING] = array (
 	'#display_length_max' => true,
 	'#display_default_value' => true,
 	'#function_return_distinct_values' => null,
-	'#function_value_to_database' => null,
+	# MySQL 4-bytes UTF-8 chars workaround #21101
+	'#function_value_to_database' => 'db_mysql_fix_utf8',
 	'#function_database_to_value' => null,
 	'#function_print_input' => 'cfdef_input_textbox',
 	'#function_string_value' => null,
@@ -41,7 +42,8 @@ $g_custom_field_type_definition[CUSTOM_FIELD_TYPE_TEXTAREA] = array (
 	'#display_length_max' => true,
 	'#display_default_value' => true,
 	'#function_return_distinct_values' => null,
-	'#function_value_to_database' => null,
+	# MySQL 4-bytes UTF-8 chars workaround #21101
+	'#function_value_to_database' => 'db_mysql_fix_utf8',
 	'#function_database_to_value' => null,
 	'#function_print_input' => 'cfdef_input_textarea',
 	'#function_string_value' => null,
@@ -371,7 +373,7 @@ function cfdef_input_textbox( array $p_field_def, $p_custom_field_value ) {
 	} else {
 		echo ' maxlength="255"';
 	}
-	echo ' value="' . string_attribute( $p_custom_field_value ) .'"></input>';
+	echo ' value="' . string_attribute( $p_custom_field_value ) .'" />';
 }
 
 /**
@@ -415,6 +417,7 @@ function cfdef_prepare_list_value_to_database( $p_value ) {
  * @return array|boolean
  */
 function cfdef_prepare_list_distinct_values( array $p_field_def ) {
+	db_param_push();
 	$t_query = 'SELECT possible_values FROM {custom_field} WHERE id=' . db_param();
 	$t_result = db_query( $t_query, array( $p_field_def['id'] ) );
 

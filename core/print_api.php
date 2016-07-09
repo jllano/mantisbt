@@ -450,6 +450,7 @@ function print_news_item_option_list() {
 	$t_project_id = helper_get_current_project();
 
 	$t_global = access_has_global_level( config_get_global( 'admin_site_threshold' ) );
+	db_param_push();
 	if( $t_global ) {
 		$t_query = 'SELECT id, headline, announcement, view_state FROM {news} ORDER BY date_posted DESC';
 	} else {
@@ -1143,6 +1144,7 @@ function print_project_user_list_option_list( $p_project_id = null ) {
  * @return void
  */
 function print_project_user_list_option_list2( $p_user_id ) {
+	db_param_push();
 	$t_query = 'SELECT DISTINCT p.id, p.name
 				FROM {project} p
 				LEFT JOIN {project_user_list} u
@@ -1351,6 +1353,7 @@ function print_view_bug_sort_link( $p_string, $p_sort_field, $p_sort, $p_dir, $p
  * @param integer $p_hide_inactive Whether to hide inactive users.
  * @param integer $p_filter        The filter to use.
  * @param integer $p_show_disabled Whether to show disabled users.
+ * @param string  $p_class         The CSS class of the link.
  * @return void
  */
 function print_manage_user_sort_link( $p_page, $p_string, $p_field, $p_dir, $p_sort_by, $p_hide_inactive = 0, $p_filter = ALL, $p_show_disabled = 0, $p_class = '' ) {
@@ -1410,6 +1413,7 @@ function print_manage_project_sort_link( $p_page, $p_string, $p_field, $p_dir, $
  * @param array  $p_args_to_post   Associative array of arguments to be posted, with
  *                                 arg name => value, defaults to null (no args).
  * @param mixed  $p_security_token Optional; null (default), OFF or security token string.
+ * @param string $p_class          The CSS class of the button.
  * @see form_security_token()
  * @return void
  */
@@ -1961,6 +1965,7 @@ function print_bug_attachment_preview_text( array $p_attachment ) {
 			}
 			break;
 		case DATABASE:
+			db_param_push();
 			$t_query = 'SELECT * FROM {bug_file} WHERE id=' . db_param();
 			$t_result = db_query( $t_query, array( (int)$p_attachment['id'] ) );
 			$t_row = db_fetch_array( $t_result );

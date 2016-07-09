@@ -55,7 +55,6 @@ web.config
 !library/securimage/web.config
 
 #libraries
-library/jpgraph
 library/FirePHPCore
 
 images/logo.png

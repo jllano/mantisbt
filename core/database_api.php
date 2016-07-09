@@ -122,11 +122,10 @@ $g_db_param = new MantisDbParam();
  * @param string  $p_username      Database server username.
  * @param string  $p_password      Database server password.
  * @param string  $p_database_name Database name.
- * @param string  $p_db_schema     Schema name (only used if database type is DB2).
  * @param boolean $p_pconnect      Use a Persistent connection to database.
  * @return boolean indicating if the connection was successful
  */
-function db_connect( $p_dsn, $p_hostname = null, $p_username = null, $p_password = null, $p_database_name = null, $p_db_schema = null, $p_pconnect = false ) {
+function db_connect( $p_dsn, $p_hostname = null, $p_username = null, $p_password = null, $p_database_name = null, $p_pconnect = false ) {
 	global $g_db_connected, $g_db;
 	$t_db_type = config_get_global( 'db_type' );
 
@@ -154,13 +153,6 @@ function db_connect( $p_dsn, $p_hostname = null, $p_username = null, $p_password
 			# @todo Is there a way to translate any charset name to MySQL format? e.g. remote the dashes?
 			# @todo Is this needed for other databases?
 			db_query( 'SET NAMES UTF8' );
-		} else if( db_is_db2() && $p_db_schema !== null && !is_blank( $p_db_schema ) ) {
-			$t_result2 = db_query( 'set schema ' . $p_db_schema );
-			if( $t_result2 === false ) {
-				db_error();
-				trigger_error( ERROR_DB_CONNECT_FAILED, ERROR );
-				return false;
-			}
 		}
 	} else {
 		db_error();
@@ -208,9 +200,6 @@ function db_check_database_support( $p_db_type ) {
 			break;
 		case 'oci8':
 			$t_support = function_exists( 'OCILogon' );
-			break;
-		case 'db2':
-			$t_support = function_exists( 'db2_connect' );
 			break;
 		case 'odbc_mssql':
 			$t_support = function_exists( 'odbc_connect' );
@@ -272,21 +261,6 @@ function db_is_mssql() {
 }
 
 /**
- * Checks if the database driver is DB2
- * @return boolean true if db2
- */
-function db_is_db2() {
-	$t_db_type = config_get_global( 'db_type' );
-
-	switch( $t_db_type ) {
-		case 'db2':
-			return true;
-	}
-
-	return false;
-}
-
-/**
  * Checks if the database driver is Oracle (oci8)
  * @return boolean true if oracle
  */
@@ -324,7 +298,9 @@ function db_query_bound() {
 /**
  * execute query, requires connection to be opened
  * An error will be triggered if there is a problem executing the query.
- * This will pop the database parameter stack {@see MantisDbParam} after a successful execution
+ * This will pop the database parameter stack {@see MantisDbParam} after a
+ * successful execution, unless specified otherwise
+ *
  * @global array of previous executed queries for profiling
  * @global adodb database connection object
  * @global boolean indicating whether queries array is populated
@@ -332,9 +308,10 @@ function db_query_bound() {
  * @param array   $p_arr_parms Array of parameters matching $p_query.
  * @param integer $p_limit     Number of results to return.
  * @param integer $p_offset    Offset query results for paging.
+ * @param boolean $p_pop_param Set to false to leave the parameters on the stack
  * @return IteratorAggregate|boolean adodb result set or false if the query failed.
  */
-function db_query( $p_query, array $p_arr_parms = null, $p_limit = -1, $p_offset = -1 ) {
+function db_query( $p_query, array $p_arr_parms = null, $p_limit = -1, $p_offset = -1, $p_pop_param = true ) {
 	global $g_queries_array, $g_db, $g_db_log_queries, $g_db_param;
 
 	$t_db_type = config_get_global( 'db_type' );
@@ -382,11 +359,10 @@ function db_query( $p_query, array $p_arr_parms = null, $p_limit = -1, $p_offset
 	$p_query = strtr($p_query, array(
 							'{' => $s_prefix,
 							'}' => $s_suffix,
-							'%s' => db_param(),
-							'%d' => db_param(),
-							'%b' => db_param(),
-							'%l' => db_param(),
 							) );
+
+	# Pushing params to safeguard the ADOdb parameter count (required for pgsql)
+	$g_db_param->push();
 
 	if( db_is_oracle() ) {
 		$p_query = db_oracle_adapt_query_syntax( $p_query, $p_arr_parms );
@@ -397,6 +373,9 @@ function db_query( $p_query, array $p_arr_parms = null, $p_limit = -1, $p_offset
 	} else {
 		$t_result = $g_db->Execute( $p_query, $p_arr_parms );
 	}
+
+	# Restore ADOdb parameter count
+	$g_db_param->pop();
 
 	$t_elapsed = number_format( microtime( true ) - $t_start, 4 );
 
@@ -445,12 +424,16 @@ function db_query( $p_query, array $p_arr_parms = null, $p_limit = -1, $p_offset
 		array_push( $g_queries_array, array( '', $t_elapsed ) );
 	}
 
+	# Restore param stack: only pop if asked to AND the query has params
+	if( $p_pop_param && !empty( $p_arr_parms ) ) {
+		$g_db_param->pop();
+	}
+
 	if( !$t_result ) {
 		db_error( $p_query );
 		trigger_error( ERROR_DB_QUERY_FAILED, ERROR );
 		return false;
 	} else {
-		$g_db_param->pop();
 		return $t_result;
 	}
 }
@@ -473,6 +456,19 @@ function db_param() {
 function db_param_push() {
 	global $g_db_param;
 	$g_db_param->push();
+}
+
+/**
+ * Pops the previous parameter count from the stack
+ * It is generally not necessary to call this, because the param count is popped
+ * automatically whenever a query is executed via db_query(). There are some
+ * corner cases when doing it manually makes sense, e.g. when a query is built
+ * but not executed.
+ * @return void
+ */
+function db_param_pop() {
+	global $g_db_param;
+	$g_db_param->pop();
 }
 
 /**
@@ -753,9 +749,6 @@ function db_prepare_string( $p_string ) {
 		case 'odbc_mssql':
 		case 'ado_mssql':
 			return addslashes( $p_string );
-		case 'db2':
-			$t_escaped = $g_db->qstr( $p_string, false );
-			return utf8_substr( $t_escaped, 1, utf8_strlen( $t_escaped ) - 2 );
 		case 'mysql':
 		case 'mysqli':
 			$t_escaped = $g_db->qstr( $p_string, false );
@@ -988,14 +981,9 @@ function db_get_table( $p_name ) {
  * @return array containing table names
  */
 function db_get_table_list() {
-	global $g_db, $g_db_schema;
+	global $g_db;
 
-	if( db_is_db2() ) {
-		# must pass schema
-		$t_tables = $g_db->MetaTables( 'TABLE', false, '', $g_db_schema );
-	} else {
-		$t_tables = $g_db->MetaTables( 'TABLE' );
-	}
+	$t_tables = $g_db->MetaTables( 'TABLE' );
 	return $t_tables;
 }
 
@@ -1270,4 +1258,25 @@ function db_oracle_adapt_query_syntax( $p_query, array &$p_arr_parms = null ) {
 	}
 	$p_query = db_oracle_order_binds_sequentially( $p_query );
 	return $p_query;
+}
+
+/**
+ * Replace 4-byte UTF-8 chars
+ * This is a workaround to avoid data getting truncated on MySQL databases
+ * using native utf8 encoding, which only supports 3 bytes chars (see #20431)
+ * @param string $p_string
+ * @return string
+ */
+function db_mysql_fix_utf8( $p_string ) {
+	if( !db_is_mysql() ) {
+		return $p_string;
+	}
+	return preg_replace(
+		# 4-byte UTF8 chars always start with bytes 0xF0-0xF7 (0b11110xxx)
+		'/[\xF0-\xF7].../s',
+		# replace with U+FFFD to avoid potential Unicode XSS attacks,
+		# see http://unicode.org/reports/tr36/#Deletion_of_Noncharacters
+		"\xEF\xBF\xBD",
+		$p_string
+	);
 }

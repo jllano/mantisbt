@@ -106,14 +106,15 @@ $t_block_icon = $t_collapse_block ? 'fa-chevron-down' : 'fa-chevron-up';
     <div class="widget-main">
 	<input type="hidden" name="id" value="<?php echo $f_bug_id ?>" />
         <?php
-            $g_filter = array();
-            $g_filter[FILTER_PROPERTY_FILTER_BY_DATE] = 'on';
-            $g_filter[FILTER_PROPERTY_START_DAY] = $t_bugnote_stats_from_d;
-            $g_filter[FILTER_PROPERTY_START_MONTH] = $t_bugnote_stats_from_m;
-            $g_filter[FILTER_PROPERTY_START_YEAR] = $t_bugnote_stats_from_y;
-            $g_filter[FILTER_PROPERTY_END_DAY] = $t_bugnote_stats_to_d;
-            $g_filter[FILTER_PROPERTY_END_MONTH] = $t_bugnote_stats_to_m;
-            $g_filter[FILTER_PROPERTY_END_YEAR] = $t_bugnote_stats_to_y;
+            $t_filter = array();
+            $t_filter[FILTER_PROPERTY_FILTER_BY_DATE] = 'on';
+            $t_filter[FILTER_PROPERTY_START_DAY] = $t_bugnote_stats_from_d;
+            $t_filter[FILTER_PROPERTY_START_MONTH] = $t_bugnote_stats_from_m;
+            $t_filter[FILTER_PROPERTY_START_YEAR] = $t_bugnote_stats_from_y;
+            $t_filter[FILTER_PROPERTY_END_DAY] = $t_bugnote_stats_to_d;
+            $t_filter[FILTER_PROPERTY_END_MONTH] = $t_bugnote_stats_to_m;
+            $t_filter[FILTER_PROPERTY_END_YEAR] = $t_bugnote_stats_to_y;
+            filter_init( $t_filter );
             print_filter_do_filter_by_date( true );
         ?>
     </div>

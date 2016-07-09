@@ -103,7 +103,7 @@ function access_denied() {
 			echo '<div class="col-md-12 col-xs-12">';
 			echo '<div class="space-10"></div>';
 			echo '<div class="alert alert-danger">';
-			echo '<div class="center bigger-130">' . error_string( ERROR_ACCESS_DENIED ) . '</p>';
+			echo '<div class="center bigger-130">' . error_string( ERROR_ACCESS_DENIED ) . '</div>';
 			echo '<p class="center">';
 			print_button(
 				helper_mantis_url( config_get( 'default_home_page' ) ),
@@ -131,6 +131,7 @@ function access_cache_matrix_project( $p_project_id ) {
 	}
 
 	if( !in_array( (int)$p_project_id, $g_cache_access_matrix_project_ids ) ) {
+		db_param_push();
 		$t_query = 'SELECT user_id, access_level FROM {project_user_list} WHERE project_id=' . db_param();
 		$t_result = db_query( $t_query, array( (int)$p_project_id ) );
 		while( $t_row = db_fetch_array( $t_result ) ) {
@@ -161,6 +162,7 @@ function access_cache_matrix_user( $p_user_id ) {
 	global $g_cache_access_matrix, $g_cache_access_matrix_user_ids;
 
 	if( !in_array( (int)$p_user_id, $g_cache_access_matrix_user_ids ) ) {
+		db_param_push();
 		$t_query = 'SELECT project_id, access_level FROM {project_user_list} WHERE user_id=' . db_param();
 		$t_result = db_query( $t_query, array( (int)$p_user_id ) );
 
@@ -699,4 +701,18 @@ function access_get_status_threshold( $p_status, $p_project_id = ALL_PROJECTS ) 
 			return config_get( 'update_bug_status_threshold', null, null, $p_project_id );
 		}
 	}
+}
+
+/**
+ * Given a access level, return the appropriate string for it
+ * @param integer $p_access_level
+ * @return string
+ */
+function access_level_get_string( $p_access_level ) {
+	if( $p_access_level > ANYBODY ) {
+		$t_access_level_string = get_enum_element( 'access_levels', $p_access_level );
+	} else {
+		$t_access_level_string = lang_get( 'no_access' );
+	}
+	return $t_access_level_string;
 }

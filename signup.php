@@ -131,6 +131,43 @@ layout_login_page_begin();
 			<a class="width-40 btn btn-inverse bigger-110 btn-success" href="login_page.php">
 				<?php echo lang_get( 'proceed' ) ?>
 			</a>
+			<div class="space-24 hidden-480"></div>
+
+			<div class="position-relative">
+
+				<div class="signup-box visible widget-box no-border" id="login-box">
+					<div class="widget-body">
+						<div class="widget-main">
+							<h4 class="header lighter bigger">
+								<i class="ace-icon fa fa-pencil"></i>
+								<?php echo lang_get( 'signup_title' ) ?>
+							</h4>
+							<div class="space-10"></div>
+
+							<div class="center">
+								<strong><?php echo lang_get( 'signup_done_title' ) ?></strong><br />
+								<?php echo '[' . $f_username . ' - ' . $f_email . '] ' ?>
+							</div>
+
+							<div>
+								<br />
+								<?php echo lang_get( 'password_emailed_msg' ) ?>
+								<br /><br />
+								<?php echo lang_get( 'no_reponse_msg' ) ?>
+								<br /><br />
+							</div>
+
+							<br />
+							<div class="center">
+								<a class="width-40 btn btn-inverse bigger-110 btn-success" href="login_page.php">
+									<?php echo lang_get( 'proceed' ) ?>
+								</a>
+							</div>
+
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 
 	</div>
@@ -142,4 +179,4 @@ layout_login_page_begin();
 
 
 <?php
-layout_login_page_end( __FILE__ );
+layout_login_page_end();

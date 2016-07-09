@@ -27,7 +27,7 @@
  * Configuration Parser class
  *
  * Simple PHP code parser for scalar and array types
- * 
+ *
  * @package MantisBT
  * @subpackage classes
  *
@@ -58,7 +58,7 @@ class ConfigParser
 	 * Parse the code for a variable assignment.
 	 * Handles scalar types, and various array types (simple, associative,
 	 * multi-dimentional)
-	 * @param bool $p_extra_tokens Define how extra tokens should be handled
+	 * @param integer $p_extra_tokens Define how extra tokens should be handled
 	 *                             - EXTRA_TOKENS_IGNORE silently ignore any
 	 *                               extra code given after the first token
 	 *                             - EXTRA_TOKENS_ERROR (default) throws an
@@ -76,6 +76,8 @@ class ConfigParser
 			case T_STRING:
 			case T_LNUMBER:
 			case T_DNUMBER:
+			case '-':
+			case '+':
 				$t_result = $this->process_value();
 				break;
 

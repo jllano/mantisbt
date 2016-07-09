@@ -66,9 +66,9 @@ class GravatarPlugin extends MantisPlugin {
 		$this->description = lang_get( 'description' );
 		$this->page = '';
 
-		$this->version = '1.0';
+		$this->version = MANTIS_VERSION;
 		$this->requires = array(
-			'MantisCore' => '1.3.0',
+			'MantisCore' => '2.0.0',
 		);
 
 		$this->author = 'Victor Boctor';
@@ -117,7 +117,7 @@ class GravatarPlugin extends MantisPlugin {
 	 */
 	function csp_headers() {
 		# Policy for images: Allow gravatar URL
-		if( config_get_global( 'show_avatar' ) !== OFF ) {
+		if( config_get( 'show_avatar' ) !== OFF ) {
 			# Set CSP header
 			# header( "Content-Security-Policy: img-src 'self' " . self::getAvatarUrl() );
 		}

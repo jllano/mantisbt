@@ -1,15 +1,8 @@
-Mantis Bug Tracker (MantisBT) Modern UI
-=======================================
+Mantis Bug Tracker (MantisBT)
+=============================
 
 [![Build Status](https://img.shields.io/travis/mantisbt/mantisbt/master.svg)](https://travis-ci.org/mantisbt/mantisbt)
 [![Gitter](https://img.shields.io/gitter/room/mantisbt/mantisbt.svg)](https://gitter.im/mantisbt/mantisbt?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
-The Modern UI was built by [MantisHub](http://www.mantishub.com) and is based on [MantisBT v1.3.x](http://github.com/mantisbt/mantisbt).  We will keep it in sync with v1.3.x and will integrate it into the next version of MantisBT once v1.3.x release is out.
-
-Demo
-----
-
-The Modern UI was built by [MantisHub](http://www.mantishub.com) and can be tested by signing up for a [free trial](http://www.mantishub.com).
 
 Screenshots
 -----------
@@ -106,7 +99,7 @@ detailed doc can be found at http://www.mantisbt.org/docs/
 * config_defaults_inc.php
   - this file contains the default values for all the site-wide variables.
 * config/config_inc.php
-  - You should create this file to change config variable values.  Your
+  - You should use this file to change config variable values.  Your
     values from this file will be used instead of the defaults.  This file
     will not be overwritten when you upgrade, but config_defaults_inc.php will.
     Look at config/config_inc.php.sample for an example.
@@ -118,7 +111,6 @@ detailed doc can be found at http://www.mantisbt.org/docs/
 * form variables are prefixed with f_
 * variables that have been cleaned for db insertiong are prefixed with c_
 * temporary variables are prefixed with t_.
-* template variables are prefixed with tpl_.
 * count variables have the word count in the variable name
 
 More detail can be seen in the coding guidelines at:
@@ -136,13 +128,7 @@ completed successfully.  The pages will automatically redirect you after a
 short amount of time.  You can shorten of lengthen the time by editing
 $g_default_redirect_delay in config_inc.php.
 
-* Edit css_inc.php to make your own page formatting.
-
 * You can set $g_top_include_page and $g_bottom_include_page
   to alter what should be visible at the top and bottom of each page.
 
 * All files were edited with TAB SPACES set to 4.
-
-As a general debugging tip you should be extremely generous in using echo,
-print and exit functions.  This is the quickest way to see if a database
-query actually contains what you want, etc.
