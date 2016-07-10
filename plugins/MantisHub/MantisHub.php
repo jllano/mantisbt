@@ -70,7 +70,6 @@ class MantisHubPlugin extends MantisPlugin {
 
 		mantishub_google_analytics();
 		mantishub_bingads_analytics();
-		mantishub_support_widget();
 		mantishub_drip();
 	}
 }
