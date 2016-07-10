@@ -128,16 +128,21 @@ function html_rss_link() {
  * @return void
  */
 function html_javascript_link( $p_filename ) {
-	echo "\t", '<script type="text/javascript" src="', helper_mantis_url( 'js/' . $p_filename ), '?mui2"></script>' . "\n";
+	echo "\t", '<script type="text/javascript" src="', helper_mantis_url( 'js/' . $p_filename ), '"></script>', "\n";
 }
 
 /**
  * Prints a <script> tag to include a JavaScript file.
  * @param string $p_url fully qualified domain name for the cdn js file
+ * @param string $p_hash resource hash to perform subresource integrity check
  * @return void
  */
-function html_javascript_cdn_link( $p_url ) {
-	echo "\t", '<script type="text/javascript" src="', $p_url, '"></script>' . "\n";
+function html_javascript_cdn_link( $p_url, $p_hash = '' ) {
+	$t_integrity = '';
+	if( $p_hash !== '' ) {
+		$t_integrity = 'integrity="' . $p_hash . '" ';
+	}
+	echo "\t", '<script type="text/javascript" src="', $p_url, '" ', $t_integrity, 'crossorigin="anonymous"></script>', "\n";
 }
 
 /**
@@ -205,7 +210,7 @@ function html_css() {
 	html_css_link( config_get( 'css_include_file' ) );
 
 	if ( config_get_global( 'cdn_enabled' ) == ON ) {
-		html_css_cdn_link( 'https://ajax.googleapis.com/ajax/libs/jqueryui/' . JQUERY_UI_VERSION . '/themes/smoothness/jquery-ui.css' );
+		html_css_cdn_link( 'https://ajax.googleapis.com/ajax/libs/jqueryui/' . JQUERY_UI_VERSION . '/themes/smoothness/jquery-ui.min.css' );
 	} else {
 		html_css_link( 'jquery-ui-' . JQUERY_UI_VERSION . '.min.css' );
 	}
@@ -226,7 +231,11 @@ function html_css() {
  * @return void
  */
 function html_css_link( $p_filename ) {
-	echo "\t", '<link rel="stylesheet" type="text/css" href="', string_sanitize_url( helper_mantis_url( 'css/' . $p_filename ), true ), '?mui2" />' . "\n";
+	# If no path is specified, look for CSS files in default directory
+	if( $p_filename == basename( $p_filename ) ) {
+		$p_filename = 'css/' . $p_filename;
+	}
+	echo "\t", '<link rel="stylesheet" type="text/css" href="', string_sanitize_url( helper_mantis_url( $p_filename ), true ), '" />', "\n";
 }
 
 /**
@@ -235,7 +244,7 @@ function html_css_link( $p_filename ) {
  * @return void
  */
 function html_css_cdn_link( $p_url ) {
-	echo "\t", '<link rel="stylesheet" type="text/css" href="', $p_url, '" />' . "\n";
+	echo "\t", '<link rel="stylesheet" type="text/css" href="', $p_url, '" crossorigin="anonymous" />', "\n";
 }
 
 /**
@@ -292,8 +301,8 @@ function html_head_javascript() {
 	echo "\t" . '<script type="text/javascript" src="' . helper_mantis_url( 'javascript_translations.php' ) . '"></script>' . "\n";
 
 	if ( config_get_global( 'cdn_enabled' ) == ON ) {
-		echo "\t" . '<script src="https://ajax.googleapis.com/ajax/libs/jquery/' . JQUERY_VERSION . '/jquery.min.js"></script>' . "\n";
-		echo "\t" . '<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/' . JQUERY_UI_VERSION . '/jquery-ui.min.js"></script>' . "\n";
+		html_javascript_cdn_link( 'https://ajax.googleapis.com/ajax/libs/jquery/' . JQUERY_VERSION . '/jquery.min.js', JQUERY_HASH );
+		html_javascript_cdn_link( 'https://ajax.googleapis.com/ajax/libs/jqueryui/' . JQUERY_UI_VERSION . '/jquery-ui.min.js', JQUERY_UI_HASH );
 	} else {
 		html_javascript_link( 'jquery-' . JQUERY_VERSION . '.min.js' );
 		html_javascript_link( 'jquery-ui-' . JQUERY_UI_VERSION . '.min.js' );
