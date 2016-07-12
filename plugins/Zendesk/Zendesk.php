@@ -31,7 +31,8 @@ class ZendeskPlugin extends MantisPlugin {
 	 */
 	function config() {
 		return array(
-			'api_key' => ''
+			'user' => '',
+			'token' => ''
 		);
 	}
 
