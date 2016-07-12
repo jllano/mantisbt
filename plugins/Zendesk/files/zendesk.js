@@ -35,12 +35,11 @@ function fetchData(callback) {
 }
 
 function populateListBox(values) {
-  $('#articles').html(''); // clear the existing options
-
   var articles = $('div#zendesk #articles');
+  articles.html('');
 
   $.each(values, function(i, o) {
-    $('<option value="' + o.html_url + '">' + o.title + '</option>').appendTo('#articles');
+    $('<option value="' + o.html_url + '">' + o.title + '</option>').appendTo(articles);
   });
 
   if (values.length > 0) {
@@ -48,16 +47,6 @@ function populateListBox(values) {
   } else {
     showSearchResults(false);
   }
-
-  articles.dblclick(function() {
-    var item = $(this).find(':selected');
-    var text = '- ' + item.text() + "\n" + item.attr('value') + "\n";
-
-    var note = $("textarea[name='bugnote_text']");
-    note.textrange('replace', text);
-    var range = note.textrange();
-    note.textrange('set', range.end, 0);
-  });
 }
 
 function zendeskDoneTyping() {
@@ -92,10 +81,17 @@ function showZendeskControl() {
   var zendeskDiv = $('<div id="zendesk" class="col-md-4 col-xs-12" id="zendesk"></div>');
   zendeskDiv.appendTo(noteParent);
 
-  var query = $('<input type="input" id="query" size="20" placeholder="Search Zendesk" />');
+  var query = $('<input type="input" id="query" size="20" placeholder="Search Zendesk" autocomplete="off" />');
   query.css('margin-bottom', '10px');
   query.css('float', 'right');
   query.insertBefore(note);
+
+  query.keypress(function(e) {
+    if (e.which == 13) {
+      e.preventDefault();
+      return false;
+    }
+  });
 
   query.on('keyup', function () {
       clearTimeout(zendeskTypingTimer);
@@ -106,11 +102,21 @@ function showZendeskControl() {
       clearTimeout(zendeskTypingTimer);
   });
 
-  // $("<br />").appendTo(zendeskDiv);
-
   var articles = $('<select size="7" id="articles"></select>');
   articles.css('display', 'none');
   articles.appendTo(zendeskDiv);
+
+  articles.dblclick(function() {
+    var item = $(this).find(':selected');
+
+    var text = '- ' + item.text() + "\n" + item.attr('value') + "\n";
+
+    var note = $("textarea[name='bugnote_text']");
+    note.textrange('replace', text);
+    var range = note.textrange();
+    note.textrange('set', range.end, 0);
+  });
+
 }
 
 $(function() {
