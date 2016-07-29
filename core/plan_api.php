@@ -32,7 +32,17 @@ function plan_auto_enable_mantistouch() {
 }
 
 function plan_price() {
-	if ( plan_is_enterprise() ) {
+	global $g_mantishub_plan_code;
+
+	if ( $g_mantishub_plan_code == 'platinum_1000' || $g_mantishub_plan_code == 'platinum12_1000' ) {
+		$t_value = '500';
+	} else if ( $g_mantishub_plan_code == 'platinum_500' || $g_mantishub_plan_code == 'platinum12_500' ) {
+		$t_value = '350';
+	} else if ( $g_mantishub_plan_code == 'platinum_300' || $g_mantishub_plan_code == 'platinum12_300' ) {
+		$t_value = '300';
+	} else if ( $g_mantishub_plan_code == 'platinum_200' || $g_mantishub_plan_code == 'platinum12_200' ) {
+		$t_value = '250';
+	} else  if ( plan_is_enterprise() ) {
 		$t_value = '300';
 	} else if ( plan_is_platinum() ) {
 		$t_value = '50';
@@ -79,7 +89,17 @@ function plan_get_disk_usage() {
 }
 
 function plan_get_disk_space_limit() {
-	if ( plan_is_enterprise() ) {
+	global $g_mantishub_plan_code;
+
+	if ( $g_mantishub_plan_code == 'platinum_1000' || $g_mantishub_plan_code == 'platinum12_1000' ) {
+		$t_value = '100GB';
+	} else if ( $g_mantishub_plan_code == 'platinum_500' || $g_mantishub_plan_code == 'platinum12_500' ) {
+		$t_value = '50GB';
+	} else if ( $g_mantishub_plan_code == 'platinum_300' || $g_mantishub_plan_code == 'platinum12_300' ) {
+		$t_value = '30GB';
+	} else if ( $g_mantishub_plan_code == 'platinum_200' || $g_mantishub_plan_code == 'platinum12_200' ) {
+		$t_value = '30GB';
+	} else if ( plan_is_enterprise() ) {
 		$t_value = '100GB';
 	} else if ( plan_is_platinum() ) {
 		$t_value = '10GB';
@@ -131,7 +151,17 @@ function plan_max_team_members_string() {
 		return lang_get( 'mantishub_plan_unlimited' );
 	}
 
-	if ( plan_is_enterprise() ) {
+	global $g_mantishub_plan_code;
+
+	if ( $g_mantishub_plan_code == 'platinum_1000' || $g_mantishub_plan_code == 'platinum12_1000' ) {
+		$t_value = '1000';
+	} else if ( $g_mantishub_plan_code == 'platinum_500' || $g_mantishub_plan_code == 'platinum12_500' ) {
+		$t_value = '500';
+	} else if ( $g_mantishub_plan_code == 'platinum_300' || $g_mantishub_plan_code == 'platinum12_300' ) {
+		$t_value = '300';
+	} else if ( $g_mantishub_plan_code == 'platinum_200' || $g_mantishub_plan_code == 'platinum12_200' ) {
+		$t_value = '200';
+	} else if ( plan_is_enterprise() ) {
 		$t_value = '50';
 	} else if ( plan_is_platinum() ) {
 		$t_value = '30';
@@ -161,8 +191,18 @@ function plan_user_packs_needed( $p_team_user_count ) {
 		return 0;
 	}
 
+	global $g_mantishub_plan_code;
+
 	# gen 2 and above has the user packs concept and doesn't have silver plan
-	if ( plan_is_enterprise() ) {
+	if ( $g_mantishub_plan_code == 'platinum_1000' || $g_mantishub_plan_code == 'platinum12_1000' ) {
+		$t_included_in_plan = 1000;
+	} else if ( $g_mantishub_plan_code == 'platinum_500' || $g_mantishub_plan_code == 'platinum12_500' ) {
+		$t_included_in_plan = 500;
+	} else if ( $g_mantishub_plan_code == 'platinum_300' || $g_mantishub_plan_code == 'platinum12_300' ) {
+		$t_included_in_plan = 300;
+	} else if ( $g_mantishub_plan_code == 'platinum_200' || $g_mantishub_plan_code == 'platinum12_200' ) {
+		$t_included_in_plan = 200;
+	} else if ( plan_is_enterprise() ) {
 		$t_included_in_plan = 50;
 	} else if ( plan_is_platinum() ) {
 		$t_included_in_plan = 30;
