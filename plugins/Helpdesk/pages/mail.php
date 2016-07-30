@@ -78,7 +78,7 @@ function mantishub_email_error( $p_error_message ) {
 	}
 
 	$t_message = str_replace( '{error}', $p_error_message, plugin_config_get( 'failed_message' ) ) . "\n\n";
-    $t_message .= "For more details about how email reporting works, checkout documentation at:\n";
+    $t_message .= plugin_lang_get( 'documentation_at' ) . "\n";
     $t_message .= "http://support.mantishub.com/hc/en-us/articles/204273585\n";
 
     email_store( $f_from_email, 'RE: ' . $f_subject, $t_message, $t_mail_headers );

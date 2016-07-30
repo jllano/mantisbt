@@ -37,5 +37,12 @@ $s_mantishub_switch_to_classic_ui = 'Switch to Classic UI';
 $s_mantishub_switch_now = 'Switch Now';
 
 # Email Notifications
-$s_mantishub_email_footer = 'This email is a service from MantisHub.  Reply to add a comment to issue.  To learn more about using MantisHub, see our support portal at %s';
+switch( $g_active_language ) {
+	case 'french':
+		$s_mantishub_email_footer = 'Ce courriel vous a été envoyé par Mantishub. Vous pouvez ajouter une note au bogue en répondant à ce courriel. Pour en savoir plus sur l’utilisation de Mantishub, visitez notre site internet à %s';
+		break;
+	default:
+		$s_mantishub_email_footer = 'This email is a service from MantisHub.  Reply to add a comment to issue.  To learn more about using MantisHub, see our support portal at %s';
+		break;
+}
 

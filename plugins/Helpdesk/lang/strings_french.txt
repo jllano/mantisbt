@@ -19,8 +19,8 @@ $s_plugin_Helpdesk_enable_unregistered = 'Enable unregistered';
 $s_plugin_Helpdesk_enable_unregistered_label = 'Accept emails from an email address that is not associated with a registered user.';
 $s_plugin_Helpdesk_enable_unregistered_help = 'Such emails will be reported via user "Email", this user by default has REPORTER access to all projects.  Manage such user account to revoke access to specific private projects.';
 $s_plugin_Helpdesk_see_issue_details = 'See issue details at %1s';
-$s_plugin_Helpdesk_responded = '%1s responded with the following:';
-$s_plugin_Helpdesk_resolved_issue = '%1$s resolved the issue';
+$s_plugin_Helpdesk_responded = '%1s a ajouté une note au bogue:';
+$s_plugin_Helpdesk_resolved_issue = '%1$s a fermé le bogue';
 $s_plugin_Helpdesk_reopened_issue = '%1$s re-opened the issue';
-$s_plugin_Helpdesk_documentation_at = 'For more details about how email reporting works, checkout documentation at:';
+$s_plugin_Helpdesk_documentation_at = 'Pour avoir plus de détails sur le fonctionnement de l’ouverture de bogue par courriel, vous pouvez consulter la documentation à:';
 
