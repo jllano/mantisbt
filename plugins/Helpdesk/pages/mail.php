@@ -172,6 +172,8 @@ if ( $t_user_id === false ) {
 	exit;
 }
 
+$t_user_id = (int)$t_user_id;
+
 $t_reporter_username = user_get_field( $t_user_id, 'username' );
 auth_attempt_script_login( $t_reporter_username );
 
