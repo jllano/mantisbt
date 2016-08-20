@@ -31,7 +31,8 @@ class ZendeskPlugin extends MantisPlugin {
 	 */
 	function config() {
 		return array(
-			'user' => '',
+			'subdomain' => '',   # instance subdomain, example for example.zendesk.com
+			'user' => '',        # leave user empty to access the articles anonymously.  Hence, no agent only articles.
 			'token' => ''
 		);
 	}
@@ -41,8 +42,22 @@ class ZendeskPlugin extends MantisPlugin {
 	 * @return void
 	 */
 	function resources() {
-		return '<script src="' . plugin_file( 'zendesk.js' ) . '"></script>
-		<script src="' . plugin_file( 'jquery-textrange.js' ) . '"></script>';
+		# If subdomain is not specified, then disable the plugin.
+		$t_subdomain = plugin_config_get( 'subdomain' );
+		if( is_blank( $t_subdomain ) ) {
+			return;
+		}
+
+		# Only include scripts on the pages that needed them.
+		switch( basename( $_SERVER['SCRIPT_NAME'] ) ) {
+			case 'bug_change_status_page.php':
+			case 'view.php':
+			case 'bug_update_page.php':
+				return '<script src="' . plugin_file( 'zendesk.js' ) . '"></script>
+			<script src="' . plugin_file( 'jquery-textrange.js' ) . '"></script>';
+			default:
+				return '';
+		}
 	}
 
 	/**
