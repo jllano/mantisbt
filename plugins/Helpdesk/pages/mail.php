@@ -367,6 +367,21 @@ if ( $t_new_issue ) {
 	# Call this after all native work just in case plugins cause a failure.
 	event_signal( 'EVENT_REPORT_BUG', array( $t_bug_data, $t_bug_id ) );
 } else {
+	# TODO: copied from bugnote_add.php -- should be part of bugnote_api.php instead.bugnote_add instead.
+	if( config_get( 'reassign_on_feedback' ) ) {
+		$t_bug = bug_get( $t_bug_id );
+
+		if( $t_bug->status === config_get( 'bug_feedback_status' ) &&
+			$t_bug->handler_id !== $t_user_id &&
+			$t_bug->reporter_id === $t_user_id ) {
+			if( $t_bug->handler_id !== NO_USER ) {
+				bug_set_field( $t_bug_id, 'status', config_get( 'bug_assigned_status' ) );
+			} else {
+				bug_set_field( $t_bug_id, 'status', config_get( 'bug_submit_status' ) );
+			}
+		}
+	}
+
 	$t_event = array( 'comp' => 'email_reporting', 'event' => 'note_reported' );
 	mantishub_event( $t_event );
 }
