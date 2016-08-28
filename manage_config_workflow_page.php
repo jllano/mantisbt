@@ -299,10 +299,10 @@ function threshold_row( $p_threshold ) {
 
 	echo '<tr><td>' . lang_get( 'desc_' . $p_threshold ) . '</td>' . "\n";
 	if( $t_can_change_threshold ) {
-		echo '<td class="' . $t_color . ' input-sm"><select name="threshold_' . $p_threshold . '">';
+		echo '<td class="' . $t_color . '"><select name="threshold_' . $p_threshold . '" class="input-sm">';
 		print_enum_string_option_list( 'status', $t_project );
 		echo '</select> </td>' . "\n";
-		echo '<td class="' . $t_color_access . ' input-sm"><select name="access_' . $p_threshold . '">';
+		echo '<td class="' . $t_color_access . '"><select name="access_' . $p_threshold . '" class="input-sm">';
 		print_enum_string_option_list( 'access_levels', config_get_access( $p_threshold ) );
 		echo '</select> </td>' . "\n";
 		$g_can_change_flags = true;
@@ -359,7 +359,8 @@ function access_row() {
 
 	$t_file_new = config_get_global( 'report_bug_threshold' );
 	$t_global_new = config_get( 'report_bug_threshold', null, ALL_USERS, ALL_PROJECTS );
-	$t_project_new = config_get( 'report_bug_threshold' );
+	$t_report_bug_threshold = config_get( 'report_bug_threshold' );
+	$t_project_new = access_threshold_min_level( $t_report_bug_threshold );
 
 	$t_file_set = config_get_global( 'set_status_threshold' );
 	$t_global_set = config_get( 'set_status_threshold', null, ALL_USERS, ALL_PROJECTS );
@@ -376,8 +377,11 @@ function access_row() {
 			# 'NEW' status
 			$t_level_project = $t_project_new;
 
-			$t_can_change = ( $g_access >= config_get_access( 'report_bug_threshold' ) );
-			$t_color = set_color_override( $t_file_new, $t_global_new, $t_project_new );
+			# If report_bug_threshold is an array (instead of an integer value), the input is not editable
+			# because it must be configured in manage_config_work_threshold_page.
+			$t_can_change = ( $g_access >= config_get_access( 'report_bug_threshold' ) )
+					&& !is_array( $t_report_bug_threshold );
+			$t_color = set_color_override( $t_file_new, $t_global_new, $t_report_bug_threshold );
 			set_overrides( 'report_bug_threshold', $t_can_change, $t_color );
 		} else {
 			# Other statuses
@@ -398,7 +402,7 @@ function access_row() {
 		}
 
 		if( $t_can_change ) {
-			echo '<td class="' . $t_color . ' input-sm"><select name="access_change_' . $t_status . '">' . "\n";
+			echo '<td class="' . $t_color . '"><select name="access_change_' . $t_status . '" class="input-sm">' . "\n";
 			print_enum_string_option_list( 'access_levels', $t_level_project );
 			echo '</select> </td>' . "\n";
 			$g_can_change_flags = true;

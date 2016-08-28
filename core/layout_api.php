@@ -86,8 +86,16 @@ function layout_page_header_begin( $p_page_title = null ) {
 	}
 
 	# Advertise the availability of the browser search plug-ins.
-	echo "\t", '<link rel="search" type="application/opensearchdescription+xml" title="MantisBT: Text Search" href="' . string_sanitize_url( 'browser_search_plugin.php?type=text', true ) . '" />' . "\n";
-	echo "\t", '<link rel="search" type="application/opensearchdescription+xml" title="MantisBT: Issue Id" href="' . string_sanitize_url( 'browser_search_plugin.php?type=id', true ) . '" />' . "\n";
+	$t_title = config_get( 'search_title' );
+	$t_searches = array( 'text', 'id' );
+	foreach( $t_searches as $t_type ) {
+		echo "\t",
+			'<link rel="search" type="application/opensearchdescription+xml" ',
+				'title="' . sprintf( lang_get( "opensearch_{$t_type}_description" ), $t_title ) . '" ',
+				'href="' . string_sanitize_url( 'browser_search_plugin.php?type=' . $t_type, true ) .
+				'"/>',
+			"\n";
+	}
 
 	html_head_javascript();
 }
@@ -142,9 +150,12 @@ function layout_page_begin( $p_active_sidebar_page = null ) {
 
 	if( auth_is_user_authenticated() ) {
 		if( ON == config_get( 'show_project_menu_bar' ) ) {
+			echo '<div class="row">' , "\n";
 			print_project_menu_bar();
+			echo '</div>' , "\n";
 		}
 	}
+	echo '<div class="row">' , "\n";
 
 	event_signal( 'EVENT_LAYOUT_CONTENT_BEGIN' );
 }
@@ -160,6 +171,8 @@ function layout_page_end( $p_file = null ) {
 	}
 
 	event_signal( 'EVENT_LAYOUT_CONTENT_END' );
+
+	echo '</div>' , "\n";
 
 	layout_page_content_end();
 	layout_main_content_end();
@@ -471,7 +484,9 @@ function layout_navbar_user_menu( $p_show_avatar = true ) {
 	echo '<ul class="user-menu dropdown-menu dropdown-menu-right dropdown-yellow dropdown-caret dropdown-close">';
 
 	# My Account
-	layout_navbar_menu_item( helper_mantis_url( 'account_page.php' ), lang_get( 'account_link' ), 'fa-user' );
+	if( !current_user_is_protected() ) {
+		layout_navbar_menu_item( helper_mantis_url( 'account_page.php' ), lang_get( 'account_link' ), 'fa-user' );
+	}
 
 	# RSS Feed
 	if( OFF != config_get( 'rss_enabled' ) ) {
@@ -720,25 +735,13 @@ function layout_print_sidebar( $p_active_sidebar_page = null ) {
 		# Starting sidebar markup
 		layout_sidebar_begin();
 
-		$t_menu_options = array();
+		# Plugin / Event added options
+		$t_event_menu_options = event_signal( 'EVENT_MENU_MAIN_FRONT' );
+		layout_plugin_menu_options_for_sidebar( $t_event_menu_options, $p_active_sidebar_page );
 
 		# Main Page
 		if( config_get( 'news_enabled' ) == ON ) {
 			layout_sidebar_menu( 'main_page.php', 'main_link', 'fa-bullhorn', $p_active_sidebar_page  );
-		}
-
-		# Plugin / Event added options
-		$t_event_menu_options = event_signal( 'EVENT_MENU_MAIN_FRONT' );
-		foreach( $t_event_menu_options as $t_plugin => $t_plugin_menu_options ) {
-			foreach( $t_plugin_menu_options as $t_callback => $t_callback_menu_options ) {
-				if( is_array( $t_callback_menu_options ) ) {
-					$t_menu_options = array_merge( $t_menu_options, $t_callback_menu_options );
-				} else {
-					if( !is_null( $t_callback_menu_options ) ) {
-						$t_menu_options[] = $t_callback_menu_options;
-					}
-				}
-			}
 		}
 
 		# My View
@@ -778,20 +781,6 @@ function layout_print_sidebar( $p_active_sidebar_page = null ) {
 			layout_sidebar_menu( 'wiki.php?type=project&amp;id=' . $t_current_project, 'wiki', 'fa-book', $p_active_sidebar_page );
 		}
 
-		# Plugin / Event added options
-		$t_event_menu_options = event_signal( 'EVENT_MENU_MAIN' );
-		foreach( $t_event_menu_options as $t_plugin => $t_plugin_menu_options ) {
-			foreach( $t_plugin_menu_options as $t_callback => $t_callback_menu_options ) {
-				if( is_array( $t_callback_menu_options ) ) {
-					$t_menu_options = array_merge( $t_menu_options, $t_callback_menu_options );
-				} else {
-					if( !is_null( $t_callback_menu_options ) ) {
-						$t_menu_options[] = $t_callback_menu_options;
-					}
-				}
-			}
-		}
-
 		# Manage Users (admins) or Manage Project (managers) or Manage Custom Fields
 		if( access_has_global_level( config_get( 'manage_site_threshold' ) ) ) {
 			layout_sidebar_menu( 'manage_overview_page.php', 'manage_link', 'fa-gears', $p_active_sidebar_page );
@@ -812,17 +801,93 @@ function layout_print_sidebar( $p_active_sidebar_page = null ) {
 			}
 		}
 
-		# Add custom options
-		$t_custom_options = prepare_custom_menu_options( 'main_menu_custom_options' );
-		$t_menu_options = array_merge( $t_menu_options, $t_custom_options );
-
 		# Time Tracking / Billing
 		if( config_get( 'time_tracking_enabled' ) && access_has_global_level( config_get( 'time_tracking_reporting_threshold' ) ) ) {
 			layout_sidebar_menu( 'billing_page.php', 'time_tracking_billing_link', 'fa-clock-o', $p_active_sidebar_page );
 		}
 
+		# Plugin / Event added options
+		$t_event_menu_options = event_signal( 'EVENT_MENU_MAIN' );
+		layout_plugin_menu_options_for_sidebar( $t_event_menu_options, $p_active_sidebar_page );
+
+		# Config based custom options
+		layout_config_menu_options_for_sidebar( $p_active_sidebar_page );
+
 		# Ending sidebar markup
 		layout_sidebar_end();
+	}
+}
+
+/**
+ * Process plugin menu options for sidebar
+ * @param array $p_plugin_event_response The response from the plugin event signal.
+ * @param string $p_active_sidebar_page The active page on the sidebar.
+ * @return void
+ */
+function layout_plugin_menu_options_for_sidebar( $p_plugin_event_response, $p_active_sidebar_page ) {
+	$t_menu_options = array();
+
+	foreach( $p_plugin_event_response as $t_plugin => $t_plugin_menu_options ) {
+		foreach( $t_plugin_menu_options as $t_callback => $t_callback_menu_options ) {
+			if( is_array( $t_callback_menu_options ) ) {
+				$t_menu_options = array_merge( $t_menu_options, $t_callback_menu_options );
+			} else {
+				if( !is_null( $t_callback_menu_options ) ) {
+					$t_menu_options[] = $t_callback_menu_options;
+				}
+			}
+		}
+	}
+
+	layout_options_for_sidebar( $t_menu_options, $p_active_sidebar_page );
+}
+
+/**
+ * Process main menu options from config.
+ * @param string $p_active_sidebar_page The active page on the sidebar.
+ * @return void
+ */
+function layout_config_menu_options_for_sidebar( $p_active_sidebar_page ) {
+	$t_menu_options = array();
+	$t_custom_options = config_get( 'main_menu_custom_options' );
+
+	foreach( $t_custom_options as $t_custom_option ) {
+		if( isset( $t_custom_option['url'] ) ) {
+			$t_menu_option = $t_custom_option;
+		} else {
+			# Support < 2.0.0 custom menu options config format
+			$t_menu_option = array();
+			$t_menu_option['title'] = $t_custom_option[0];
+			$t_menu_option['access_level'] = $t_custom_option[1];
+			$t_menu_option['url'] = $t_custom_option[2];
+		}
+
+		$t_menu_options[] = $t_menu_option;
+	}
+
+	layout_options_for_sidebar( $t_menu_options, $p_active_sidebar_page );
+}
+
+/**
+ * Process main menu options
+ * @param array $p_menu_options Array of menu options to output.
+ * @param string $p_active_sidebar_page The active page on the sidebar.
+ * @return void
+ */
+function layout_options_for_sidebar( $p_menu_options, $p_active_sidebar_page ) {
+	foreach( $p_menu_options as $t_menu_option ) {
+		$t_icon = isset( $t_menu_option['icon'] ) ? $t_menu_option['icon'] : 'fa-plug';
+		if( !isset( $t_menu_option['url'] ) || !isset( $t_menu_option['title'] ) ) {
+			continue;
+		}
+
+		if( isset( $t_menu_option['access_level'] ) ) {
+			if( !access_has_project_level( $t_menu_option['access_level'] ) ) {
+				continue;
+			}
+		}
+
+		layout_sidebar_menu( $t_menu_option['url'], $t_menu_option['title'], $t_icon, $p_active_sidebar_page );
 	}
 }
 
@@ -857,7 +922,7 @@ function layout_sidebar_menu( $p_page, $p_title, $p_icon, $p_active_sidebar_page
 	}
 	echo '<a href="' . helper_mantis_url( $p_page ) . '">' . "\n";
 	echo '<i class="menu-icon fa ' . $p_icon . '"></i> ' . "\n";
-	echo '<span class="menu-text"> ' . lang_get( $p_title ) . ' </span>' . "\n";
+	echo '<span class="menu-text"> ' . lang_get_defaulted( $p_title ) . ' </span>' . "\n";
 	echo '</a>' . "\n";
 	echo '<b class="arrow"></b>' . "\n";
 	echo '</li>' . "\n";
@@ -925,7 +990,6 @@ function layout_main_content_end() {
  */
 function layout_page_content_begin() {
 	echo '  <div class="page-content">' , "\n";
-	echo '    <div class="row">' , "\n";
 }
 
 /**
@@ -933,7 +997,6 @@ function layout_page_content_begin() {
  * @return null
  */
 function layout_page_content_end() {
-	echo '  </div>' , "\n";
 	echo '</div>' , "\n";
 }
 

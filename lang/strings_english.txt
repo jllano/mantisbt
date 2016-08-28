@@ -180,6 +180,12 @@ $s_create_new_project_link = 'Create New Project';
 
 $s_login_link = 'Login';
 
+# Browser Search - %s is the Search Engine title (@see $g_search_title)
+$s_opensearch_id_short = '%s Id';
+$s_opensearch_id_description = '%s: search by Issue Id';
+$s_opensearch_text_short = '%s Text';
+$s_opensearch_text_description = '%s: full-text search';
+
 # comboboxes default to this to instruct user to explicitly select an entry.
 $s_select_option = '(select)';
 
@@ -1764,11 +1770,11 @@ $MANTIS_ERROR[ERROR_API_TOKEN_NAME_NOT_UNIQUE] = 'API token name "%s" is already
 
 # dropzone.js - placeholders format is defined by the library
 $s_dropzone_default_message = 'Drop files here to upload (or click)';
-$s_dropzone_fallback_message = "Your browser does not support drag'n'drop file uploads.";
+$s_dropzone_fallback_message = 'Your browser does not support drag\'n\'drop file uploads.';
 $s_dropzone_fallback_text = '';
-$s_dropzone_file_too_big = "File is too big ({{filesize}}MiB). Max filesize: {{maxFilesize}}MiB.";
-$s_dropzone_invalid_file_type = "You cannot upload files of this type.";
-$s_dropzone_response_error = "Server responded with {{statusCode}} code.";
+$s_dropzone_file_too_big = 'File is too big ({{filesize}}MiB). Max filesize: {{maxFilesize}}MiB.';
+$s_dropzone_invalid_file_type = 'You cannot upload files of this type.';
+$s_dropzone_response_error = 'Server responded with {{statusCode}} code.';
 $s_dropzone_cancel_upload = 'Cancel upload';
 $s_dropzone_cancel_upload_confirmation = 'Are you sure you want to cancel this upload?';
 $s_dropzone_remove_file = 'Remove file';

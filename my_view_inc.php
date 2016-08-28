@@ -314,6 +314,11 @@ echo '<span class="badge"> ' . " $v_start - $v_end / $t_bug_count " . ' </span>'
 				<i class="1 ace-icon fa <?php echo $t_block_icon ?> bigger-125"></i>
 			</a>
 		</div>
+		<div class="widget-toolbar no-border">
+			<div class="widget-menu">
+				<?php print_small_button( $t_box_url, lang_get( 'view_bugs_link' ) ); ?>
+			</div>
+		</div>
 	</div>
 
 	<div class="widget-body">
@@ -397,8 +402,7 @@ for( $i = 0;$i < $t_count; $i++ ) {
 				echo '<span>[', string_display_line( project_get_name( $t_bug->project_id ) ), '] </span>';
 			}
 			$t_bug_url = string_get_bug_view_url( $t_bug->id );
-			$t_bug_url_title = string_html_specialchars( sprintf( lang_get( 'label' ), lang_get( 'issue_id' ) . $t_bug->id ) . lang_get( 'word_separator' ) . $t_bug->summary );
-			echo '<span><a href="' . $t_bug_url . '" title="' . $t_bug_url_title . '">' . $t_summary . '</a></span><br />';
+			echo '<span><a href="' . $t_bug_url . '">' . $t_summary . '</a></span><br />';
 	?>
 		<?php
 	# type project name if viewing 'all projects' or bug is in subproject
@@ -422,16 +426,8 @@ for( $i = 0;$i < $t_count; $i++ ) {
 ?>
 </tbody>
 </table>
-	</div>
-	</div>
-	<div class="widget-toolbox padding-8 clearfix">
-		<?php
-			echo ' ' . $t_bug_count . ' ' . lang_get( $t_bug_string ) . ' ';
-		?>
-		<a class="btn btn-xs btn-primary btn-white btn-round" href="<?php echo $t_box_url ?>">
-			<?php echo lang_get( 'view_bugs_link' ) ?>
-		</a>
-	</div>
+</div>
+</div>
 </div>
 </div>
 <?php

@@ -29,6 +29,9 @@ $t_mantis_dir = dirname( dirname( __FILE__ ) ) . DIRECTORY_SEPARATOR;
 
 require_once( $t_mantis_dir . 'core.php' );
 
+# Load schema version needed to render admin menu bar
+require_once( 'schema.php' );
+
 access_ensure_global_level( config_get_global( 'admin_site_threshold' ) );
 
 if( function_exists( 'xdebug_disable' ) ) {
@@ -39,11 +42,6 @@ if( !defined( 'T_ML_COMMENT' ) ) {
 	define( 'T_ML_COMMENT', T_COMMENT );
 } else {
 	define( 'T_DOC_COMMENT', T_ML_COMMENT );
-}
-
-if( !checkfile( $t_mantis_dir . 'lang' . DIRECTORY_SEPARATOR, STRINGS_ENGLISH, true ) ) {
-	print_error( "Language file '" . STRINGS_ENGLISH . "' failed.", 'FAILED' );
-	die;
 }
 
 lang_push( 'english' );
@@ -70,9 +68,16 @@ print_admin_menu_bar( 'test_langs.php' );
 
 <div class="widget-body">
 <div class="widget-main">
-<div class="table-responsive">
-	<table>
+
+
+
 <?php
+
+if( !checkfile( $t_mantis_dir . 'lang' . DIRECTORY_SEPARATOR, STRINGS_ENGLISH, true ) ) {
+	print_error( "Language file '" . STRINGS_ENGLISH . "' failed.", 'FAILED' );
+	die;
+}
+
 # check core language files
 if( function_exists( 'scandir' ) ) {
 	checklangdir( $t_mantis_dir );
@@ -88,19 +93,15 @@ if( function_exists( 'scandir' ) ) {
 	checklangdir( $t_mantis_dir, $t_lang_files );
 }
 
-
 # attempt to find plugin language files
-echo '<tr><td>';
-echo "Trying to find+check plugin language files...<br />";
+echo 'Trying to find+check plugin language files...<br />';
 if( function_exists( 'scandir' ) ) {
 	checkplugins( config_get( 'plugin_path' ) );
 } else {
 	echo 'php scandir is disabled - skipping<br />';
 }
-echo '</td></tr>';
 ?>
-	</table>
-</div>
+
 </div>
 </div>
 </div>
@@ -431,14 +432,18 @@ function lang_error_handler( $p_type, $p_error, $p_file, $p_line, $p_context ) {
 }
 
 /**
- * Print Language File error
+ * Print Language File Error messages
  *
  * @param string $p_string Error string.
  * @param string $p_type   Message type to display (default ERROR).
  * @return void
  */
-function print_error( $p_string, $p_type = 'ERROR' ) {
-	echo '<p class="alert alert-danger">', $p_type . ': ' . $p_string, '</p>';
+function print_error($p_string, $p_type = 'ERROR' ) {
+	if ( $p_type === 'WARNING' ) {
+		echo '<span class="alert-warning">', $p_type . ': ' . $p_string, '</span><br />';
+	} else {
+		echo '<span class="alert-danger">', $p_type . ': ' . $p_string, '</span><br />';
+	}
 }
 
 layout_admin_page_end();
