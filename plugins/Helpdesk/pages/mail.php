@@ -319,16 +319,6 @@ if ( $t_new_issue ) {
 		exit;
 	}
 
-	# If a user adds a note to an issue that was resolved/closed and user doesn't have access to update
-	# a read-only issue, then re-open the issue.  Otherwise, just add a note.
-	if( bug_is_resolved( $t_bug_id ) ) {
-		if( !access_has_bug_level( config_get( 'update_readonly_bug_threshold' ), $t_bug_id, $t_user_id ) ) {
-			bug_reopen( $t_bug_id );
-			$t_event = array( 'level' => 'info', 'comp' => 'email_reporting', 'event' => 'reopen_issue' );
-			mantishub_event( $t_event );
-		}
-	}
-
 	$t_note_text = $f_stripped_text;
 
 	if ( $t_generic_user ) {
@@ -336,13 +326,33 @@ if ( $t_new_issue ) {
 		helpdesk_add_user_to_issue( $t_bug_id, $f_from_name_email );
 	}
 
-	$t_event = array( 'comp' => 'email_reporting', 'event' => 'adding_note', 'issue_id' => $t_bug_id );
-	mantishub_event( $t_event );
+	$t_note_added = false;
 
-	$t_note_id = bugnote_add( $t_bug_id, $t_note_text );
+	# If a user adds a note to an issue that was resolved/closed and user doesn't have access to update
+	# a read-only issue, then re-open the issue.  Otherwise, just add a note.
+	if( bug_is_resolved( $t_bug_id ) ) {
+		if( !access_has_bug_level( config_get( 'update_readonly_bug_threshold' ), $t_bug_id, $t_user_id ) ) {
+			$t_event = array( 'comp' => 'email_reporting', 'event' => 'reopening_issue', 'issue_id' => $t_bug_id );
+			mantishub_event( $t_event );
 
-	$t_event = array( 'comp' => 'email_reporting', 'event' => 'added_note', 'issue_id' => $t_bug_id, 'note_id' => $t_note_id );
-	mantishub_event( $t_event );
+			bug_reopen( $t_bug_id, $t_note_text );
+
+			$t_event = array( 'level' => 'info', 'comp' => 'email_reporting', 'event' => 'reopened_issue' );
+			mantishub_event( $t_event );
+
+			$t_note_added = true;
+		}
+	}
+
+	if ( !$t_note_added ) {
+		$t_event = array( 'comp' => 'email_reporting', 'event' => 'adding_note', 'issue_id' => $t_bug_id );
+		mantishub_event( $t_event );
+
+		$t_note_id = bugnote_add( $t_bug_id, $t_note_text );
+
+		$t_event = array( 'comp' => 'email_reporting', 'event' => 'added_note', 'issue_id' => $t_bug_id, 'note_id' => $t_note_id );
+		mantishub_event( $t_event );
+	}
 }
 
 for ( $i = 1; $i <= (int)$f_attachment_count; ++$i ) {
