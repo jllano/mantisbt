@@ -269,9 +269,14 @@ if ( $t_new_issue ) {
 		$f_body_plain = $f_subject;
 	}
 
+	$t_description = $f_body_plain;
+	if ( $t_generic_user ) {
+		$t_description .= "\n\n---\n" . $f_from_name_email;
+	}
+
 	$t_bug = new BugData;
 	$t_bug->summary = $f_subject;
-	$t_bug->description = $f_body_plain;
+	$t_bug->description = $t_description;
 	$t_bug->project_id = (int)$t_project['id'];
 	$t_bug->reporter_id = $t_user_id;
 
