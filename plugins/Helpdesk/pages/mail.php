@@ -43,7 +43,7 @@ function mantishub_get_header( $p_headers, $p_header_name ) {
 }
 
 function mantishub_email_new_issue_success( $p_issue_id, $p_message ) {
-    global $f_from_email, $f_subject, $g_auto_response_suppress;
+    global $f_from_email, $g_auto_response_suppress;
 
 	# Don't respond if message supresses auto-response to avoid loopback.
 	if ( $g_auto_response_suppress == 'All' )
@@ -53,7 +53,6 @@ function mantishub_email_new_issue_success( $p_issue_id, $p_message ) {
 
 	$t_mail_headers = helpdesk_headers_for_issue( $p_issue_id );
 	$t_subject = helpdesk_subject_for_issue( $p_issue_id );
-	$t_issue_url = helpdesk_url_for_issue( $p_issue_id );
 
     $t_message = $p_message . "\n\n";
 
@@ -81,7 +80,7 @@ function mantishub_email_error( $p_error_message ) {
     $t_message .= plugin_lang_get( 'documentation_at' ) . "\n";
     $t_message .= "http://support.mantishub.com/hc/en-us/articles/204273585\n";
 
-    email_store( $f_from_email, 'RE: ' . $f_subject, $t_message, $t_mail_headers );
+    email_store( $f_from_email, 'RE: ' . $f_subject, $t_message );
     log_event( LOG_EMAIL, sprintf( 'Incoming Mail API response to = \'%s\'', $f_from_email ) );
 
     if( OFF == config_get( 'email_send_using_cronjob' ) ) {

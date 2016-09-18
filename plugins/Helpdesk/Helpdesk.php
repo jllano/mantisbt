@@ -65,8 +65,6 @@ class HelpdeskPlugin extends MantisPlugin {
 			return;
 		}
 
-		$t_issue = bug_get( $p_issue_id );
-		$t_project_name = project_get_name( $t_issue->project_id );
 		$t_sender_name = HelpdeskPlugin::user_get_name( $t_reporter_id );
 		$t_note = trim( bugnote_get_text( $p_issue_note_id ) );
 
@@ -103,7 +101,6 @@ class HelpdeskPlugin extends MantisPlugin {
 			# Don't send private notes to external reporters
 			$t_view_state = bugnote_get_field( $this->issue_note_id, 'view_state' );
 			if ( $t_view_state == VS_PUBLIC ) {
-				$t_note_reporter_id = bugnote_get_field( $this->issue_note_id, 'reporter_id' );
 				$t_message = trim( bugnote_get_text( $this->issue_note_id ) ) . "\n\n";
 			}
 		}
