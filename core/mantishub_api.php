@@ -296,10 +296,6 @@ function mantishub_instance_name() {
 	return strtolower( $t_company_name );
 }
 
-function mantishub_is_manage_section() {
-	return is_page_name( 'manage_' ) || is_page_name( 'logo_page' ) || is_page_name( 'adm_' );
-}
-
 /**
  * Print navbar help menu at the top right of the page
  * @return null
