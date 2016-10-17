@@ -74,29 +74,6 @@ function mantishub_guide_stage() {
  * @returns null
  */
 function mantishub_show_messages() {
-
-	mantishub_announcements();
-
-	mantishub_trial_message();
-}
-
-function mantishub_trial_message() {
-	global $g_mantishub_info_trial, $g_mantishub_info_payment_on_file;
-
-	if ( $g_mantishub_info_trial && !$g_mantishub_info_payment_on_file && current_user_is_administrator() ) {
-		$t_issues_count = mantishub_table_row_count( 'bug' );
-
-		$t_trial_conversion_url = config_get( 'mantishub_info_trial_conversion_url', '' );
-		if ( $t_issues_count >= 5 && !is_blank( $t_trial_conversion_url ) ) {
-			echo '<div class="alert alert-warning padding-8 no-margin">';
-			echo '<strong><i class="ace-icon fa fa-flag-checkered fa-lg"></i> Trial Version: </strong>';
-			echo 'Click <a href="' . $t_trial_conversion_url . '" target="_blank">here</a> to convert to paid and enable daily backups.';
-			echo '</div>';
-		}
-	}
-}
-
-function mantishub_announcements() {
 	global $g_config_path;
 
 	try {
@@ -109,25 +86,46 @@ function mantishub_announcements() {
 			$json = json_decode($str, true);
 
 			foreach ( $json['announcements'] as  $message ) {
-				if ( isset( $message['access_level'] ) && $message['access_level'] > current_user_get_access_level() ) {
+				$t_access_level_min = 0;
+				$t_access_level_max = 100;
+
+				if( isset( $message['access_level_min'] ) ) {
+					$t_access_level_min = $message['access_level_min'];
+				} else if( isset( $message['access_level'] ) ) {
+					$t_access_level_min = $message['access_level'];
+				}
+
+				if( isset( $message['access_level_max'] ) ) {
+					$t_access_level_max = $message['access_level_max'];
+				}
+
+				$t_access_level = current_user_get_access_level();
+				if ( $t_access_level < $t_access_level_min || $t_access_level > $t_access_level_max ) {
 					continue;
 				}
 
-				$t_show = !mantishub_is_dismissed_block( $message['id'] );
-				$t_now = time();
-				if( $t_show
-					&& ( $t_now >= strtotime( $message['valid_from'] ) )
-					&& ( $t_now <= strtotime( $message['valid_until'] ) ) ) {
-
-					echo '<div id="' . $message['id'] . '" class="alert alert-warning padding-8 no-margin">';
-					if ( isset( $message['dismissable'] ) && $message['dismissable'] === true ) {
-						echo '<a data-dismiss="alert" class="close" type="button" href="#">';
-						echo '<i class="ace-icon fa fa-times bigger-125"></i> ';
-						echo '</a>';
-					}
-					echo '<i class="ace-icon fa fa-lg ' . $message['icon'] . '"></i> ' . $message['text'];
-					echo '</div>';
+				if( mantishub_is_dismissed_block( $message['id'] ) ) {
+					continue;
 				}
+
+				$t_now = time();
+
+				if( isset( $message['valid_from'] ) && $t_now < $message['valid_from'] ) {
+					continue;
+				}
+
+				if( isset( $message['valid_until'] ) && $t_now > $message['valid_until'] ) {
+					continue;
+				}
+
+				echo '<div id="' . $message['id'] . '" class="alert alert-warning padding-8 no-margin">';
+				if ( isset( $message['dismissable'] ) && $message['dismissable'] === true ) {
+					echo '<a data-dismiss="alert" class="close" type="button" href="#">';
+					echo '<i class="ace-icon fa fa-times bigger-125"></i> ';
+					echo '</a>';
+				}
+				echo '<i class="ace-icon fa fa-lg ' . $message['icon'] . '"></i> ' . $message['text'];
+				echo '</div>';
 			}
 		} else {
 			# clear dismissed blocks cache
