@@ -148,10 +148,6 @@
 			$g_bug_view_page_fields,
 			$t_columns_to_remove );
 
-		$g_bug_print_page_fields = mantishub_remove_columns(
-			$g_bug_print_page_fields,
-			$t_columns_to_remove );
-
 		$t_columns_to_remove[] = 'additional_info';
 		$t_columns_to_remove[] = 'steps_to_reproduce';
 
