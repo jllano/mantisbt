@@ -6,6 +6,24 @@ require_api( 'mantishub_api.php' );
 
 define( 'HELPDESK_GENERIC_USERNAME', 'Email' );
 
+/**
+ * Check if the specified text contains any of the mantishub domain.
+ *
+ * @param  string $p_text The text to check.
+ * @return bool true: contains a domain, false: otherwise.
+ */
+function helpdesk_string_contains_domain( $p_text ) {
+	global $g_mantishub_domains;
+
+	foreach( $g_mantishub_domains as $t_domain ) {
+		if ( stristr( $p_text, $t_domain ) !== false ) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
 function helpdesk_log( $p_message ) {
 	global $global_log_request_id;
 	log_event( LOG_EMAIL, $global_log_request_id . ' ' . $p_message );

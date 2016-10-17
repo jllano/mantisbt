@@ -25,7 +25,7 @@ $t_message_id = mantishub_get_header( $t_headers, 'Message-Id' );
 $g_auto_response_suppress = mantishub_get_header( $t_headers, 'X-Auto-Response-Suppress' );
 
 # Check for loopback
-if ( mantishub_string_contains_domain( $t_message_id ) ) {
+if ( helpdesk_string_contains_domain( $t_message_id ) ) {
 	header( 'HTTP/1.0 406 Loop detected' );
 	$t_event = array( 'level' => 'error', 'comp' => 'email_reporting', 'event' => 'loop' );
 	mantishub_event( $t_event );

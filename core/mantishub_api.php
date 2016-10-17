@@ -42,24 +42,6 @@ function mantishub_impersonation() {
 }
 
 /**
- * Check if the specified text contains any of the mantishub domain.
- *
- * @param  string $p_text The text to check.
- * @return bool true: contains a domain, false: otherwise.
- */
-function mantishub_string_contains_domain( $p_text ) {
-	global $g_mantishub_domains;
-
-	foreach( $g_mantishub_domains as $t_domain ) {
-		if ( stristr( $p_text, $t_domain ) !== false ) {
-			return true;
-		}
-	}
-
-	return false;
-}
-
-/**
  * Gets the current guide step or false if user has done the steps outlined
  * in the getting started guide and hence it shouldn't be shown.
  *
