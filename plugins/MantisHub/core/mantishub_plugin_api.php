@@ -158,6 +158,101 @@ function mantishub_auth_attempt_login( $p_username, $p_token, $p_duration ) {
 	return true;
 }
 
+function mantishub_google_analytics() {
+	if ( mantishub_auto_refresh_page() ) {
+		return;
+	}
+
+	if( config_get( 'mantishub_analytics_enabled' ) == OFF ) {
+		return;
+	}
+
+	// MantisHub Google Analytics to track engagement.
+	echo "<script>";
+	echo "(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){";
+	echo "(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),";
+	echo "m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)";
+	echo "})(window,document,'script','//www.google-analytics.com/analytics.js','ga');\n";
+	echo "ga('create', 'UA-330112-9', 'mantishub.com');\n";
+	echo "ga('send', 'pageview');\n";
+	echo "</script>\n";
+
+	global $g_mantishub_info_trial;
+
+	if ( $g_mantishub_info_trial ) {
+		# <!-- Google Code for Trail Starts Conversion Page -->
+		echo '<script type="text/javascript">' . "\n";
+		echo '/' . '* <![CDATA[ */' . "\n";
+		echo 'var google_conversion_id = 970248102;' . "\n";
+		echo 'var google_conversion_language = "en";' . "\n";
+		echo 'var google_conversion_format = "3";' . "\n";
+		echo 'var google_conversion_color = "ffffff";' . "\n";
+		echo 'var google_conversion_label = "eQWuCIrG5AkQpp_TzgM";' . "\n";
+		echo 'var google_remarketing_only = false;' . "\n";
+		echo '/* ]]> */' . "\n";
+		echo '</script>' . "\n";
+		echo '<script type="text/javascript" src="//www.googleadservices.com/pagead/conversion.js">' . "\n";
+		echo '</script>' . "\n";
+		echo '<noscript>' . "\n";
+		echo '<div style="display:inline;">' . "\n";
+		echo '<img height="1" width="1" style="border-style:none;" alt="" src="//www.googleadservices.com/pagead/conversion/970248102/?label=eQWuCIrG5AkQpp_TzgM&guid=ON&script=0"/>' . "\n";
+		echo '</div>' . "\n";
+		echo '</noscript>' . "\n";
+	} else {
+		$t_value = plan_price();
+
+		# <!-- Google Code for Trial Converts Conversion Page -->
+		echo '<script type="text/javascript">' . "\n";
+		echo '/' . '* <![CDATA[ */' . "\n";
+		echo 'var google_conversion_id = 970248102;' . "\n";
+		echo 'var google_conversion_language = "en";' . "\n";
+		echo 'var google_conversion_format = "3";' . "\n";
+		echo 'var google_conversion_color = "ffffff";' . "\n";
+		echo 'var google_conversion_label = "GYQECPrH5AkQpp_TzgM";' . "\n";
+		echo 'var google_conversion_value = ' . $t_value . ';' . "\n";
+		echo 'var google_remarketing_only = false;' . "\n";
+		echo '/* ]]> */' . "\n";
+		echo '</script>' . "\n";
+		echo '<script type="text/javascript" src="//www.googleadservices.com/pagead/conversion.js">' . "\n";
+		echo '</script>' . "\n";
+		echo '<noscript>' . "\n";
+		echo '<div style="display:inline;">' . "\n";
+		echo '<img height="1" width="1" style="border-style:none;" alt="" src="//www.googleadservices.com/pagead/conversion/970248102/?value=20.000000&label=GYQECPrH5AkQpp_TzgM&guid=ON&script=0"/>' . "\n";
+		echo '</div>' . "\n";
+		echo '</noscript>' . "\n";
+	}
+}
+
+function mantishub_bingads_analytics() {
+	if ( mantishub_auto_refresh_page() ) {
+		return;
+	}
+
+	if( config_get( 'mantishub_analytics_enabled' ) == OFF ) {
+		return;
+	}
+
+	global $g_mantishub_info_trial;
+
+	if ( $g_mantishub_info_trial ) {
+		# <!-- BingAds Code for Trail Starts Conversion Page -->
+		echo '<script>(function(w,d,t,r,u){var f,n,i;w[u]=w[u]||[],f=function(){var o={ti:"4061542"};o.q=w[u],w[u]=new UET(o),w[u].push("pageLoad")},n=d.createElement(t),n.src=r,n.async=1,n.onload=n.onreadystatechange=function(){var s=this.readyState;s&&s!=="loaded"&&s!=="complete"||(f(),n.onload=n.onreadystatechange=null)},i=d.getElementsByTagName(t)[0],i.parentNode.insertBefore(n,i)})(window,document,"script","//bat.bing.com/bat.js","uetq");</script>';
+		echo '<noscript><img src="//bat.bing.com/action/0?ti=4061542&Ver=2" height="0" width="0" style="display:none; visibility: hidden;" /></noscript>';
+	} else {
+		$t_value = plan_price();
+
+		# Pass plan value first
+		echo '<script>' . "\n";
+		echo '	window.uetq = window.uetq || [];' . "\n";
+		echo "	window.uetq.push({ 'gv': " . $t_value . ' })' . "\n";
+		echo '</script>' . "\n";
+
+		# <!-- BingAds Code for Trial Converts Conversion Page -->
+		echo '<script>(function(w,d,t,r,u){var f,n,i;w[u]=w[u]||[],f=function(){var o={ti:"4061543"};o.q=w[u],w[u]=new UET(o),w[u].push("pageLoad")},n=d.createElement(t),n.src=r,n.async=1,n.onload=n.onreadystatechange=function(){var s=this.readyState;s&&s!=="loaded"&&s!=="complete"||(f(),n.onload=n.onreadystatechange=null)},i=d.getElementsByTagName(t)[0],i.parentNode.insertBefore(n,i)})(window,document,"script","//bat.bing.com/bat.js","uetq");</script>';
+		echo '<noscript><img src="//bat.bing.com/action/0?ti=4061543&Ver=2" height="0" width="0" style="display:none; visibility: hidden;" /></noscript>';
+	}
+}
+
 /**
  * Add drip markup for measuring conversions.
  */

@@ -378,7 +378,6 @@ function layout_login_page_end() {
 	layout_footer();
 	layout_main_container_end();
 	layout_body_javascript();
-    mantishub_google_analytics();
 	echo '</body>', "\n";
 	html_end();
 
@@ -1131,10 +1130,9 @@ function layout_footer() {
 	echo '<address>' . "\n";
 	# echo '<strong>Powered by <a href="http://www.mantisbt.org" title="bug tracking software">MantisBT ' . $t_version_suffix . '</a></strong> <br>' . "\n";
 	# echo "<small>Copyright &copy;$t_copyright_years MantisBT Team</small>" . '<br>';
+
 	global $g_mantishub_plan;
 	echo '<small>Hosted at <a href="http://www.mantishub.com">MantisHub</a> (' . $g_mantishub_plan . ' Plan)' . "</small><br />\n";
-
-	#echo '<small>Hosted at <a href="http://www.mantishub.com">MantisHub</a> (' . $g_Copyright &copy;$t_copyright_years MantisBT Team</small>" . '<br>';
 
 	# Show optional user-specified custom copyright statement
 	$t_copyright_statement = config_get( 'copyright_statement' );
