@@ -102,6 +102,10 @@ class HelpdeskPlugin extends MantisPlugin {
 			$t_view_state = bugnote_get_field( $this->issue_note_id, 'view_state' );
 			if ( $t_view_state == VS_PUBLIC ) {
 				$t_message = trim( bugnote_get_text( $this->issue_note_id ) ) . "\n\n";
+
+				if( $t_action == '' ) {
+					$t_action = 'responded';
+				}
 			}
 		}
 
@@ -133,7 +137,11 @@ class HelpdeskPlugin extends MantisPlugin {
 		$t_recipient_email = helpdesk_get_email_from_name_email( $p_recipient_email );
 
 		$t_message = '';
-		$t_message .= sprintf( plugin_lang_get( $p_action_lang_string ), $p_sender_name ) . "\n\n";
+
+		if( $p_action_lang_string != '' ) {
+			$t_message .= sprintf( plugin_lang_get( $p_action_lang_string ), $p_sender_name ) . "\n\n";
+		}
+
 		$t_message .= $p_message . "\n\n";
 
 		if ( $p_anonymous_enabled ) {
