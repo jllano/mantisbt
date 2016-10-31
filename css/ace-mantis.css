@@ -48,16 +48,6 @@
     font-size: x-small;
 }
 
-.navbar-default .navbar-nav .open .dropdown-menu > .active > a {
-    background: #e7e7e7 none repeat scroll 0 0;
-    color: #444 !important;
-}
-
-.navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus,
-.navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover {
-    color: #fff !important;
-}
-
 .uppercase {
     text-transform: uppercase;
 }
@@ -290,6 +280,10 @@ textarea.input-xs, select.input-xs[multiple] {
     overflow-x: hidden;
 }
 
+.navbar-toggle {
+    display:  block;
+}
+
 /* Small devices (tablets, 768px and up) */
 @media (min-width: 768px) {
     .page-content {
@@ -300,17 +294,22 @@ textarea.input-xs, select.input-xs[multiple] {
         width: 120px !important;
     }
 
-    .dropdown-menu {
-        max-height: 500px;
-        overflow-y: scroll;
-    }
-
     .login-container {
         width: 90%;
     }
 
     .login-container img {
         max-height: 80px;
+    }
+
+    .navbar.navbar-collapse .navbar-header {
+        float: left !important;
+    }
+
+    .navbar.navbar-collapse .navbar-buttons {
+        float: right !important;
+        border-style: none !important;
+        width: auto;
     }
 }
 
@@ -364,17 +363,22 @@ textarea.input-xs, select.input-xs[multiple] {
         right: 43px !important;
     }
 
-    .dropdown-menu {
-        max-height: 500px;
-        overflow-y: scroll;
-    }
-
     .login-container {
         width: 90%;
     }
 
     .login-container img {
         max-height: 120px;
+    }
+
+    .navbar.navbar-collapse .navbar-header {
+        float: left !important;
+    }
+
+    .navbar.navbar-collapse .navbar-buttons {
+        float: right !important;
+        border-style: none !important;
+        width: auto;
     }
 }
 
