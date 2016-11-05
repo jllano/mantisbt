@@ -267,7 +267,7 @@ if( config_get_global( 'admin_checks' ) == ON && file_exists( dirname( __FILE__ 
 				<span class="block input-icon input-icon-right">
 					<input id="username" name="username" type="text" placeholder="<?php echo $t_username_label ?>"
 						   size="32" maxlength="<?php echo DB_FIELD_SIZE_USERNAME;?>" value="<?php echo string_attribute( $f_username ); ?>"
-						   class="form-control <?php echo $t_username_field_autofocus ?>">
+						   class="form-control" <?php echo $t_username_field_autofocus ?>>
 					<i class="ace-icon fa fa-user"></i>
 				</span>
 			</label>
@@ -275,7 +275,7 @@ if( config_get_global( 'admin_checks' ) == ON && file_exists( dirname( __FILE__ 
 				<span class="block input-icon input-icon-right">
 					<input id="password" name="password" type="password" placeholder="<?php echo lang_get( 'password' ) ?>"
 						   size="32" maxlength="<?php echo auth_get_password_max_size(); ?>"
-						   class="form-control <?php echo $t_password_field_autofocus ?>">
+						   class="form-control" <?php echo $t_password_field_autofocus ?>>
 					<i class="ace-icon fa fa-lock"></i>
 				</span>
 			</label>
