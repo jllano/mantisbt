@@ -74,6 +74,7 @@ if( config_get_global( 'email_login_enabled' ) ) {
 
 $t_session_validation = ( ON == config_get_global( 'session_validation' ) );
 
+$t_re_auth = false;
 
 # If user is already authenticated and not anonymous
 if( auth_is_user_authenticated() && !current_user_is_anonymous() ) {
@@ -85,7 +86,11 @@ if( auth_is_user_authenticated() && !current_user_is_anonymous() ) {
 	if( null != $t_auth_token ) {
 		token_touch( $t_auth_token['id'], config_get_global( 'reauthentication_expiry' ) );
 	} else {
-		# If URL is not specified and URL is "index.php" redirect to default page
+
+		# executed via the reauthenticate flow
+		$t_re_auth = true;
+
+		# If URL is not specified OR URL is "index.php" redirect to default page
 		if( is_blank( $f_return ) || $f_return == "index.php" ) {
 			print_header_redirect( config_get( 'default_home_page' ) );
 		} 
@@ -124,6 +129,16 @@ if( $t_session_validation ) {
 $t_username_field_autofocus = 'autofocus';
 $t_password_field_autofocus = '';
 if( $f_username ) {
+	$t_username_field_autofocus = '';
+	$t_password_field_autofocus = 'autofocus';
+}
+
+# IF executed via the reauthenticate
+# - username should be populated by current username
+# - password field should receive automatic focus
+if ( $t_re_auth ) {	
+	$t_user_id = auth_get_current_user_id();
+	$f_username = user_get_field( $t_user_id, 'username' );
 	$t_username_field_autofocus = '';
 	$t_password_field_autofocus = 'autofocus';
 }
