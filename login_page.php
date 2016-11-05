@@ -57,6 +57,7 @@ $f_error                 = gpc_get_bool( 'error' );
 $f_cookie_error          = gpc_get_bool( 'cookie_error' );
 $f_return                = string_sanitize_url( gpc_get_string( 'return', '' ) );
 $f_username              = gpc_get_string( 'username', '' );
+$f_reauthenticate        = gpc_get_bool( 'reauthenticate', false );
 $f_perm_login            = gpc_get_bool( 'perm_login', false );
 $f_secure_session        = gpc_get_bool( 'secure_session', false );
 $f_secure_session_cookie = gpc_get_cookie( config_get_global( 'cookie_prefix' ) . '_secure_session', null );
@@ -74,22 +75,17 @@ if( config_get_global( 'email_login_enabled' ) ) {
 
 $t_session_validation = ( ON == config_get_global( 'session_validation' ) );
 
-$t_re_auth = false;
-
 # If user is already authenticated and not anonymous
 if( auth_is_user_authenticated() && !current_user_is_anonymous() ) {
 	
-	$t_auth_token = token_get( TOKEN_AUTHENTICATED );
-	
-	# Check for authentication tokens, then always "authenticate" the user
-	# Otherwise use default page
-	if( null != $t_auth_token ) {
-		token_touch( $t_auth_token['id'], config_get_global( 'reauthentication_expiry' ) );
+	# IF executed via the reauthenticate
+	if( $f_reauthenticate ) {
+		# username should be populated by current username
+		if ( $f_reauthenticate ) {	
+			$t_user_id = auth_get_current_user_id();
+			$f_username = user_get_field( $t_user_id, 'username' );
+		}
 	} else {
-
-		# executed via the reauthenticate flow
-		$t_re_auth = true;
-
 		# If URL is not specified OR URL is "index.php" redirect to default page
 		if( is_blank( $f_return ) || $f_return == "index.php" ) {
 			print_header_redirect( config_get( 'default_home_page' ) );
@@ -123,13 +119,6 @@ if( $t_session_validation ) {
 	} else {
 		$t_default_secure_session = $f_secure_session;
 	}
-}
-
-# IF executed via the reauthenticate
-# username should be populated by current username
-if ( $t_re_auth ) {	
-	$t_user_id = auth_get_current_user_id();
-	$f_username = user_get_field( $t_user_id, 'username' );
 }
 
 # Determine whether the username or password field should receive automatic focus.
@@ -267,7 +256,7 @@ if( config_get_global( 'admin_checks' ) == ON && file_exists( dirname( __FILE__ 
 				<span class="block input-icon input-icon-right">
 					<input id="username" name="username" type="text" placeholder="<?php echo $t_username_label ?>"
 						   size="32" maxlength="<?php echo DB_FIELD_SIZE_USERNAME;?>" value="<?php echo string_attribute( $f_username ); ?>"
-						   class="form-control" <?php echo $t_username_field_autofocus ?>>
+						   class="form-control <?php echo $t_username_field_autofocus ?>">
 					<i class="ace-icon fa fa-user"></i>
 				</span>
 			</label>
@@ -275,7 +264,7 @@ if( config_get_global( 'admin_checks' ) == ON && file_exists( dirname( __FILE__ 
 				<span class="block input-icon input-icon-right">
 					<input id="password" name="password" type="password" placeholder="<?php echo lang_get( 'password' ) ?>"
 						   size="32" maxlength="<?php echo auth_get_password_max_size(); ?>"
-						   class="form-control" <?php echo $t_password_field_autofocus ?>>
+						   class="form-control <?php echo $t_password_field_autofocus ?>">
 					<i class="ace-icon fa fa-lock"></i>
 				</span>
 			</label>

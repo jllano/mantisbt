@@ -784,7 +784,7 @@ function auth_reauthenticate() {
 		$t_request_uri = string_url( $_SERVER['REQUEST_URI'] );
 		
 		# redirect to login page
-		print_header_redirect( 'login_page.php?return=' . $t_request_uri );
+		print_header_redirect( 'login_page.php?reauthenticate=1&return=' . $t_request_uri );
 	}
 }
 
