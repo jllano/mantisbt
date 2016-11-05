@@ -125,20 +125,17 @@ if( $t_session_validation ) {
 	}
 }
 
+# IF executed via the reauthenticate
+# username should be populated by current username
+if ( $t_re_auth ) {	
+	$t_user_id = auth_get_current_user_id();
+	$f_username = user_get_field( $t_user_id, 'username' );
+}
+
 # Determine whether the username or password field should receive automatic focus.
 $t_username_field_autofocus = 'autofocus';
 $t_password_field_autofocus = '';
 if( $f_username ) {
-	$t_username_field_autofocus = '';
-	$t_password_field_autofocus = 'autofocus';
-}
-
-# IF executed via the reauthenticate
-# - username should be populated by current username
-# - password field should receive automatic focus
-if ( $t_re_auth ) {	
-	$t_user_id = auth_get_current_user_id();
-	$f_username = user_get_field( $t_user_id, 'username' );
 	$t_username_field_autofocus = '';
 	$t_password_field_autofocus = 'autofocus';
 }
