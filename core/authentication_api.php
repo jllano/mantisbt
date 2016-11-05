@@ -781,7 +781,17 @@ function auth_reauthenticate() {
 			return true;
 		}
 
-		return auth_reauthenticate_page( $t_user_id, $t_username );
+		if( !isset( $_SERVER['REQUEST_URI'] ) ) {
+			$_SERVER['REQUEST_URI'] = $_SERVER['SCRIPT_NAME'] . '?' . $_SERVER['QUERY_STRING'];
+		}
+		
+		$p_return_page = $_SERVER['REQUEST_URI'];
+		
+		$p_return_page = string_url( $p_return_page );
+		
+		# redirect to the login page
+		# so that users who login via Github or Bitbucket on MantisHub can just click the button to re-authenticate.
+		print_header_redirect( 'login_page.php?return=' . $p_return_page );
 	}
 }
 

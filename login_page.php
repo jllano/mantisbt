@@ -74,13 +74,21 @@ if( config_get_global( 'email_login_enabled' ) ) {
 
 $t_session_validation = ( ON == config_get_global( 'session_validation' ) );
 
+
 # If user is already authenticated and not anonymous
 if( auth_is_user_authenticated() && !current_user_is_anonymous() ) {
-	# If return URL is specified redirect to it; otherwise use default page
-	if( !is_blank( $f_return ) ) {
-		print_header_redirect( $f_return, false, false, true );
+	
+	$t_auth_token = token_get( TOKEN_AUTHENTICATED );
+	
+	# Check for authentication tokens, then always "authenticate" the user
+	# Otherwise use default page
+	if( null != $t_auth_token ) {
+		token_touch( $t_auth_token['id'], config_get_global( 'reauthentication_expiry' ) );
 	} else {
-		print_header_redirect( config_get( 'default_home_page' ) );
+		# If URL is not specified and URL is "index.php" redirect to default page
+		if( is_blank( $f_return ) || $f_return == "index.php" ) {
+			print_header_redirect( config_get( 'default_home_page' ) );
+		} 
 	}
 }
 
