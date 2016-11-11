@@ -110,11 +110,11 @@ function mantishub_show_messages() {
 
 				$t_now = time();
 
-				if( isset( $message['valid_from'] ) && $t_now < $message['valid_from'] ) {
+				if( isset( $message['valid_from'] ) && $t_now < strtotime( $message['valid_from'] ) ) {
 					continue;
 				}
 
-				if( isset( $message['valid_until'] ) && $t_now > $message['valid_until'] ) {
+				if( isset( $message['valid_until'] ) && $t_now > strtotime( $message['valid_until'] ) )  {
 					continue;
 				}
 
