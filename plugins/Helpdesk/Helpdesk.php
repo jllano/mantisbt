@@ -49,6 +49,7 @@ class HelpdeskPlugin extends MantisPlugin {
 		}
 
 		$t_recipients = helpdesk_users_for_issue( $p_issue_id );
+		$t_recipients = $this->cleanup_duplicate_recipients( $t_recipients );
 		if ( count( $t_recipients ) == 0 ) {
 			return;
 		}
@@ -61,11 +62,12 @@ class HelpdeskPlugin extends MantisPlugin {
 		# Don't notify reporter about their own notes.
 		# We will ignore receive own configuration option in this case.
 		$t_reporter_id = bugnote_get_field( $p_issue_note_id, 'reporter_id' );
-		if ( helpdesk_generic_user_id() == $t_reporter_id ) {
-			return;
+		$t_sender_name = user_get_field( $t_reporter_id, 'username' );
+
+		if ( helpdesk_generic_user_id() != $t_reporter_id ) {
+			$t_sender_name = HelpdeskPlugin::user_get_name( $t_reporter_id );
 		}
 
-		$t_sender_name = HelpdeskPlugin::user_get_name( $t_reporter_id );
 		$t_note = trim( bugnote_get_text( $p_issue_note_id ) );
 
 		$t_anonymous_enabled = config_get( 'allow_anonymous_login' ) != OFF;
@@ -74,11 +76,14 @@ class HelpdeskPlugin extends MantisPlugin {
 		$t_subject = helpdesk_subject_for_issue( $p_issue_id );
 		$t_issue_url = helpdesk_url_for_issue( $p_issue_id );
 
+		$t_email_ids = array();
 		foreach( $t_recipients as $t_recipient ) {
-			HelpdeskPlugin::send_message(
+			$t_email_ids[] = HelpdeskPlugin::send_message(
 				$t_sender_name, $t_recipient, $p_issue_id, $t_subject, $t_note, $t_mail_headers,
 				$t_issue_url, $t_anonymous_enabled, 'responded' );
 		}
+
+		return $t_email_ids;
 	}
 
 	public function issue_update( $p_event, $p_issue_before, $p_issue_after ) {
@@ -114,6 +119,7 @@ class HelpdeskPlugin extends MantisPlugin {
 		}
 
 		$t_recipients = helpdesk_users_for_issue( $t_issue_id );
+		$t_recipients = $this->cleanup_duplicate_recipients( $t_recipients );
 		if ( count( $t_recipients ) == 0 ) {
 			return;
 		}
@@ -149,6 +155,8 @@ class HelpdeskPlugin extends MantisPlugin {
 		}
 
 		$t_message .= "---\n";
+
+		$t_message .= self::construct_mail_rollback_issue_signature( $p_issue_id );
 
 		$t_message = mantishub_wrap_email( $p_issue_id, $t_message );
 
@@ -190,5 +198,19 @@ class HelpdeskPlugin extends MantisPlugin {
 			array( 'CreateIndexSQL', array( 'idx_bug_id', plugin_table( "recipients" ), 'bug_id' ) ),
 		);
 	}
-}
 
+	public static function construct_mail_rollback_issue_signature( $p_issue_id ) {
+		$t_message = '';
+		$t_mail_headers = helpdesk_headers_for_issue( $p_issue_id );
+		$t_message .= "# Issue: " . bug_format_id( $p_issue_id )  . "\n";
+		if( !empty($t_mail_headers['Reply-To']) ) {
+			$t_message .= "# Hash: " . strstr( $t_mail_headers['Reply-To'], '@', true ) . "\n";
+		}
+
+		return $t_message;
+	}
+
+	public function cleanup_duplicate_recipients(array $t_recipients) {
+		return array_unique( array_map( helpdesk_get_email_from_name_email, $t_recipients ) );
+	}
+}

@@ -103,8 +103,9 @@ function helpdesk_issue_from_recipient( $p_recipient, &$p_abort_error ) {
 	$t_before_at = strtolower( $p_recipient );
 	$t_before_at = substr( $t_before_at, 0, strpos( $t_before_at, '@' ) );
 
-	// If instancename@domain.com, then return false since project is not specified.
+	# If instancename@domain.com, then return false since project is not specified.
 	if ( $t_before_at == $t_instance_name ) {
+		helpdesk_log( 'no project specified in recipient header = ' . $p_recipient );
 		return 0;
 	}
 
@@ -112,7 +113,9 @@ function helpdesk_issue_from_recipient( $p_recipient, &$p_abort_error ) {
 
 	# Don't match an issue if a project exists with the same name.
 	$t_project_row = helpdesk_project_get_row_by_clean_name( $t_between_plus_and_at );
+
 	if ( $t_project_row !== false ) {
+		helpdesk_log( 'project exists with same name as requested issue = ' . $t_between_plus_and_at );
 		return 0;
 	}
 
@@ -124,12 +127,14 @@ function helpdesk_issue_from_recipient( $p_recipient, &$p_abort_error ) {
 			$p_abort_error = "missing token from recipient address.";
 		}
 
+		helpdesk_log( ' invalid hash = ' . $t_between_plus_and_at );
 		return 0;
 	}
 
 	$t_id = $t_parts[0];
 
 	if ( !is_numeric( $t_id ) ) {
+		helpdesk_log( ' invalid issue id = ' . $t_id );
 		return 0;
 	}
 
@@ -141,7 +146,7 @@ function helpdesk_issue_from_recipient( $p_recipient, &$p_abort_error ) {
 	}
 
 	$t_md5 = $t_parts[1];
-	$t_expected_md5 = md5( $t_id . config_get( 'crypto_master_salt' ) );
+	$t_expected_md5 = md5( $t_id . config_get_global( 'crypto_master_salt' ) );
 
 	if ( $t_md5 != $t_expected_md5 ) {
 		helpdesk_log( 'incoming mail: received md5 = ' . $t_md5 );
@@ -170,6 +175,7 @@ function helpdesk_headers_for_issue( $p_issue_id ) {
 	$t_reply_to = mantishub_reply_to_address( $p_issue_id );
 	if ( $t_reply_to !== null ) {
 		$t_mail_headers['Reply-To'] = $t_reply_to;
+		$t_mail_headers['X-MantisHub-Hash'] = strstr( $t_mail_headers['Reply-To'], '@', true );
 	}
 
 	$t_issue = bug_get( $p_issue_id );
@@ -202,7 +208,7 @@ function helpdesk_add_user_to_issue( $p_issue_id, $p_email_address ) {
 	$t_recipients = helpdesk_users_for_issue( $p_issue_id );
 
 	foreach( $t_recipients as $t_recipient ) {
-		if ( $t_recipient == $p_email_address ) {
+		if ( helpdesk_get_email_from_name_email( $t_recipient ) == helpdesk_get_email_from_name_email( $p_email_address ) ) {
 			return false;
 		}
 	}
@@ -355,4 +361,49 @@ function helpdesk_print_issue_view_info( $p_issue_id ) {
 </script>
 </div>
 <?php
+}
+
+/**
+ * Collect issue ID by parsing the incoming email body, searching for # Hash attribute
+ * Find issue by collected Hash
+ *
+ * @param string $p_body_plain              Received email plain body (from mail.php)
+ * @param string $p_abort_error             Error message
+ *
+ * @return int                              Issue ID or 0 if failed
+ */
+function helpdesk_issue_from_mail_body( $p_body_plain, &$p_abort_error ) {
+	helpdesk_log( 'trying to retrieve issue hash from mail body-plain' );
+
+	$t_ticket_position = strpos( $p_body_plain, '# Hash' );
+	if($t_ticket_position <= 0) {
+		helpdesk_log( 'no hash found inside body-plain' );
+		$p_abort_error = "Could not retrieve issue hash.";
+		return 0;
+	}
+
+	# Cut for inspection only this part of the string which contains '# Hash'
+	$t_partial = substr( $p_body_plain, $t_ticket_position );
+	if(!preg_match( '/\#\s?Hash:\s?([^\s]+)/im', $t_partial, $t_matches )) {
+		helpdesk_log( 'invalid or missing hash in body-plain' );
+		return 0;
+	}
+
+	return helpdesk_issue_from_recipient( $t_matches[1] );
+}
+
+/**
+ * Strip rollback signature from body-plain
+ *
+ * @param string $p_body_plain              Gpc body-plain
+ *
+ * @return string                           Body-plain without the roll back Issue and Hash signature
+ */
+function helpdesk_description_from_reply_body( $p_body_plain ) {
+	$t_ticket_position = strpos( $p_body_plain, "---\n# Issue" );
+	if( !$t_ticket_position ) {
+		return $p_body_plain;
+	}
+
+	return substr( $p_body_plain, 0, $t_ticket_position );
 }
