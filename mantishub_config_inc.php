@@ -15,10 +15,6 @@ $g_system_font_folder	= dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'fonts' . DI
 // Don't allow per-project upload path.
 $g_allow_per_project_upload_path = OFF;
 
-if ( plan_auto_enable_mantistouch() ) {
-	$g_plugins_force_installed['MantisTouchRedirect'] = 5;
-}
-
 $g_crypto_master_salt = 'salt-for-dev-machine-where-normal-salt-is-short' . $g_database_name . $g_db_username . $g_db_password;
 $g_plugins_force_installed['MantisHub'] = 3;
 

@@ -27,10 +27,6 @@ function plan_mantistouch() {
 	return !plan_is_bronze();
 }
 
-function plan_auto_enable_mantistouch() {
-	return plan_mantistouch() && plan_gen() <= 4;
-}
-
 function plan_price() {
 	global $g_mantishub_plan_code;
 
