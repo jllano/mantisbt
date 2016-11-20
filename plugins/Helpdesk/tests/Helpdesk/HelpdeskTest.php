@@ -135,7 +135,9 @@ class HelpdeskTest extends PHPUnit_Framework_TestCase {
 	 */
 	public function testCollectingAdditionalRecipientsFromToCc() {
 		$this->prepareGpcAdditionalRecipients();
-		$t_filtered_list = mantishub_collect_additional_recipients();
+
+		$f_additional_recipients_headers = gpc_get_string( 'To' ) . ',' . gpc_get_string( 'Cc' );
+		$t_filtered_list = mantishub_collect_additional_recipients( $f_additional_recipients_headers );
 
 		# Validate retrieved recipients list is not empty
 		$this->assertEmpty( $t_filtered_list );

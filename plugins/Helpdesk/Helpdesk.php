@@ -203,8 +203,8 @@ class HelpdeskPlugin extends MantisPlugin {
 		$t_message = '';
 		$t_mail_headers = helpdesk_headers_for_issue( $p_issue_id );
 		$t_message .= "# Issue: " . bug_format_id( $p_issue_id )  . "\n";
-		if( !empty($t_mail_headers['Reply-To']) ) {
-			$t_message .= "# Hash: " . strstr( $t_mail_headers['Reply-To'], '@', true ) . "\n";
+		if( !empty($t_mail_headers['X-MantisHub-Hash']) ) {
+			$t_message .= "# Hash: " . $t_mail_headers['X-MantisHub-Hash'] . "\n";
 		}
 
 		return $t_message;
