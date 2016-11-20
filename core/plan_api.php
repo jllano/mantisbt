@@ -53,32 +53,54 @@ function plan_price() {
 	return $t_value;
 }
 
-function plan_get_disk_usage() {
-	$t_output = array();
-	$t_result = 0;
+function plan_get_disk_usage_in_bytes() {
+	$t_query = 'SELECT SUM(filesize) FROM {bug_file}';
+	$t_result = db_query( $t_query );
+	return db_result( $t_result );
+}
 
+function plan_get_disk_usage() {
 	$t_root_path = dirname( dirname( __FILE__ ) );
 	if ( !file_exists( $t_root_path . '/core.php' ) ) {
 		return 'error';
 	}
 
-	# Possible exclusions, but won't be consistent with Stratus.
-	# --exclude="backup/*" --exclude="log*/*"
-	exec( 'du -c -b -h -s ' . $t_root_path, $t_output, $t_result );
+	$t_total_attachments_size = plan_get_disk_usage_in_bytes();
 
-	if( empty( $t_output ) ) {
-		# command fails on mac
-		$t_value = 'unknown';
+	if( $t_total_attachments_size > 1024 * 1024 * 1024 ) {
+		$t_total_attachments_size = $t_total_attachments_size / ( 1024 * 1024 * 1024 );
+		$t_unit = 'GB';
 	} else {
-		$t_output = $t_output[0];
-		$t_line = str_replace( "\t", ' ', $t_output );
-		$t_index = strpos( $t_line, ' ' );
-		$t_value = substr( $t_line, 0, $t_index );
+		$t_total_attachments_size = (float)( $t_total_attachments_size / ( 1024 * 1024 ) );
+		$t_unit = 'MB';
+	}
 
-		# Add the B to the disk space multiplier
-		$t_value = str_replace( 'K', 'KB', $t_value );
-		$t_value = str_replace( 'M', 'MB', $t_value );
-		$t_value = str_replace( 'G', 'GB', $t_value );
+	$t_value = sprintf( "%.2f%s", $t_total_attachments_size, $t_unit );
+
+	return $t_value;
+}
+
+function plan_get_disk_space_limit_in_mb() {
+	global $g_mantishub_plan_code;
+
+	if ( $g_mantishub_plan_code == 'platinum_1000' || $g_mantishub_plan_code == 'platinum12_1000' ) {
+		$t_value = 100 * 1024;
+	} else if ( $g_mantishub_plan_code == 'platinum_500' || $g_mantishub_plan_code == 'platinum12_500' ) {
+		$t_value = 50 * 1024;
+	} else if ( $g_mantishub_plan_code == 'platinum_300' || $g_mantishub_plan_code == 'platinum12_300' ) {
+		$t_value = 30 * 1024;
+	} else if ( $g_mantishub_plan_code == 'platinum_200' || $g_mantishub_plan_code == 'platinum12_200' ) {
+		$t_value = 30 * 1024;
+	} else if ( plan_is_enterprise() ) {
+		$t_value = 4 * 1024;
+	} else if ( plan_is_platinum() ) {
+		$t_value = 10 * 1024;
+	} else if ( plan_is_gold() ) {
+		$t_value = 4 * 1024;
+	} else if ( plan_is_silver() ) {
+		$t_value = 2 * 1024;
+	} else {
+		$t_value = 200;
 	}
 
 	return $t_value;
@@ -108,6 +130,21 @@ function plan_get_disk_space_limit() {
 	}
 
 	return $t_value;
+}
+
+function plan_storage_packs() {
+	$t_used_mbs = plan_get_disk_usage_in_bytes() / ( 1024 * 1024 );
+	$t_plan_mbs = plan_get_disk_space_limit_in_mb();
+
+	if( $t_plan_mbs > $t_used_mbs ) {
+		return 0;
+	}
+
+	if( $t_used_mbs < 1 ) {
+		return 0;
+	}
+
+	return ceil( (float) ( ( $t_used_mbs - $t_plan_mbs ) / 1024 ) );
 }
 
 function plan_users_count() {
@@ -357,6 +394,10 @@ function plan_info_get_public( $p_force_push = false ) {
 
 function plan_show_user_limits_on_plan_page() {
 	return !plan_is_enterprise();
+}
+
+function plan_show_storage_limits_on_plan_page() {
+	return true;
 }
 
 function plan_show_user_list_on_plan_page() {

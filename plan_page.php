@@ -105,6 +105,11 @@ if ( plan_show_user_limits_on_plan_page() ) {
 	print_field( lang_get( 'mantishub_plan_team_packs' ),  $t_team_packs_needed );
 }
 
+if ( plan_show_storage_limits_on_plan_page() ) {
+	$t_storage_packs_needed = plan_storage_packs();
+	print_field( lang_get( 'mantishub_plan_storage_packs' ),  $t_storage_packs_needed );
+}
+
 if ( plan_show_user_list_on_plan_page() ) {
 	$t_team_members_value .= '<br /><br />' . team_info( $t_result );
 
