@@ -79,7 +79,9 @@ function mantishub_email_new_issue_success( $p_issue_id, $p_message, $p_from_ema
 	$t_mail_headers = helpdesk_headers_for_issue( $p_issue_id );
 	$t_subject = helpdesk_subject_for_issue( $p_issue_id );
 
-	$t_message = $p_message . "\n\n";
+	$t_message = HelpdeskPlugin::get_reply_above();
+
+	$t_message .= $p_message . "\n\n";
 
 	$t_message .= "---\n";
 
@@ -316,7 +318,7 @@ if ( $t_new_issue ) {
 		$f_body_plain = $f_subject;
 	}
 
-	$t_description = helpdesk_description_from_reply_body( $f_body_plain );
+	$t_description = helpdesk_trim_body_based_on_marker($f_body_plain );
 	if ( $t_generic_user ) {
 		$t_description .= "\n\n---\n" . $f_from_name_email;
 	}

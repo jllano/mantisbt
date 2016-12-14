@@ -110,6 +110,26 @@ class HelpdeskTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * A test case that tests trimming body by reply marker
+	 * 1. Set User reply and Reply marker before Body
+	 * 2. Test Marker has been set
+	 * 3. Trim content after Reply marker
+	 * 4. Test for the absence of Reply marker
+	 * @return void
+	 */
+	public function testTrimBodyBasedOnMarker() {
+		$t_body_plain = $this->prepareUserReply();
+		$t_body_plain .= HelpdeskPlugin::get_reply_above();
+		$t_body_plain .= $this->prepareBodyPlainForTest();
+
+		$this->assertTrue( strpos( $t_body_plain, HelpdeskPlugin::get_reply_above() ) );
+
+		$t_body_plain = helpdesk_trim_body_based_on_marker( $t_body_plain );
+
+		$this->assertFalse( strpos( $t_body_plain, HelpdeskPlugin::get_reply_above() ) );
+	}
+
+	/**
 	 * A test case that tests the following:
 	 * 1. Test retrieving email from name-email format, using `helpdesk_get_email_from_name_email`
 	 * 2. Filter retrieved list of emails leaving only the unique records
@@ -155,6 +175,16 @@ class HelpdeskTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * Test content for user reply
+	 * @return string
+	 */
+	private function prepareUserReply() {
+		return "That's user reply after pressing REPLY TO on an automated notification message sent from Mantis over 
+		an issue or if being set in To/Cc reply of another user on a notification message.\nBelow that sentence should
+		 be the the 'Reply Before marker'\n\n---";
+	}
+
+	/**
 	 * Mailgun `body-plain` with # Issue and # Hash included, Host being retrieved dynamically by
 	 * `mantishub_instance_name()`
 	 *
@@ -162,7 +192,7 @@ class HelpdeskTest extends PHPUnit_Framework_TestCase {
 	 */
 	private function prepareBodyPlainForTest() {
 		return "administrator responded with the following:  Lorem ipsum dolor sit amet, tellus et eros erat sit dignissim erat, massa non eget porta curabitur aliquam, in ultricies sapien etiam vivamus. Est dolor vivamus, lectus nunc, consectetuer suscipit consectetuer sit ante eget tristique. Turpis ut in justo scelerisque nibh, morbi auctor nec. Nam id mauris, vitae mus amet dignissim auctor. Justo nec felis per. Taciti purus arcu, tincidunt gravida non etiam dis condimentum at, volutpat nec placerat praesent sagittis per sed, posuere quisque laoreet at, congue egestas.\n--- # Issue: 0000002 # Hash: " . mantishub_instance_name() . "+2-712b93d369f539b1fa06306162d80bee\nThis email is a service from MantisHub.  Reply to add a comment to issue. To learn more about using MantisHub, see our support portal at http://support.mantishub.com\n\n  --  Svetoslav Dragoev
-		 :: Senior PHP Developer :: TL @ The Mags";
+		 :: My signature :: My position";
 	}
 
 	/**

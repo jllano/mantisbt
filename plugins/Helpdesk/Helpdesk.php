@@ -142,7 +142,7 @@ class HelpdeskPlugin extends MantisPlugin {
 		$p_mail_headers, $p_issue_url, $p_anonymous_enabled, $p_action_lang_string ) {
 		$t_recipient_email = helpdesk_get_email_from_name_email( $p_recipient_email );
 
-		$t_message = '';
+		$t_message = self::get_reply_above();
 
 		if( $p_action_lang_string != '' ) {
 			$t_message .= sprintf( plugin_lang_get( $p_action_lang_string ), $p_sender_name ) . "\n\n";
@@ -212,5 +212,14 @@ class HelpdeskPlugin extends MantisPlugin {
 
 	public function cleanup_duplicate_recipients(array $t_recipients) {
 		return array_unique( array_map( helpdesk_get_email_from_name_email, $t_recipients ) );
+	}
+
+	/**
+	 * Get reply above marker
+	 *
+	 * @return string       Reply above marker
+	 */
+	public static function get_reply_above() {
+		return "### Please reply above this line ###\n\n";
 	}
 }

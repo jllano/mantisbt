@@ -407,3 +407,19 @@ function helpdesk_description_from_reply_body( $p_body_plain ) {
 
 	return substr( $p_body_plain, 0, $t_ticket_position );
 }
+
+/**
+ * Strip body using reply marker for end point
+ *
+ * @param string $p_body_plain              Gpc body-plain
+ *
+ * @return string                           Body-plain without the roll back Issue and Hash signature
+ */
+function helpdesk_trim_body_based_on_marker( $p_body_plain ) {
+	$t_reply_marker_position = strpos( $p_body_plain, HelpdeskPlugin::get_reply_above() );
+	if( !$t_reply_marker_position ) {
+		return $p_body_plain;
+	}
+
+	return substr( $p_body_plain, 0, $t_reply_marker_position );
+}
