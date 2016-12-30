@@ -32,11 +32,6 @@ $s_mantishub_branding_company_name = 'Company Name';
 $s_mantishub_branding_logo_file = 'Logo file (smaller than 50K)';
 $s_mantishub_branding_submit_button = 'Update';
 
-# Switch Page
-$s_mantishub_switch_to_modern_ui = 'Switch to Modern UI';
-$s_mantishub_switch_to_classic_ui = 'Switch to Classic UI';
-$s_mantishub_switch_now = 'Switch Now';
-
 # Email Notifications
 switch( $g_active_language ) {
 	case 'french':
