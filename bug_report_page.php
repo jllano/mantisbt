@@ -151,6 +151,12 @@ if( $f_master_bug_id > 0 ) {
 		print_header_redirect( 'login_select_proj_page.php?ref=bug_report_page.php' );
 	}
 
+	# Check for bug report threshold
+	if( !access_has_project_level( config_get( 'report_bug_threshold' ) ) ) {
+		# If can't report on current project, show project selector if there is any other allowed project
+		access_ensure_any_project_level( 'report_bug_threshold' );
+		print_header_redirect( 'login_select_proj_page.php?ref=bug_report_page.php' );
+	}
 	access_ensure_project_level( config_get( 'report_bug_threshold' ) );
 
 	$f_build				= gpc_get_string( 'build', '' );
@@ -215,13 +221,6 @@ $t_show_additional_info = in_array( 'additional_info', $t_fields );
 $t_show_due_date = in_array( 'due_date', $t_fields ) && access_has_project_level( config_get( 'due_date_update_threshold' ), helper_get_current_project(), auth_get_current_user_id() );
 $t_show_attachments = in_array( 'attachments', $t_fields ) && file_allow_bug_upload();
 $t_show_view_state = in_array( 'view_state', $t_fields ) && access_has_project_level( config_get( 'set_view_status_threshold' ) );
-
-if( $t_show_due_date ) {
-	require_js( 'jscalendar/calendar.js' );
-	require_js( 'jscalendar/lang/calendar-en.js' );
-	require_js( 'jscalendar/calendar-setup.js' );
-	require_css( 'calendar-blue.css' );
-}
 
 # don't index bug report page
 html_robots_noindex();
@@ -348,7 +347,7 @@ if( $t_show_attachments ) {
 		$t_date_to_display = '';
 
 		if( !date_is_null( $f_due_date ) ) {
-			$t_date_to_display = date( config_get( 'calendar_date_format' ), $f_due_date );
+			$t_date_to_display = date( config_get( 'normal_date_format' ), $f_due_date );
 		}
 ?>
 	<tr>
@@ -356,7 +355,11 @@ if( $t_show_attachments ) {
 			<label for="due_date"><?php print_documentation_link( 'due_date' ) ?></label>
 		</th>
 		<td>
-			<?php echo '<input ' . helper_get_tab_index() . ' type="text" id="due_date" name="due_date" class="datetime" size="20" maxlength="16" value="' . $t_date_to_display . '" />' ?>
+			<?php echo '<input ' . helper_get_tab_index() . ' type="text" id="due_date" name="due_date" class="datetimepicker input-sm" ' .
+				'data-picker-locale="' . lang_get_current_datetime_locale() .
+				'" data-picker-format="' . config_get( 'datetime_picker_format' ) . '" ' .
+				'size="20" maxlength="16" value="' . $t_date_to_display . '" />' ?>
+			<i class="fa fa-calendar fa-xlg datetimepicker"></i>
 		</td>
 	</tr>
 <?php } ?>

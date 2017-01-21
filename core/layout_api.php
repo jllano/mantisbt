@@ -259,12 +259,18 @@ function layout_head_css() {
 
 		# theme text fonts
 		html_css_cdn_link( 'https://fonts.googleapis.com/css?family=Open+Sans:300,400' );
+
+		# datetimepicker
+		html_css_cdn_link( 'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/' . DATETIME_PICKER_VERSION . '/css/bootstrap-datetimepicker.min.css' );
 	} else {
 		html_css_link( 'bootstrap-' . BOOTSTRAP_VERSION . '.min.css' );
 		html_css_link( 'font-awesome-' . FONT_AWESOME_VERSION . '.min.css' );
 
 		# theme text fonts
 		html_css_link( 'open-sans.css' );
+
+		# datetimepicker
+		html_css_link( 'bootstrap-datetimepicker-' . DATETIME_PICKER_VERSION . '.min.css' );
 	}
 
 	# page specific plugin styles
@@ -309,11 +315,20 @@ function layout_head_javascript() {
  * @return null
  */
 function layout_body_javascript() {
-	# bootstrap
 	if ( config_get_global( 'cdn_enabled' ) == ON ) {
+		# bootstrap
 		html_javascript_cdn_link( 'https://maxcdn.bootstrapcdn.com/bootstrap/' . BOOTSTRAP_VERSION . '/js/bootstrap.min.js', BOOTSTRAP_HASH );
+
+		# moment & datetimepicker
+		html_javascript_cdn_link( 'https://cdnjs.cloudflare.com/ajax/libs/moment.js/' . MOMENT_VERSION . '/moment-with-locales.min.js', MOMENT_HASH );
+		html_javascript_cdn_link( 'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/' . DATETIME_PICKER_VERSION . '/js/bootstrap-datetimepicker.min.js', DATETIME_PICKER_HASH );
 	} else {
+		# bootstrap
 		html_javascript_link( 'bootstrap-' . BOOTSTRAP_VERSION . '.min.js' );
+
+		# moment & datetimepicker
+		html_javascript_link( 'moment-with-locales-' . MOMENT_VERSION . '.min.js' );
+		html_javascript_link( 'bootstrap-datetimepicker-' . DATETIME_PICKER_VERSION . '.min.js' );
 	}
 
 	# theme scripts
@@ -564,7 +579,7 @@ function layout_navbar_button_bar() {
 		return;
 	}
 
-	$t_can_report_bug = access_has_project_level( config_get( 'report_bug_threshold' ) );
+	$t_can_report_bug = access_has_any_project_level( 'report_bug_threshold' );
 	$t_can_invite_user = current_user_is_administrator();
 
 	if( !$t_can_report_bug && !$t_can_invite_user ) {
@@ -587,6 +602,7 @@ function layout_navbar_button_bar() {
 		echo '</a>';
 	}
 
+	echo '</div>';
   	echo '</li>';
 }
 
@@ -733,7 +749,7 @@ function layout_print_sidebar( $p_active_sidebar_page = null ) {
 		layout_sidebar_menu( 'view_all_bug_page.php', 'view_bugs_link', 'fa-list-alt', $p_active_sidebar_page );
 
 		# Report Bugs
-		if( access_has_project_level( config_get( 'report_bug_threshold' ) ) ) {
+		if( access_has_any_project_level( 'report_bug_threshold' ) ) {
 			$t_bug_url = string_get_bug_report_url();
 			layout_sidebar_menu( $t_bug_url, 'report_bug_link', 'fa-edit', $p_active_sidebar_page );
 		}
@@ -1115,7 +1131,8 @@ function layout_footer() {
 	}
 	echo '<div class="col-md-6 col-xs-12 no-padding">' . "\n";
 	echo '<address>' . "\n";
-	# echo '<strong>Powered by <a href="http://www.mantisbt.org" title="bug tracking software">MantisBT ' . $t_version_suffix . '</a></strong> <br>' . "\n";
+
+	# echo '<strong>Powered by <a href="https://www.mantisbt.org" title="bug tracking software">MantisBT ' . $t_version_suffix . '</a></strong> <br>' . "\n";
 	# echo "<small>Copyright &copy;$t_copyright_years MantisBT Team</small>" . '<br>';
 
 	global $g_mantishub_plan;
@@ -1143,7 +1160,7 @@ function layout_footer() {
 		echo '<div class="col-md-6 col-xs-12">' . "\n";
 		echo '<div class="pull-right" id="powered-by-mantisbt-logo">' . "\n";
 		$t_mantisbt_logo_url = helper_mantis_url( 'images/mantishub_logo.png' );
-		echo '<a href="http://www.mantisbt.org" '.
+		echo '<a href="https://www.mantishub.com" '.
 			'title="Mantis Bug Tracker: a free and open source web based bug tracking system.">' .
 			'<img src="' . $t_mantisbt_logo_url . '" height="35" ' .
 			'alt="Powered by Mantis Bug Tracker: a free and open source web based bug tracking system." />' .

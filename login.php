@@ -50,6 +50,7 @@ $t_return		= string_url( string_sanitize_url( gpc_get_string( 'return', config_g
 $f_from			= gpc_get_string( 'from', '' );
 $f_secure_session = gpc_get_bool( 'secure_session', false );
 
+# MantisHub Specific Change for Impersonation
 $f_token		= gpc_get_string( 'token', '' );
 $t_impersonation_username = false;
 
@@ -61,6 +62,9 @@ if ( !is_blank( $f_token ) ) {
 		$t_impersonation_username = true;
 	}
 }
+# End of MantisHub Specific Change for Impersonation
+
+$f_reauthenticate = gpc_get_bool( 'reauthenticate', false );
 
 $f_install = gpc_get_bool( 'install' );
 
@@ -82,16 +86,30 @@ if( auth_attempt_login( $f_username, $f_password, $f_perm_login ) ) {
 	}
 
 	$t_redirect_url = 'login_cookie_test.php?return=' . $t_return;
-
 } else {
 	$t_username = $t_impersonation_username ? '' : $f_username;
 
-	$t_redirect_url = 'login_page.php?return=' . $t_return .
-		'&error=1&username=' . urlencode( $t_username ) .
-		'&secure_session=' . ( $f_secure_session ? 1 : 0 );
-	if( $t_allow_perm_login ) {
-		$t_redirect_url .= '&perm_login=' . ( $f_perm_login ? 1 : 0 );
+	$t_query_args = array(
+		'error' => 1,
+		'username' => $t_username,
+		'return' => $t_return,
+	);
+
+	if( $f_reauthenticate ) {
+		$t_query_args['reauthenticate'] = 1;
 	}
+
+	if( $f_secure_session ) {
+		$t_query_args['secure_session'] = 1;
+	}
+
+	if( $t_allow_perm_login && $f_perm_login ) {
+		$t_query_args['perm_login'] = 1;
+	}
+
+	$t_query_text = http_build_query( $t_query_args, '', '&' );
+
+	$t_redirect_url = 'login_page.php?' . $t_query_text;
 
 	if( HTTP_AUTH == config_get( 'login_method' ) ) {
 		auth_http_prompt();

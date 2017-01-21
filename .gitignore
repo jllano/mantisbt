@@ -50,18 +50,25 @@ plugins/*
 *.kdev4
 nbproject/
 
+# MacOS
+.DS_Store
+
 # IIS7
 web.config
 !library/securimage/web.config
 
-#libraries
+# Libraries
 library/FirePHPCore
 library/ezc
+/vendor/
 
+# MantisHub Ignores
 images/logo.png
 attach/
 config/
 backup/
 log/
 
-/vendor/
+# Parsedown submodule added in 2.1
+library/parsedown
+

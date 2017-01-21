@@ -273,8 +273,25 @@ if( 0 == $t_install_state ) {
 	?>
 
 <!-- Check PHP Version -->
-<?php print_test( ' Checking PHP version (your version is ' . phpversion() . ')', check_php_version( phpversion() ), true, 'Upgrade to a more recent version of PHP' );?>
+<?php
+	print_test(
+		'Checking PHP version (your version is ' . phpversion() . ')',
+		check_php_version( phpversion() ),
+		true,
+		'Upgrade to a more recent version of PHP'
+	);
 
+	# UTF-8 support check
+	# We need either the 'mbstring' extension, or the utf8_encode() function
+	# (part of the 'XML parser' extension) as a fallback for Unicode support
+	# by the utf8 library.
+	print_test(
+		'Checking UTF-8 support',
+		extension_loaded( 'mbstring' ) || function_exists( 'utf8_encode' ),
+		true,
+		'Please install or enable the PHP mbstring extension'
+	);
+?>
 <!-- Check Safe Mode -->
 <?php
 print_test( 'Checking if safe mode is enabled for install script',
@@ -335,7 +352,9 @@ print_test( 'Checking if safe mode is enabled for install script',
 
 # got database information, check and install
 if( 2 == $t_install_state ) {
-	?>
+	# By now user has picked a timezone, ensure it is set
+	date_default_timezone_set( $f_timezone );
+?>
 
 <div class="col-md-12 col-xs-12">
 <div class="widget-box widget-color-blue2">
@@ -351,8 +370,6 @@ if( 2 == $t_install_state ) {
 	print_test( 'Checking PHP support for database type', db_check_database_support( $f_db_type ), true, 'database is not supported by PHP. Check that it has been compiled into your server.' );
 
 	# ADOdb library version check
-	# PostgreSQL, Oracle and MSSQL require at least 5.19. MySQL should be fine
-	# with 5.10 but to simplify we align to the requirement of the others.
 	$t_adodb_version = substr( $ADODB_vers, 1, strpos( $ADODB_vers, ' ' ) - 1 );
 	print_test( 'Checking ADOdb Library version is at least ' . DB_MIN_VERSION_ADODB,
 		version_compare( $t_adodb_version, DB_MIN_VERSION_ADODB, '>=' ),
@@ -467,7 +484,7 @@ if( 2 == $t_install_state ) {
 			case 'mssql':
 			case 'mssqlnative':
 				if( version_compare( $t_version_info['version'], DB_MIN_VERSION_MSSQL, '<' ) ) {
-					$t_error = 'SQL Server 2005 (' . DB_MIN_VERSION_MSSQL . ') or later is required for installation.';
+					$t_error = 'SQL Server (' . DB_MIN_VERSION_MSSQL . ') or later is required for installation.';
 				}
 				break;
 			case 'pgsql':
@@ -562,7 +579,6 @@ if( !$g_database_upgrade ) {
 			$t_db_list = array(
 				'mysqli'      => 'MySQL Improved',
 				'mysql'       => 'MySQL',
-				'mssql'       => 'Microsoft SQL Server',
 				'mssqlnative' => 'Microsoft SQL Server Native Driver',
 				'pgsql'       => 'PostgreSQL',
 				'oci8'        => 'Oracle',
@@ -570,10 +586,6 @@ if( !$g_database_upgrade ) {
 			# mysql is deprecated as of PHP 5.5.0
 			if( version_compare( phpversion(), '5.5.0' ) >= 0 ) {
 				unset( $t_db_list['mysql']);
-			}
-			# mssql is not supported with PHP >= 5.3
-			if( version_compare( phpversion(), '5.3' ) >= 0 ) {
-				unset( $t_db_list['mssql']);
 			}
 
 			foreach( $t_db_list as $t_db => $t_db_descr ) {
