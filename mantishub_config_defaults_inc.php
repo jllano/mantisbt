@@ -179,3 +179,7 @@
 
 	# Increase default preview limit to 1MB.
 	$g_preview_attachments_inline_max_size = 1 * 1024 * 1024;
+
+	# Verbose notifications off by default
+	$g_email_notifications_verbose = OFF;
+
