@@ -211,7 +211,7 @@ class HelpdeskPlugin extends MantisPlugin {
 	}
 
 	public function cleanup_duplicate_recipients(array $t_recipients) {
-		return array_unique( array_map( helpdesk_get_email_from_name_email, $t_recipients ) );
+		return array_unique( array_map( 'helpdesk_get_email_from_name_email', $t_recipients ) );
 	}
 
 	/**

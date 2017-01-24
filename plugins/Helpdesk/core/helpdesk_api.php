@@ -377,8 +377,8 @@ function helpdesk_issue_from_mail_body( $p_body_plain, &$p_abort_error ) {
 
 	$t_ticket_position = strpos( $p_body_plain, '# Hash' );
 	if($t_ticket_position <= 0) {
+
 		helpdesk_log( 'no hash found inside body-plain' );
-		$p_abort_error = "Could not retrieve issue hash.";
 		return 0;
 	}
 
@@ -389,7 +389,7 @@ function helpdesk_issue_from_mail_body( $p_body_plain, &$p_abort_error ) {
 		return 0;
 	}
 
-	return helpdesk_issue_from_recipient( $t_matches[1] );
+	return helpdesk_issue_from_recipient( $t_matches[1], $p_abort_error );
 }
 
 /**

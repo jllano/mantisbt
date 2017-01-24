@@ -42,7 +42,7 @@ if ( helpdesk_string_contains_domain( $t_message_id ) ) {
 function mantishub_collect_additional_recipients( $f_additional_recipients_headers ) {
 	$t_emails = array();
 
-	$t_parsed_emails = array_filter( explode( ',', gpc_get_string( $f_additional_recipients_headers ) ) );
+	$t_parsed_emails = array_filter( explode( ',', $f_additional_recipients_headers ) );
 	$t_emails += array_filter(
 		array_map(
 			'helpdesk_get_email_from_name_email',
@@ -228,14 +228,14 @@ $t_abort_error = '';
 $f_body_plain = trim( gpc_get_string( 'body-plain', '' ) );
 
 $t_bug_id = helpdesk_issue_from_recipient( $f_recipient, $t_abort_error );
+
 if( $t_bug_id == 0 ) {
 	if( !empty( $t_issue_hash ) ) {
-		$t_bug_id = helpdesk_issue_from_recipient( $t_issue_hash );
+		$t_bug_id = helpdesk_issue_from_recipient( $t_issue_hash, $t_abort_error );
 	} else {
-		$t_bug_id = helpdesk_issue_from_mail_body( $f_body_plain, $t_abort_error);
+		$t_bug_id = helpdesk_issue_from_mail_body( $f_body_plain, $t_abort_error );
 	}
 }
-
 
 if ( $t_bug_id == 0 && !is_blank( $t_abort_error ) ) {
 	header( 'HTTP/1.0 406 ' . $t_abort_error );
@@ -251,7 +251,6 @@ if ( $t_new_issue ) {
 	#
 	# Get project name.
 	#
-
 	$t_instance_name = mantishub_instance_name();
 	if ( stripos( $f_recipient, $t_instance_name . '+' ) !== 0 &&
 		stripos( $f_recipient, $t_instance_name . '@' ) !== 0 ) {
