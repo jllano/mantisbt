@@ -905,6 +905,13 @@ function email_bugnote_add( $p_bugnote_id, $p_files = array(), $p_exclude_user_i
 	$t_recipients = email_collect_recipients( $t_bugnote->bug_id, 'bugnote', /* extra_user_ids */ array(), $p_bugnote_id );
 	$t_recipients_verbose = array();
 
+	# MantisHub: Stamp headers to enable users to reply-to-comment
+	$t_mail_headers = array();
+	$t_reply_to = mantishub_reply_to_address( $t_bugnote->bug_id );
+	if ( $t_reply_to !== null ) {
+		$t_mail_headers['Reply-To'] = $t_reply_to;
+	}
+
 	# send email to every recipient
 	foreach( $t_recipients as $t_user_id => $t_user_email ) {
 		if( in_array( $t_user_id, $p_exclude_user_ids ) ) {
@@ -947,7 +954,7 @@ function email_bugnote_add( $p_bugnote_id, $p_files = array(), $p_exclude_user_i
 
 		$t_contents = $t_message . "\n";
 
-		email_store( $t_user_email, $t_subject, $t_contents );
+		email_store( $t_user_email, $t_subject, $t_contents, $t_mail_headers );
 
 		log_event( LOG_EMAIL_VERBOSE, 'queued bugnote email for note ~' . $p_bugnote_id .
 			' issue #' . $t_bugnote->bug_id . ' by U' . $t_user_id );
@@ -1392,6 +1399,13 @@ function email_bug_reminder( $p_recipients, $p_bug_id, $p_message ) {
 	$t_subject = email_build_subject( $p_bug_id );
 	$t_date = date( config_get( 'normal_date_format' ) );
 
+	# MantisHub: Stamp headers to enable users to reply-to-comment
+	$t_mail_headers = array();
+	$t_reply_to = mantishub_reply_to_address( $p_bug_id );
+	if ( $t_reply_to !== null ) {
+		$t_mail_headers['Reply-To'] = $t_reply_to;
+	}
+
 	$t_result = array();
 	foreach( $p_recipients as $t_recipient ) {
 		lang_push( user_pref_get_language( $t_recipient, $t_project_id ) );
@@ -1405,13 +1419,6 @@ function email_bug_reminder( $p_recipients, $p_bug_id, $p_message ) {
 		}
 		$t_header = "\n" . lang_get( 'on_date' ) . ' ' . $t_date . ', ' . $t_sender . ' ' . $t_sender_email . lang_get( 'sent_you_this_reminder_about' ) . ': ' . "\n\n";
 		$t_contents = $t_header . string_get_bug_view_url_with_fqdn( $p_bug_id ) . " \n\n" . $p_message;
-
-		# MantisHub: Stamp headers to enable users to reply-to-comment
-		$t_mail_headers = array();
-		$t_reply_to = mantishub_reply_to_address( $p_bug_id );
-		if ( $t_reply_to !== null ) {
-			$t_mail_headers['Reply-To'] = $t_reply_to;
-		}
 
 		$t_contents = mantishub_wrap_email( $p_bug_id, $t_contents . "\n\n---\n" );
 
@@ -1456,6 +1463,13 @@ function email_user_mention( $p_bug_id, $p_mention_user_ids, $p_message, $p_remo
 		log_event( LOG_EMAIL_VERBOSE, 'skipped mention email for U' . $t_removed_mention_user_id . ' (no access to issue or note).' );
 	}
 
+	# MantisHub: Stamp headers to enable users to reply-to-comment
+	$t_mail_headers = array();
+	$t_reply_to = mantishub_reply_to_address( $p_bug_id );
+	if ( $t_reply_to !== null ) {
+		$t_mail_headers['Reply-To'] = $t_reply_to;
+	}
+
 	$t_result = array();
 	foreach( $p_mention_user_ids as $t_mention_user_id ) {
 		# Don't trigger mention emails for self mentions
@@ -1489,13 +1503,6 @@ function email_user_mention( $p_bug_id, $p_mention_user_ids, $p_message, $p_remo
 		$t_complete_subject = sprintf( lang_get( 'mentioned_in' ), $t_subject );
 		$t_header = "\n" . lang_get( 'on_date' ) . ' ' . $t_date . ', ' . $t_sender . ' ' . $t_sender_email . lang_get( 'mentioned_you' ) . "\n\n";
 		$t_contents = $t_header . string_get_bug_view_url_with_fqdn( $p_bug_id ) . " \n\n" . $p_message;
-
-		# MantisHub: Stamp headers to enable users to reply-to-comment
-		$t_mail_headers = array();
-		$t_reply_to = mantishub_reply_to_address( $p_bug_id );
-		if ( $t_reply_to !== null ) {
-			$t_mail_headers['Reply-To'] = $t_reply_to;
-		}
 
 		$t_id = email_store( $t_email, $t_complete_subject, $t_contents, $t_mail_headers );
 		if( $t_id !== null ) {
