@@ -176,7 +176,7 @@ $t_key = plugin_config_get( 'mailgun_key' );
 $t_data = $f_timestamp . $f_token;
 $t_hash = hash_hmac ( 'sha256', $t_data, $t_key );
 
-if (false && $t_hash != $f_signature ) {
+if ($t_hash != $f_signature ) {
 	header( 'HTTP/1.0 406 Invalid Signature' );
 	$t_event = array( 'level' => 'error', 'comp' => 'email_reporting', 'event' => 'invalid_signature' );
 	mantishub_event( $t_event );
