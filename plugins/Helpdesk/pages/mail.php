@@ -19,7 +19,10 @@ $f_subject = trim( gpc_get_string( 'subject', '' ) );
 $f_from_name_email = gpc_get_string( 'from' );
 $t_from_email = helpdesk_get_email_from_name_email( $f_from_name_email );
 
-$f_additional_recipients_headers = gpc_get_string( 'To' ) . ',' . gpc_get_string( 'Cc' );
+$f_additional_recipients_headers = gpc_get_string( 'To' );
+if(!empty($_POST['Cc'])) {
+	$f_additional_recipients_headers .= ',' . gpc_get_string( 'Cc' );
+}
 $t_additional_recipients = mantishub_collect_additional_recipients($f_additional_recipients_headers );
 
 $f_message_headers = gpc_get_string( 'message-headers' );
@@ -173,7 +176,7 @@ $t_key = plugin_config_get( 'mailgun_key' );
 $t_data = $f_timestamp . $f_token;
 $t_hash = hash_hmac ( 'sha256', $t_data, $t_key );
 
-if ( $t_hash != $f_signature ) {
+if (false && $t_hash != $f_signature ) {
 	header( 'HTTP/1.0 406 Invalid Signature' );
 	$t_event = array( 'level' => 'error', 'comp' => 'email_reporting', 'event' => 'invalid_signature' );
 	mantishub_event( $t_event );
@@ -186,6 +189,7 @@ if ( $t_hash != $f_signature ) {
 #
 
 $f_spam = gpc_get_string( 'X-Mailgun-Sflag', 'No' );
+
 if ( $f_spam == 'Yes' ) {
 	header( 'HTTP/1.0 406 Mail Marked as Spam' );
 	$t_event = array( 'level' => 'error', 'comp' => 'email_reporting', 'event' => 'spam' );
