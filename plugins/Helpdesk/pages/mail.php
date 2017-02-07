@@ -19,9 +19,11 @@ $f_subject = trim( gpc_get_string( 'subject', '' ) );
 $f_from_name_email = gpc_get_string( 'from' );
 $t_from_email = helpdesk_get_email_from_name_email( $f_from_name_email );
 
-$f_additional_recipients_headers = gpc_get_string( 'To' ); // . ',' . gpc_get_string( 'Cc' );
-//$t_additional_recipients = mantishub_collect_additional_recipients($f_additional_recipients_headers );
-$t_additional_recipients = [];
+$f_additional_recipients_headers = gpc_get_string( 'To' );
+if(!empty($_POST['Cc'])) {
+	$f_additional_recipients_headers .= ',' . gpc_get_string( 'Cc' );
+}
+$t_additional_recipients = mantishub_collect_additional_recipients($f_additional_recipients_headers );
 
 $f_message_headers = gpc_get_string( 'message-headers' );
 $t_headers = json_decode( $f_message_headers );
@@ -43,7 +45,7 @@ if ( helpdesk_string_contains_domain( $t_message_id ) ) {
 function mantishub_collect_additional_recipients( $f_additional_recipients_headers ) {
 	$t_emails = array();
 
-	$t_parsed_emails = array_filter( explode( ',', gpc_get_string( $f_additional_recipients_headers ) ) );
+	$t_parsed_emails = array_filter( explode( ',', $f_additional_recipients_headers ) );
 	$t_emails += array_filter(
 		array_map(
 			'helpdesk_get_email_from_name_email',
@@ -174,7 +176,7 @@ $t_key = plugin_config_get( 'mailgun_key' );
 $t_data = $f_timestamp . $f_token;
 $t_hash = hash_hmac ( 'sha256', $t_data, $t_key );
 
-if ( $t_hash != $f_signature ) {
+if ($t_hash != $f_signature ) {
 	header( 'HTTP/1.0 406 Invalid Signature' );
 	$t_event = array( 'level' => 'error', 'comp' => 'email_reporting', 'event' => 'invalid_signature' );
 	mantishub_event( $t_event );
@@ -187,6 +189,7 @@ if ( $t_hash != $f_signature ) {
 #
 
 $f_spam = gpc_get_string( 'X-Mailgun-Sflag', 'No' );
+
 if ( $f_spam == 'Yes' ) {
 	header( 'HTTP/1.0 406 Mail Marked as Spam' );
 	$t_event = array( 'level' => 'error', 'comp' => 'email_reporting', 'event' => 'spam' );
@@ -229,14 +232,14 @@ $t_abort_error = '';
 $f_body_plain = trim( gpc_get_string( 'body-plain', '' ) );
 
 $t_bug_id = helpdesk_issue_from_recipient( $f_recipient, $t_abort_error );
-//if( $t_bug_id == 0 ) {
-//	if( !empty( $t_issue_hash ) ) {
-//		$t_bug_id = helpdesk_issue_from_recipient( $t_issue_hash );
-//	} else {
-//		$t_bug_id = helpdesk_issue_from_mail_body( $f_body_plain, $t_abort_error);
-//	}
-//}
 
+if( $t_bug_id == 0 ) {
+	if( !empty( $t_issue_hash ) ) {
+		$t_bug_id = helpdesk_issue_from_recipient( $t_issue_hash, $t_abort_error );
+	} else {
+		$t_bug_id = helpdesk_issue_from_mail_body( $f_body_plain, $t_abort_error );
+	}
+}
 
 if ( $t_bug_id == 0 && !is_blank( $t_abort_error ) ) {
 	header( 'HTTP/1.0 406 ' . $t_abort_error );
@@ -252,7 +255,6 @@ if ( $t_new_issue ) {
 	#
 	# Get project name.
 	#
-
 	$t_instance_name = mantishub_instance_name();
 	if ( stripos( $f_recipient, $t_instance_name . '+' ) !== 0 &&
 		stripos( $f_recipient, $t_instance_name . '@' ) !== 0 ) {
