@@ -94,6 +94,12 @@
 	# Supported parameters: {error}
 	$g_email_incoming_failed_message = '{error}';
 
+	# Excluded emails from notifications from Helpdesk.
+	# Supported parameters: support@mantishub.com or [support@mantishub.com, support2@mantishub.com]
+	$g_email_incoming_exclude_emails = array( 'support@mantishub.com' );
+
+
+
 	# Some customers complained about losing data entered in bug reports due to security token
 	# issues.  So disabling this feature.
 	$g_form_security_validation = OFF;

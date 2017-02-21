@@ -59,9 +59,9 @@ function mantishub_collect_additional_recipients( $f_additional_recipients_heade
 		}
 	);
 
-    $t_excluded_recipients = plugin_config_get('exclude_emails');
-    $t_emails = array_unique( $t_emails );
-    $t_emails = array_diff($t_emails, $t_excluded_recipients);
+	$t_excluded_recipients = (array) plugin_config_get( 'exclude_emails' );
+	$t_emails = array_unique( $t_emails );
+	$t_emails = array_diff($t_emails, $t_excluded_recipients);
 
 	return $t_emails;
 }
