@@ -25,6 +25,7 @@ class HelpdeskPlugin extends MantisPlugin {
 			'default_project' => config_get( 'email_incoming_default_project' ),
 			'failed_message' => config_get( 'email_incoming_failed_message' ),
 			'issue_reported_message' => config_get( 'email_incoming_issue_reported_message' ),
+			'exclude_emails' => config_get( 'email_incoming_exclude_emails' ),
 			);
 	}
 
