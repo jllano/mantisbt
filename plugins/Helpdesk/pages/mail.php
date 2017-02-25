@@ -71,13 +71,13 @@ function mantishub_collect_additional_recipients( $f_additional_recipients_heade
 		if( !is_array( $t_exclude_additional_emails ) ) {
 			$t_exclude_additional_emails = array( $t_exclude_additional_emails );
 		}
-		$t_exclude_emails = array_unique( $t_exclude_emails);
-		$t_exclude_emails = array_merge($t_exclude_emails, $t_exclude_additional_emails);
+		$t_exclude_emails = array_unique( $t_exclude_emails );
+		$t_exclude_emails = array_merge( $t_exclude_emails, $t_exclude_additional_emails );
 	}
 
 	$t_emails = array_unique( $t_emails );
 	$t_emails = array_diff( $t_emails, $t_exclude_emails );
-	
+
 	return $t_emails;
 }
 
