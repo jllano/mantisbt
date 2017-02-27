@@ -62,11 +62,13 @@ class MantisCoreFormattingPlugin extends MantisFormattingPlugin {
 	 * @return array
 	 */
 	function config() {
+		global $g_mantishub_gen;
+
 		return array(
 			'process_text'		=> ON,
 			'process_urls'		=> ON,
 			'process_buglinks'	=> ON,
-			'process_markdown'	=> OFF
+			'process_markdown'	=> $g_mantishub_gen >= 6
 		);
 	}
 
