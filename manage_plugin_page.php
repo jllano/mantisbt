@@ -138,7 +138,7 @@ foreach ( $t_plugins_installed as $t_basename => $t_plugin ) {
 		$t_name = '<a href="' . string_attribute( plugin_page( $t_page, false, $t_basename ) ) . '">' . $t_name . '</a>';
 	}
 
-	if( !is_blank( $t_author ) ) {
+	if( !empty( $t_author ) ) {
 		if( is_array( $t_author ) ) {
 			$t_author = implode( $t_author, ', ' );
 		}
@@ -270,7 +270,7 @@ if( 0 < count( $t_plugins_available ) ) {
 
 		$t_name = mantishub_cleanup_plugin_name( $t_plugin->name );
 
-		if( !is_blank( $t_author ) ) {
+		if( !empty( $t_author ) ) {
 			if( is_array( $t_author ) ) {
 				$t_author = implode( $t_author, ', ' );
 			}
