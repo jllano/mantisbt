@@ -46,8 +46,10 @@ function plan_price() {
 		$t_value = '25';
 	} else if ( plan_is_silver() ) {
 		$t_value = '20';
-	} else {
+	} else if ( plan_is_bronze() ) {
 		$t_value = '15';
+	} else {
+		$t_value = 0;
 	}
 
 	return $t_value;
@@ -95,7 +97,7 @@ function plan_get_disk_space_limit_in_mb() {
 		$t_value = 4 * 1024;
 	} else if ( plan_is_platinum() ) {
 		$t_value = 10 * 1024;
-	} else if ( plan_is_gold() ) {
+	} else if ( plan_is_gold() || plan_is_free() ) {
 		$t_value = 4 * 1024;
 	} else if ( plan_is_silver() ) {
 		$t_value = 2 * 1024;
@@ -119,7 +121,7 @@ function plan_get_disk_space_limit() {
 		$t_value = '30GB';
 	} else if ( plan_is_enterprise() ) {
 		$t_value = '100GB';
-	} else if ( plan_is_platinum() ) {
+	} else if ( plan_is_platinum() || plan_is_free() ) {
 		$t_value = '10GB';
 	} else if ( plan_is_gold() ) {
 		$t_value = '4GB';
@@ -180,7 +182,7 @@ function plan_max_attachments_string() {
 }
 
 function plan_max_team_members_string() {
-	if ( plan_gen() == 1 ) {
+	if ( plan_gen() == 1 || plan_is_free() ) {
 		return lang_get( 'mantishub_plan_unlimited' );
 	}
 
@@ -220,7 +222,7 @@ function plan_max_projects_string() {
 }
 
 function plan_user_packs_needed( $p_team_user_count ) {
-	if ( plan_gen() == 1 ) {
+	if ( plan_gen() == 1 || plan_is_free() ) {
 		return 0;
 	}
 
@@ -270,6 +272,10 @@ function plan_is_platinum() {
 
 function plan_is_gold() {
 	return plan_name() == 'Gold';
+}
+
+function plan_is_free() {
+	return plan_name() == 'Free';
 }
 
 function plan_is_silver() {
