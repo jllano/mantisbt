@@ -45,3 +45,6 @@
 [submodule "plugins/ImportUsers"]
 	path = plugins/ImportUsers
 	url = git@bitbucket.org:mantishub/importusers.git
+[submodule "plugins/source-integration"]
+	path = plugins/source-integration
+	url = https://github.com/mantisbt-plugins/source-integration.git
