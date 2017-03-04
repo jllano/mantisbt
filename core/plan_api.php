@@ -95,9 +95,9 @@ function plan_get_disk_space_limit_in_mb() {
 		$t_value = 30 * 1024;
 	} else if ( plan_is_enterprise() ) {
 		$t_value = 4 * 1024;
-	} else if ( plan_is_platinum() ) {
+	} else if ( plan_is_platinum() || plan_is_free() ) {
 		$t_value = 10 * 1024;
-	} else if ( plan_is_gold() || plan_is_free() ) {
+	} else if ( plan_is_gold() ) {
 		$t_value = 4 * 1024;
 	} else if ( plan_is_silver() ) {
 		$t_value = 2 * 1024;
