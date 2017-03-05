@@ -39,6 +39,8 @@ remove_folder( 'docbook' );
 remove_folder( 'phing' );
 remove_folder( 'hosting' );
 remove_folder( 'tools' );
+remove_folder( 'plugins/source-integration' );
+remove_folder( 'plugins/XmlImportExport' );
 
 echo "Deleting unnecessary vendor folders\n";
 remove_folder( 'vendor/auth0/auth0-php/examples' );
