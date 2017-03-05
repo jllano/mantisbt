@@ -105,7 +105,7 @@
     # Plugins that are included in the distribution that we don't want to include.
     # If customer have them installed, they will continue to be available, but they won't be
     # available for installs.
-    $g_plugins_to_exclude = array( 'XmlImportExport', 'Zendesk' );
+    $g_plugins_to_exclude = array( 'XmlImportExport', 'Zendesk', 'Source', 'SourceGithub', 'SourceBitBucket', 'SourceGitlab' );
 
     # This causes issue for some customers.
 	$g_session_validation = OFF;
