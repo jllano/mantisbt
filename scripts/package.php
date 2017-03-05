@@ -29,6 +29,7 @@ remove_file( '.gitmodules' );
 remove_file( '.travis.yml' );
 remove_file( '.mailmap' );
 remove_file( 'scripts/travis_before_script.sh' );
+remove_file( 'scripts/travis_script.sh' );
 
 echo "Deleting unnecessary MantisBT folders\n";
 remove_folder( 'tests' );
