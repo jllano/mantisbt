@@ -76,7 +76,7 @@ function mantishub_collect_additional_recipients( $f_additional_recipients_heade
 	}
 
 	$t_emails = array_unique( $t_emails );
-	$t_emails = array_diff( $t_emails, $t_exclude_emails );
+	$t_emails = array_udiff( $t_emails, $t_exclude_emails, 'strcasecmp' );
 
 	return $t_emails;
 }
