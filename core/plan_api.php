@@ -118,7 +118,7 @@ function plan_get_disk_space_limit() {
 	} else if ( $g_mantishub_plan_code == 'platinum_300' || $g_mantishub_plan_code == 'platinum12_300' ) {
 		$t_value = '30GB';
 	} else if ( $g_mantishub_plan_code == 'platinum_200' || $g_mantishub_plan_code == 'platinum12_200' ) {
-		$t_value = '30GB';
+		$t_value = '20GB';
 	} else if ( plan_is_enterprise() ) {
 		$t_value = '100GB';
 	} else if ( plan_is_platinum() || plan_is_free() ) {
