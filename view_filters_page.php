@@ -101,11 +101,11 @@ $t_filter = filter_ensure_valid_filter( $t_filter );
 <div class="space-10"></div>
 <div class="col-md-12 col-xs-12">
 
-	<form method="post" name="filters" id="filters_form_open" class="form-control" action="<?php echo $t_action; ?>">
+	<form method="post" name="filters" id="filters_form_open" action="<?php echo $t_action; ?>">
 
 	<?php # CSRF protection not required here - form does not result in modifications ?>
 	<input type="hidden" name="type" value="1" />
-	<input type="hidden" name="view_type" value="<?php echo $f_view_type; ?>" />
+	<input type="hidden" name="view_type" value="<?php echo $t_filter['_view_type']; ?>" />
 	<?php
 		if( $f_for_screen == false ) {
 			print '<input type="hidden" name="print" value="1" />';
@@ -126,22 +126,14 @@ $t_filter = filter_ensure_valid_filter( $t_filter );
 							<i class="ace-icon fa fa-bars bigger-125"></i>
 						</a>
 						<ul class="dropdown-menu dropdown-menu-right dropdown-yellow dropdown-caret dropdown-closer">
-							<li>
 							<?php
-								$f_switch_view_link = 'view_filters_page.php?static=' . (int)$f_static;
+								$t_url = 'view_filters_page.php?static=' . (int)$f_static;
 								if( $t_named_filter ) {
-									$f_switch_view_link .= '&filter_id=' . $f_filter_id;
+									$t_url .= '&filter_id=' . $f_filter_id;
 								}
-								$f_switch_view_link .= '&view_type=';
-								if( ( SIMPLE_ONLY != config_get( 'view_filters' ) ) && ( ADVANCED_ONLY != config_get( 'view_filters' ) ) ) {
-									if( 'advanced' == $t_filter['_view_type'] ) {
-										echo '<a href="' . $f_switch_view_link, 'simple"><i class="ace-icon fa fa-toggle-off"></i>&#160;&#160;' . lang_get('simple_filters') . '</a>';
-									} else {
-										echo '<a href="' . $f_switch_view_link, 'advanced"><i class="ace-icon fa fa-toggle-on"></i>&#160;&#160;' . lang_get('advanced_filters') . '</a>';
-									}
-								}
+								$t_url .= '&view_type=';
+								filter_print_view_type_toggle( $t_url, $t_filter['_view_type'] );
 							?>
-							</li>
 						</ul>
 					</div>
 				</div>
