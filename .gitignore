@@ -37,7 +37,7 @@ plugins/*
 !plugins/XmlImportExport
 !plugins/Gravatar
 !plugins/MantisHub
-!plugins/MantisKnowledgeBase
+!plugins/KnowledgeBase
 
 # IDE/Editor temporary files
 *~
