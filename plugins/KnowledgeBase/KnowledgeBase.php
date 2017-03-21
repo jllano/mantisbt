@@ -18,6 +18,12 @@
  * @copyright Copyright MantisBT Team - mantisbt-dev@lists.sourceforge.net
  */
 
+require_once( 'core.php' );
+require_api( 'constant_inc.php' );
+require_api( 'current_user_api.php' );
+require_api( 'project_api.php' );
+require_api( 'project_hierarchy_api.php' );
+
 /**
  * Mantis KnowledgeBase Plugin
  *
@@ -45,4 +51,37 @@ class KnowledgeBasePlugin extends MantisPlugin {
 		$this->url = 'http://www.mantisbt.org';
 	}
 
+
+	/**
+	 * Install KnowledgeBase plugin
+	 * 
+	 * Create a project upon install
+	 * @return boolean
+	 */
+	function install() {
+
+		$this->createProject();
+		return true;
+	}
+
+	/**
+	 * Create Project with named Knowledbase
+	 * @return void
+	 */
+	function createProject() {
+		
+		$t_name 		= 'Knowledge Base';
+		$t_description 	= 'Knowledge Base Description';
+		$t_view_state	= VS_PUBLIC;
+		$t_status		= 10; //development
+		
+		$t_project_id = project_create
+			( 
+				$t_name, 
+				$t_description, 
+				$t_status, 
+				$t_view_state
+			);
+	}
+	
 }
