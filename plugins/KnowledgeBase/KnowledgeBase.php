@@ -32,6 +32,8 @@ require_api( 'project_hierarchy_api.php' );
  */
 class KnowledgeBasePlugin extends MantisPlugin {
 	
+	public $project_name = 'Knowledge Base';
+
 	/**
 	 * A method that populates the plugin information and minimum requirements.
 	 * @return void
@@ -60,7 +62,13 @@ class KnowledgeBasePlugin extends MantisPlugin {
 	 */
 	function install() {
 
-		$this->createProject();
+		$t_project_exist = project_get_id_by_name( $this->project_name );
+
+		# check if project exist already
+		if( !$t_project_exist ) {
+			$this->createProject();
+		}
+
 		return true;
 	}
 
@@ -70,7 +78,7 @@ class KnowledgeBasePlugin extends MantisPlugin {
 	 */
 	function createProject() {
 		
-		$t_name 		= 'Knowledge Base';
+		$t_name 		= $this->project_name;
 		$t_description 	= 'Knowledge Base Description';
 		$t_view_state	= VS_PUBLIC;
 		$t_status		= 10; //development
@@ -82,6 +90,8 @@ class KnowledgeBasePlugin extends MantisPlugin {
 				$t_status, 
 				$t_view_state
 			);
+
+		var_dump($t_project_id);
 	}
 	
 }
