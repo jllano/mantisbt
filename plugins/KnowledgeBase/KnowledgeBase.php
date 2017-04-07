@@ -18,11 +18,10 @@
  * @copyright Copyright MantisBT Team - mantisbt-dev@lists.sourceforge.net
  */
 
-require_once( 'core.php' );
-require_api( 'constant_inc.php' );
-require_api( 'current_user_api.php' );
+require_once( dirname( __FILE__ ) . '/../../core.php' );
+require_api( 'custom_function_api.php' );
+require_api( 'filter_api.php' );
 require_api( 'project_api.php' );
-require_api( 'project_hierarchy_api.php' );
 
 /**
  * Mantis KnowledgeBase Plugin
@@ -73,7 +72,7 @@ class KnowledgeBasePlugin extends MantisPlugin {
 	}
 
 	/**
-	 * Create Project with named Knowledbase
+	 * Create Project with named Knowled Base
 	 * @return void
 	 */
 	function createProject() {
@@ -91,7 +90,27 @@ class KnowledgeBasePlugin extends MantisPlugin {
 				$t_view_state
 			);
 
-		var_dump($t_project_id);
 	}
 	
+	/**
+	 * Fetch Closed Issues under KnowledBase Project
+	 * @return Object BugData
+	 */
+	function getClosedIssues() {
+
+		$f_page_number = 1;
+		$t_per_page = null;
+		$t_bug_count = null;
+		$t_page_count = null;
+
+		$t_filter = array(
+			'status' => CLOSED,
+			'per_page' => 10
+		);
+
+		$t_rows = filter_get_bug_rows( $f_page_number, $t_per_page, $t_page_count, $t_bug_count, $t_filter, null, null, false );
+
+		return $t_rows;
+	}
+
 }
