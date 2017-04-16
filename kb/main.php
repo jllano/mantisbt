@@ -15,7 +15,9 @@ require_once( dirname( dirname( __FILE__ ) ) . '/plugins/KnowledgeBase/Knowledge
 
 <body>
 
-<h2>Knowledge Base</h2>
+<div class="page-header">
+  <h1>Knowledge Base</h1>
+</div>
 
 <div class="table-responsive">
 	<table class="table">
@@ -32,7 +34,7 @@ require_once( dirname( dirname( __FILE__ ) ) . '/plugins/KnowledgeBase/Knowledge
 		<tbody>	
 			<?php foreach ($t_close_issues as $t_bug):?>	
 				<tr>
-					<td><?php echo $t_bug->summary ?></td>
+					<td><a href="view.php?id=<?php echo $t_bug->id; ?>"><?php echo $t_bug->summary ?></a></td>
 					<td>
 						<?php
 							echo date( config_get( 'normal_date_format' ), $t_bug->last_updated );
