@@ -93,10 +93,10 @@ class KnowledgeBasePlugin extends MantisPlugin {
 	}
 	
 	/**
-	 * Fetch Closed Issues under KnowledBase Project
+	 * Fetch all Closed Issues
 	 * @return Object BugData
 	 */
-	function getClosedIssues() {
+	static function getClosedIssues() {
 
 		$f_page_number = 1;
 		$t_per_page = null;
@@ -105,10 +105,19 @@ class KnowledgeBasePlugin extends MantisPlugin {
 
 		$t_filter = array(
 			'status' => CLOSED,
-			'per_page' => 10
+			'per_page' => 100
 		);
 
-		$t_rows = filter_get_bug_rows( $f_page_number, $t_per_page, $t_page_count, $t_bug_count, $t_filter, null, null, false );
+		$t_rows = filter_get_bug_rows( 
+			$f_page_number, 
+			$t_per_page, 
+			$t_page_count, 
+			$t_bug_count, 
+			$t_filter, 
+			null, 
+			null, 
+			false 
+		);
 
 		return $t_rows;
 	}
