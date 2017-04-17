@@ -15,6 +15,17 @@ require_once( dirname( dirname( __FILE__ ) ) . '/plugins/KnowledgeBase/Knowledge
 
 <body>
 
+<!-- Fixed navbar -->
+<nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container">
+    <div id="navbar" class="collapse navbar-collapse">
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="#">MantisHub</a></li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div>
+</nav>
+<br/><br/>
 <div class="container">
 	<div class="page-header">
 		<h1>Knowledge Base</h1>
